@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
+import { io, Socket } from "socket.io-client";
 import {
   Swords,
   Trophy,
@@ -18,7 +19,10 @@ import {
   Cpu,
   Loader2,
   UserPlus,
-  X
+  X,
+  Globe,
+  Plus,
+  LogIn
 } from "lucide-react";
 
 import { Character, MatchHistory, RoleId, SlottedTeam } from "./types";
@@ -103,6 +107,8 @@ const getRequiredRarityForTeam = (slots: SlottedTeam): Rarity | null => {
   return null;
 };
 
+const API_BASE = import.meta.env.VITE_API_URL || "https://animebattle.up.railway.app";
+
 export default function App() {
   // Game Setup States
   const [view, setView] = useState<ViewState>("landing");
@@ -113,7 +119,14 @@ export default function App() {
   const [importedCastAnimes, setImportedCastAnimes] = useState<Set<string>>(() => new Set());
   const [player1Name, setPlayer1Name] = useState("Hero Picker");
   const [player2Name, setPlayer2Name] = useState("AI Overlord");
-  const [gameMode, setGameMode] = useState<"vs-ai" | "local-2p">("vs-ai");
+  const [gameMode, setGameMode] = useState<"vs-ai" | "local-2p" | "online-2p">("vs-ai");
+
+  // Online Multiplayer States
+  const [socket, setSocket] = useState<Socket | null>(null);
+  const [onlineRoomId, setOnlineRoomId] = useState<string | null>(null);
+  const [onlineSide, setOnlineSide] = useState<"p1" | "p2" | null>(null);
+  const [isWaitingForOpponent, setIsWaitingForOpponent] = useState(false);
+  const [joinRoomId, setJoinRoomId] = useState("");
 
   // Active Draft Slotted States
   const [round, setRound] = useState(1);
@@ -177,7 +190,7 @@ export default function App() {
     const key = getAnimeKey(anime);
     if (importedCastAnimes.has(key)) return;
 
-    const res = await fetch("/api/anime/import-cast", {
+    const res = await fetch(`${API_BASE}/api/anime/import-cast`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ animeTitle: anime, limit: 40 }),
@@ -216,7 +229,7 @@ export default function App() {
 
   const fetchTotalCharactersCount = async () => {
     try {
-      const res = await fetch("/api/characters");
+      const res = await fetch(`${API_BASE}/api/characters`);
       if (res.ok) {
         const data = await res.json();
         setTotalCharacters(data.length);
@@ -236,7 +249,74 @@ export default function App() {
   useEffect(() => {
     fetchMatchHistory();
     fetchTotalCharactersCount();
+
+    const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || "https://animebattle.up.railway.app";
+    const newSocket = io(SOCKET_URL, { transports: ["websocket", "polling"] });
+    setSocket(newSocket);
+
+    newSocket.on("room-created", ({ roomId, side }) => {
+      setOnlineRoomId(roomId);
+      setOnlineSide(side);
+      setIsWaitingForOpponent(true);
+    });
+
+    newSocket.on("game-started", ({ roomId, p1Name, p2Name }) => {
+      setOnlineRoomId(roomId);
+      setPlayer1Name(p1Name);
+      setPlayer2Name(p2Name);
+      setIsWaitingForOpponent(false);
+      setView("draft");
+    });
+
+    newSocket.on("game-state-updated", (state) => {
+      if (state.round) setRound(state.round);
+      if (state.activeTurn) setActiveTurn(state.activeTurn);
+      if (state.p1Slots) setP1Slots(state.p1Slots);
+      if (state.p2Slots) setP2Slots(state.p2Slots);
+      if (state.p1SkipUsed !== undefined) setP1SkipUsed(state.p1SkipUsed);
+      if (state.p2SkipUsed !== undefined) setP2SkipUsed(state.p2SkipUsed);
+      if (state.excludedIds) setExcludedIds(state.excludedIds);
+      if (state.activeCharacter !== undefined) setActiveCharacter(state.activeCharacter);
+      if (state.isCardFlipped !== undefined) setIsCardFlipped(state.isCardFlipped);
+      if (state.mustPick !== undefined) setMustPick(state.mustPick);
+      if (state.view) setView(state.view);
+      if (statsMatch(state.resultData)) setResultData(state.resultData);
+    });
+
+    newSocket.on("player-disconnected", () => {
+      alert("Opponent disconnected. Returning to lobby.");
+      setView("landing");
+    });
+
+    newSocket.on("error", (msg) => {
+      alert(msg);
+    });
+
+    return () => {
+      newSocket.close();
+    };
   }, []);
+
+  const statsMatch = (data: any) => {
+    return data && data.winnerId;
+  };
+
+  const createOnlineRoom = () => {
+    if (!socket) return;
+    setGameMode("online-2p");
+    socket.emit("create-room", player1Name);
+  };
+
+  const joinOnlineRoom = () => {
+    if (!socket || !joinRoomId) return;
+    setGameMode("online-2p");
+    socket.emit("join-room", { roomId: joinRoomId.toUpperCase(), playerName: player1Name });
+  };
+
+  const syncGameState = (updates: any) => {
+    if (!socket || !onlineRoomId) return;
+    socket.emit("sync-game-state", { roomId: onlineRoomId, state: updates });
+  };
 
   // Spotlight rotation effect
   useEffect(() => {
@@ -257,7 +337,7 @@ export default function App() {
 
   const fetchMatchHistory = async () => {
     try {
-      const res = await fetch("/api/draft/history");
+      const res = await fetch(`${API_BASE}/api/draft/history`);
       if (res.ok) {
         const data = await res.json();
         setMatchHistory(data);
@@ -351,7 +431,7 @@ export default function App() {
     const requiredRarity = getRequiredRarityForTeam(targetSlots);
 
     try {
-      let url = `/api/characters/random?exclude=${currentExcludes.join(",")}`;
+      let url = `${API_BASE}/api/characters/random?exclude=${currentExcludes.join(",")}`;
       if (activeAnimes.length > 0) {
         url += `&animes=${encodeURIComponent(activeAnimes.join(","))}`;
       }
@@ -365,6 +445,9 @@ export default function App() {
       setTimeout(() => {
         setActiveCharacter(character);
         setIsCardFlipped(true);
+        if (gameMode === "online-2p") {
+          syncGameState({ activeCharacter: character, isCardFlipped: true });
+        }
       }, 300);
     } catch (er) {
       // Client-side fallback if network cuts out
@@ -397,6 +480,7 @@ export default function App() {
   const handleSlotSelect = (roleId: RoleId) => {
     if (!activeCharacter) return;
     if (isCardFlipped) return; // Prevent card slot insertion before reveal
+    if (gameMode === "online-2p" && activeTurn !== onlineSide) return;
 
     const activeSlots = activeTurn === "p1" ? p1Slots : p2Slots;
     if (activeSlots[roleId]) return; // slot already occupied
@@ -417,6 +501,9 @@ export default function App() {
     if (pickedIds.has(activeCharacter.id) || pickedNames.has(normalizeName(activeCharacter.name))) {
       setExcludedIds(updatedExcludes);
       pullNewCharacter(updatedExcludes, activeAnimes, activeSlots);
+      if (gameMode === "online-2p") {
+        syncGameState({ excludedIds: updatedExcludes });
+      }
       return;
     }
 
@@ -432,13 +519,24 @@ export default function App() {
       if (gameMode === "local-2p") {
         setActiveTurn("p2");
         pullNewCharacter(updatedExcludes, activeAnimes, p2Slots);
+      } else if (gameMode === "online-2p") {
+        setActiveTurn("p2");
+        syncGameState({
+          p1Slots: nextSlots,
+          activeTurn: "p2",
+          excludedIds: updatedExcludes,
+          mustPick: false,
+          activeCharacter: null, // Clear on other side
+          isCardFlipped: true
+        });
+        pullNewCharacter(updatedExcludes, activeAnimes, p2Slots);
       } else {
         // AI Turn — pass activeAnimes so AI's async flow uses the same filter
         setActiveTurn("p2");
         triggerAiTurn(nextTeam, p2Slots, updatedExcludes, activeAnimes);
       }
     } else {
-      // Local P2 Turn
+      // Local or Online P2 Turn
       const nextSlots = { ...p2Slots, [roleId]: activeCharacter };
       setP2Slots(nextSlots);
       setMustPick(false);
@@ -449,9 +547,28 @@ export default function App() {
         setRound(round + 1);
         setActiveTurn("p1");
         pullNewCharacter(updatedExcludes, activeAnimes, p1Slots);
+        if (gameMode === "online-2p") {
+          syncGameState({
+            p2Slots: nextSlots,
+            activeTurn: "p1",
+            round: round + 1,
+            excludedIds: updatedExcludes,
+            mustPick: false,
+            activeCharacter: null,
+            isCardFlipped: true
+          });
+        }
       } else {
         const p1CurrentTeam = Object.values(p1Slots).filter(Boolean) as Character[];
         calculateWinner(p1CurrentTeam, nextTeam);
+        if (gameMode === "online-2p") {
+          syncGameState({
+            p2Slots: nextSlots,
+            excludedIds: updatedExcludes,
+            mustPick: false,
+            activeCharacter: null
+          });
+        }
       }
     }
   };
@@ -466,6 +583,8 @@ export default function App() {
   };
 
   const handleSkip = () => {
+    if (gameMode === "online-2p" && activeTurn !== onlineSide) return;
+
     if (activeTurn === "p1") {
       if (p1SkipUsed) return;
       setP1SkipUsed(true);
@@ -481,6 +600,17 @@ export default function App() {
     setExcludedIds(nextExcludes);
     setMustPick(true); // Player must pick the next revealed fighter
     pullNewCharacter(nextExcludes, activeAnimes, activeTurn === "p1" ? p1Slots : p2Slots);
+
+    if (gameMode === "online-2p") {
+      syncGameState({
+        p1SkipUsed: activeTurn === "p1" ? true : p1SkipUsed,
+        p2SkipUsed: activeTurn === "p2" ? true : p2SkipUsed,
+        excludedIds: nextExcludes,
+        mustPick: true,
+        activeCharacter: null,
+        isCardFlipped: true
+      });
+    }
   };
 
   // ---------------- AI LOGIC SIMULATION ----------------
@@ -517,7 +647,7 @@ export default function App() {
     const fetchCandidate = async (excludes: string[], targetSlots: SlottedTeam): Promise<Character> => {
       const requiredRarity = getRequiredRarityForTeam(targetSlots);
       try {
-        let url = `/api/characters/random?exclude=${excludes.join(",")}`;
+        let url = `${API_BASE}/api/characters/random?exclude=${excludes.join(",")}`;
         if (activeAnimes.length > 0) {
           url += `&animes=${encodeURIComponent(activeAnimes.join(","))}`;
         }
@@ -634,7 +764,7 @@ export default function App() {
     setLoadingResult(true);
 
     try {
-      const res = await fetch("/api/draft/calculate", {
+      const res = await fetch(`${API_BASE}/api/draft/calculate`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -650,8 +780,11 @@ export default function App() {
       if (res.ok) {
         const stats = await res.json();
         setResultData(stats);
+        if (gameMode === "online-2p") {
+          syncGameState({ resultData: stats, view: "results" });
+        }
 
-        await fetch("/api/draft/save", {
+        await fetch(`${API_BASE}/api/draft/save`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -827,7 +960,7 @@ export default function App() {
                           <label className="text-[10px] font-mono text-neutral-400 tracking-widest uppercase">
                             SELECT BATTLE DESIGN
                           </label>
-                          <div className="grid grid-cols-2 gap-3.5">
+                          <div className="grid grid-cols-3 gap-3.5">
                             <button
                               onClick={() => {
                                 setGameMode("vs-ai");
@@ -840,8 +973,8 @@ export default function App() {
                             >
                               <Computer className="w-5 h-5" />
                               <div>
-                                <p className="text-xs font-black uppercase tracking-wide">P1 VS AI BOT</p>
-                                <p className="text-[9px] font-mono text-neutral-500 mt-0.5">Solo Training Draft</p>
+                                <p className="text-xs font-black uppercase tracking-wide">P1 VS AI</p>
+                                <p className="text-[9px] font-mono text-neutral-500 mt-0.5">Solo Bot</p>
                               </div>
                             </button>
 
@@ -857,12 +990,75 @@ export default function App() {
                             >
                               <Users className="w-5 h-5" />
                               <div>
-                                <p className="text-xs font-black uppercase tracking-wide">P1 VS P2 DUAL</p>
-                                <p className="text-[9px] font-mono text-neutral-500 mt-0.5">Local Pass & Play</p>
+                                <p className="text-xs font-black uppercase tracking-wide">LOCAL 2P</p>
+                                <p className="text-[9px] font-mono text-neutral-500 mt-0.5">Pass & Play</p>
+                              </div>
+                            </button>
+
+                            <button
+                              onClick={() => {
+                                setGameMode("online-2p");
+                              }}
+                              className={`p-4 rounded-xl border flex flex-col items-center gap-2 text-center transition-all cursor-pointer ${gameMode === "online-2p"
+                                  ? "border-violet-500 bg-violet-950/10 text-white shadow-[0_0_15px_rgba(139,92,246,0.15)]"
+                                  : "border-neutral-900 bg-neutral-900/20 text-neutral-400 hover:border-neutral-800"
+                                }`}
+                            >
+                              <Globe className="w-5 h-5" />
+                              <div>
+                                <p className="text-xs font-black uppercase tracking-wide">ONLINE 2P</p>
+                                <p className="text-[9px] font-mono text-neutral-500 mt-0.5">Play Online</p>
                               </div>
                             </button>
                           </div>
                         </div>
+
+                        {gameMode === "online-2p" && !onlineRoomId && (
+                          <div className="space-y-4 p-4 rounded-2xl border border-violet-500/20 bg-violet-500/5 animate-fadeIn">
+                            <div className="grid grid-cols-2 gap-3">
+                              <button
+                                onClick={createOnlineRoom}
+                                className="py-3 rounded-xl bg-violet-600 hover:bg-violet-500 text-white text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2 transition-all"
+                              >
+                                <Plus className="w-4 h-4" /> Create Room
+                              </button>
+                              <div className="relative">
+                                <input
+                                  type="text"
+                                  value={joinRoomId}
+                                  onChange={(e) => setJoinRoomId(e.target.value)}
+                                  placeholder="ROOM CODE"
+                                  className="w-full bg-neutral-900 border border-neutral-800 rounded-xl py-3 px-3 text-[10px] text-white font-mono font-bold focus:border-violet-500 focus:outline-none uppercase"
+                                />
+                                <button
+                                  onClick={joinOnlineRoom}
+                                  className="absolute right-1 top-1 bottom-1 px-3 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-violet-400 text-[9px] font-black uppercase"
+                                >
+                                  Join
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        {onlineRoomId && isWaitingForOpponent && (
+                          <div className="p-6 rounded-2xl border border-emerald-500/20 bg-emerald-500/5 text-center space-y-3 animate-pulse">
+                            <p className="text-[10px] font-mono text-emerald-400 uppercase tracking-widest">Room Created! Share code with friend</p>
+                            <h3 className="text-3xl font-black text-white tracking-widest">{onlineRoomId}</h3>
+                            <div className="flex items-center justify-center gap-2 text-[9px] text-neutral-500 uppercase font-mono">
+                              <Loader2 className="w-3 h-3 animate-spin" /> Waiting for opponent...
+                            </div>
+                            <button 
+                              onClick={() => {
+                                setOnlineRoomId(null);
+                                setIsWaitingForOpponent(false);
+                              }}
+                              className="text-[9px] text-red-400 hover:underline"
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        )}
 
                         {/* Anime Filter */}
                         <div className="space-y-2 pt-1">
@@ -1212,8 +1408,8 @@ export default function App() {
                     slots={p1Slots}
                     skipUsed={p1SkipUsed}
                     activeTurn={activeTurn === "p1" && !aiIsProcessing}
-                    onSlotSelect={handleSlotSelect}
-                    isDraggingActive={isDraggingActive}
+                    onSlotSelect={(gameMode !== "online-2p" || onlineSide === "p1") ? handleSlotSelect : undefined}
+                    isDraggingActive={isDraggingActive && (gameMode !== "online-2p" || onlineSide === "p1")}
                   />
                 </div>
 
@@ -1249,7 +1445,12 @@ export default function App() {
                         isFlipped={isCardFlipped}
                         activePlayerName={activeTurn === "p1" ? player1Name : player2Name}
                         activeTurn={activeTurn}
-                        onClickBackSide={() => setIsCardFlipped(false)}
+                        onClickBackSide={() => {
+                          setIsCardFlipped(false);
+                          if (gameMode === "online-2p") {
+                            syncGameState({ isCardFlipped: false });
+                          }
+                        }}
                         onDragStart={(e) => {
                           if (e.dataTransfer) {
                             e.dataTransfer.setData("text/plain", activeCharacter.id);
@@ -1332,8 +1533,8 @@ export default function App() {
                     slots={p2Slots}
                     skipUsed={p2SkipUsed}
                     activeTurn={activeTurn === "p2"}
-                    onSlotSelect={gameMode === "local-2p" ? handleSlotSelect : undefined}
-                    isDraggingActive={isDraggingActive}
+                    onSlotSelect={(gameMode === "local-2p" || (gameMode === "online-2p" && onlineSide === "p2")) ? handleSlotSelect : undefined}
+                    isDraggingActive={isDraggingActive && (gameMode === "local-2p" || (gameMode === "online-2p" && onlineSide === "p2"))}
                   />
                 </div>
               </div>

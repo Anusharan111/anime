@@ -1,6 +1,8 @@
 import express from "express";
 import path from "path";
 import dotenv from "dotenv";
+import { createServer } from "http";
+import { Server } from "socket.io";
 import { createServer as createViteServer } from "vite";
 import { GoogleGenAI } from "@google/genai";
 import { CHARACTERS } from "./src/data/characters.js";
@@ -14,6 +16,17 @@ const PORT = parseInt(process.env.PORT || "5174", 10);
 
 // Express JSON middleware
 app.use(express.json());
+
+// CORS – allow the Vercel front-end (and any other origin) to call the API
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(200);
+  }
+  next();
+});
 
 // In-Memory Databases
 const matchHistory: MatchHistory[] = [];
@@ -835,7 +848,78 @@ app.get("/api/draft/history", (req, res) => {
 
 // ---------------- MAIN SERVER KICKOFF ----------------
 
+const rooms = new Map<string, any>();
+
 async function startServer() {
+  const httpServer = createServer(app);
+  const io = new Server(httpServer, {
+    cors: {
+      origin: "*",
+      methods: ["GET", "POST"]
+    }
+  });
+
+  io.on("connection", (socket) => {
+    console.log(`User connected: ${socket.id}`);
+
+    socket.on("create-room", (playerName) => {
+      const roomId = Math.random().toString(36).substring(2, 8).toUpperCase();
+      rooms.set(roomId, {
+        id: roomId,
+        players: [{ id: socket.id, name: playerName, side: "p1" }],
+        status: "waiting",
+      });
+      socket.join(roomId);
+      socket.emit("room-created", { roomId, side: "p1" });
+    });
+
+    socket.on("join-room", ({ roomId, playerName }) => {
+      const room = rooms.get(roomId);
+      if (!room) {
+        socket.emit("error", "Room not found");
+        return;
+      }
+      if (room.players.length >= 2) {
+        socket.emit("error", "Room is full");
+        return;
+      }
+
+      room.players.push({ id: socket.id, name: playerName, side: "p2" });
+      room.status = "drafting";
+      socket.join(roomId);
+      
+      const p1 = room.players.find((p: any) => p.side === "p1");
+      
+      io.to(roomId).emit("game-started", {
+        roomId,
+        players: room.players,
+        p1Name: p1.name,
+        p2Name: playerName
+      });
+    });
+
+    socket.on("sync-game-state", ({ roomId, state }) => {
+      socket.to(roomId).emit("game-state-updated", state);
+    });
+
+    socket.on("disconnect", () => {
+      console.log(`User disconnected: ${socket.id}`);
+      // Find room the player was in
+      for (const [roomId, room] of rooms.entries()) {
+        const playerIndex = room.players.findIndex((p: any) => p.id === socket.id);
+        if (playerIndex !== -1) {
+          room.players.splice(playerIndex, 1);
+          if (room.players.length === 0) {
+            rooms.delete(roomId);
+          } else {
+            io.to(roomId).emit("player-disconnected");
+          }
+          break;
+        }
+      }
+    });
+  });
+
   if (process.env.NODE_ENV !== "production") {
     console.log("Starting server in DEVELOPMENT mode with Vite dev middleware...");
     const vite = await createViteServer({
@@ -852,7 +936,7 @@ async function startServer() {
     });
   }
 
-  app.listen(PORT, "0.0.0.0", () => {
+  httpServer.listen(PORT, "0.0.0.0", () => {
     console.log(`Anime Battle server listening on port ${PORT}`);
   });
 }

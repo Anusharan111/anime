@@ -24,6 +24,7 @@ import {
   Plus,
   LogIn
 } from "lucide-react";
+import { Analytics } from "@vercel/analytics/react";
 
 import { Character, MatchHistory, RoleId, SlottedTeam } from "./types";
 import { CHARACTERS } from "./data/characters";
@@ -1824,7 +1825,7 @@ export default function App() {
                         <div>
                           <p className="text-xs text-neutral-400 font-mono leading-none">PLAYER 2 TEAM</p>
                           <p className="text-sm font-black text-white">{item.player2Name}</p>
-                          <p className="text-xs font-mono text-violet-400">∑ {item.player2Power} Power</p>
+                          <p className="text-xs font-mono text-violet-400">�� {item.player2Power} Power</p>
                         </div>
                       </div>
 
@@ -1892,6 +1893,7 @@ export default function App() {
         <span>© 2026 ANIME BATTLE. ALL RIGHTS RESERVED.</span>
         <span className="text-violet-400">MADE FOR ANIME ENTHUSIASTS WORLDWIDE</span>
       </footer>
+      <Analytics />
     </div>
   );
 }

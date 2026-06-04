@@ -1,24 +1,37 @@
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
-import {defineConfig} from 'vite';
-import {fileURLToPath} from 'url';
+import { defineConfig } from 'vite';
+import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
-  base: '/anime/',
+  base: process.env.VITE_BASE_PATH || '/',
   plugins: [react(), tailwindcss()],
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          react: ['react', 'react-dom'],
+          animation: ['motion'],
+          icons: ['lucide-react'],
+        },
+      },
+    },
+  },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, '.'),
     },
   },
   server: {
-    // HMR is disabled in AI Studio via DISABLE_HMR env var.
-    // Do not modify—file watching is disabled to prevent flickering during agent edits.
-    hmr: process.env.DISABLE_HMR !== 'true',
-    // Disable file watching when DISABLE_HMR is true to save CPU during agent edits.
+    port: 5174,
+    proxy: {
+      '/api': 'http://localhost:6000',
+    },
+    // HMR is disabled by default in middleware mode; set DISABLE_HMR=false to enable it.
+    hmr: process.env.DISABLE_HMR === 'false',
     watch: process.env.DISABLE_HMR === 'true' ? null : {},
   },
 });

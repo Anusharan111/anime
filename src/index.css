@@ -1,0 +1,71 @@
+@import "tailwindcss";
+
+@theme {
+  --color-nexus-blue: #1e90ff;
+  --color-nexus-purple: #a855f7;
+  --color-nexus-cyan: #00e5ff;
+  
+  --animate-nexus-pulse: nexus-pulse 3s infinite;
+  --animate-nexus-float: nexus-float 6s ease-in-out infinite;
+  --animate-nexus-scan: nexus-scan 4s linear infinite;
+
+  @keyframes nexus-pulse {
+    0%, 100% { opacity: 0.4; box-shadow: 0 0 20px rgba(30, 144, 255, 0.2); }
+    50% { opacity: 0.8; box-shadow: 0 0 40px rgba(0, 229, 255, 0.4); }
+  }
+
+  @keyframes nexus-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+  }
+
+  @keyframes nexus-scan {
+    0% { top: -10%; }
+    100% { top: 110%; }
+  }
+}
+
+@layer base {
+  body {
+    @apply bg-[#050816] text-slate-100 overflow-x-hidden selection:bg-nexus-cyan/30;
+  }
+}
+
+@layer components {
+  .nexus-glass {
+    @apply bg-black/40 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_0_rgba(0,0,0,0.37)];
+  }
+
+  .nexus-card {
+    @apply relative overflow-hidden rounded-xl border border-nexus-blue/20 bg-nexus-blue/5 transition-all duration-300 hover:border-nexus-cyan/40 hover:bg-nexus-cyan/5;
+  }
+
+  .nexus-glow-text {
+    @apply drop-shadow-[0_0_8px_rgba(0,229,255,0.6)];
+  }
+  
+  .nexus-border-futuristic {
+    clip-path: polygon(
+      0% 15px, 15px 0%, 
+      calc(100% - 15px) 0%, 100% 15px, 
+      100% calc(100% - 15px), calc(100% - 15px) 100%, 
+      15px 100%, 0% calc(100% - 15px)
+    );
+  }
+}
+
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+}
+
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}

@@ -1,0 +1,1698 @@
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "motion/react";
+import {
+  Swords,
+  Trophy,
+  Users,
+  Computer,
+  Sparkles,
+  RefreshCw,
+  Play,
+  RotateCcw,
+  Zap,
+  ArrowRight,
+  ShieldAlert,
+  Flame,
+  Award,
+  AlertCircle,
+  Cpu,
+  Loader2,
+  UserPlus,
+  X
+} from "lucide-react";
+
+import { Character, MatchHistory, RoleId, SlottedTeam } from "./types";
+import { CHARACTERS } from "./data/characters";
+import CharacterCard from "./components/CharacterCard";
+import TeamSlots from "./components/TeamSlots";
+import MyAnimeListPortal from "./components/MyAnimeListPortal";
+
+type ViewState = "landing" | "draft" | "results";
+
+type BattleReport = {
+  p1BattleScore: number;
+  p2BattleScore: number;
+  p1DuelWins: number;
+  p2DuelWins: number;
+  drawDuels: number;
+  rules: string[];
+  duels: Array<{
+    role: string;
+    label: string;
+    p1Name: string;
+    p2Name: string;
+    p1Score: number;
+    p2Score: number;
+    winner: "p1" | "p2" | "draw";
+    detail: string;
+  }>;
+  bonuses: {
+    p1: Record<string, number>;
+    p2: Record<string, number>;
+  };
+};
+
+const initialSlots: SlottedTeam = {
+  captain: null,
+  vice_captain: null,
+  tank: null,
+  healer: null,
+  support_1: null,
+  support_2: null,
+};
+
+import CharacterImage from "./components/CharacterImage";
+
+const MIN_CHARACTERS_FOR_FULL_DRAFT = 14;
+type Rarity = Character["rarity"];
+
+const getAnimeKey = (anime: string) => anime.trim().toLowerCase();
+
+const buildAnimeCatalog = (characters: Character[]) => {
+  const labelsByKey = new Map<string, string>();
+  const countsByLabel: Record<string, number> = {};
+
+  for (const character of characters) {
+    if (!character.anime) continue;
+
+    const key = getAnimeKey(character.anime);
+    if (!labelsByKey.has(key)) {
+      labelsByKey.set(key, character.anime);
+    }
+
+    const label = labelsByKey.get(key)!;
+    countsByLabel[label] = (countsByLabel[label] || 0) + 1;
+  }
+
+  return {
+    animeList: [...labelsByKey.values()].sort(),
+    animeCounts: countsByLabel,
+  };
+};
+
+const getRequiredRarityForTeam = (slots: SlottedTeam): Rarity | null => {
+  const team = Object.values(slots).filter(Boolean) as Character[];
+  const hasLegendary = team.some((character) => character.rarity === "Legendary");
+  const hasEpic = team.some((character) => character.rarity === "Epic");
+
+  // Introduce 40% chance of total randomness to prevent same characters from appearing every game
+  if (Math.random() < 0.4) return null;
+
+  if (!hasLegendary) return "Legendary";
+  if (!hasEpic) return "Epic";
+  return null;
+};
+
+export default function App() {
+  // Game Setup States
+  const [view, setView] = useState<ViewState>("landing");
+  const [category, setCategory] = useState<"all" | "choose">("all");
+  const [selectedAnimes, setSelectedAnimes] = useState<string[]>([]);
+  const [animeSearchQuery, setAnimeSearchQuery] = useState("");
+  const [isAnimeDropdownOpen, setIsAnimeDropdownOpen] = useState(false);
+  const [importedCastAnimes, setImportedCastAnimes] = useState<Set<string>>(() => new Set());
+  const [player1Name, setPlayer1Name] = useState("Hero Picker");
+  const [player2Name, setPlayer2Name] = useState("AI Overlord");
+  const [gameMode, setGameMode] = useState<"vs-ai" | "local-2p">("vs-ai");
+
+  // Active Draft Slotted States
+  const [round, setRound] = useState(1);
+  const [activeTurn, setActiveTurn] = useState<"p1" | "p2">("p1");
+  const [p1Slots, setP1Slots] = useState<SlottedTeam>(initialSlots);
+  const [p2Slots, setP2Slots] = useState<SlottedTeam>(initialSlots);
+  const [p1SkipUsed, setP1SkipUsed] = useState(false);
+  const [p2SkipUsed, setP2SkipUsed] = useState(false);
+
+  // Computes flat teams for compatibility with other game engines
+  const p1Team = Object.values(p1Slots).filter(Boolean) as Character[];
+  const p2Team = Object.values(p2Slots).filter(Boolean) as Character[];
+
+  // Drag-and-drop state to highlight slots during active player drags
+  const [isDraggingActive, setIsDraggingActive] = useState(false);
+
+  // Character pool track
+  const [activeCharacter, setActiveCharacter] = useState<Character | null>(null);
+  const [isCardFlipped, setIsCardFlipped] = useState(false);
+  const [excludedIds, setExcludedIds] = useState<string[]>([]);
+  const [mustPick, setMustPick] = useState(false);
+  const [aiIsProcessing, setAiIsProcessing] = useState(false);
+
+  // Result States
+  const [loadingResult, setLoadingResult] = useState(false);
+  const [resultData, setResultData] = useState<{
+    player1Power: number;
+    player2Power: number;
+    p1SubStats: any;
+    p2SubStats: any;
+    winner: string;
+    winnerId: "p1" | "p2" | "draw";
+    mvp: Character;
+    commentary: string;
+    battleReport?: BattleReport;
+  } | null>(null);
+
+  // Global States
+  const [matchHistory, setMatchHistory] = useState<MatchHistory[]>([]);
+  const [showHistoryModal, setShowHistoryModal] = useState(false);
+  const [hottestSpotlight, setHottestSpotlight] = useState<Character>(CHARACTERS[0]);
+  const [showLeaderboard, setShowLeaderboard] = useState(false);
+  const [showAbout, setShowAbout] = useState(false);
+  const [totalCharacters, setTotalCharacters] = useState(CHARACTERS.length);
+  const [animeCounts, setAnimeCounts] = useState<Record<string, number>>(() => buildAnimeCatalog(CHARACTERS).animeCounts);
+  const aboutCharacter = CHARACTERS.find((character) => character.name === "Lelouch Lamperouge") ?? CHARACTERS[0];
+
+  // Extract unique anime names from the character pool
+  const [animeList, setAnimeList] = useState<string[]>(() => {
+    return buildAnimeCatalog(CHARACTERS).animeList;
+  });
+  const selectedAnimeCharacterCount = selectedAnimes.reduce(
+    (total, anime) => total + (animeCounts[anime] || 0),
+    0
+  );
+  const hasEnoughSelectedCharacters =
+    category !== "choose" ||
+    (selectedAnimes.length > 0 && selectedAnimeCharacterCount >= MIN_CHARACTERS_FOR_FULL_DRAFT);
+
+  const importCastForAnime = async (anime: string) => {
+    const key = getAnimeKey(anime);
+    if (importedCastAnimes.has(key)) return;
+
+    const res = await fetch("/api/anime/import-cast", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ animeTitle: anime, limit: 40 }),
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      throw new Error(data.error || `Could not import ${anime}.`);
+    }
+
+    setImportedCastAnimes(prev => {
+      const next = new Set(prev);
+      next.add(key);
+      return next;
+    });
+    await fetchTotalCharactersCount();
+  };
+
+  const importStarterAllAnimeCasts = async () => {
+    const starterAnimes = [
+      "Jujutsu Kaisen",
+      "One Piece",
+      "Attack on Titan",
+      "Naruto",
+      "Bleach",
+      "Demon Slayer: Kimetsu no Yaiba",
+    ];
+
+    try {
+      for (const anime of starterAnimes) {
+        await importCastForAnime(anime);
+      }
+    } catch (error) {
+      console.warn("Auto import failed", error);
+    }
+  };
+
+  const fetchTotalCharactersCount = async () => {
+    try {
+      const res = await fetch("/api/characters");
+      if (res.ok) {
+        const data = await res.json();
+        setTotalCharacters(data.length);
+        // Build unique anime list
+        const animeCatalog = buildAnimeCatalog(data);
+        setAnimeList(animeCatalog.animeList);
+        setAnimeCounts(animeCatalog.animeCounts);
+        return data as Character[];
+      }
+    } catch (e) {
+      console.error("Failed to fetch characters list size", e);
+    }
+    return null;
+  };
+
+  // Load history and characters on startup
+  useEffect(() => {
+    fetchMatchHistory();
+    fetchTotalCharactersCount();
+  }, []);
+
+  // Spotlight rotation effect
+  useEffect(() => {
+    // Disable background rotation during active draft/results to save resources
+    if (view !== "landing") return;
+
+    const interval = setInterval(async () => {
+      try {
+        const unusedChars = CHARACTERS.filter(c => c.id !== hottestSpotlight.id);
+        const randomChar = unusedChars[Math.floor(Math.random() * unusedChars.length)];
+        setHottestSpotlight(randomChar);
+      } catch (e) {
+        console.warn("Spotlight rotation error", e);
+      }
+    }, 8000);
+    return () => clearInterval(interval);
+  }, [hottestSpotlight.id, view]);
+
+  const fetchMatchHistory = async () => {
+    try {
+      const res = await fetch("/api/draft/history");
+      if (res.ok) {
+        const data = await res.json();
+        setMatchHistory(data);
+      }
+    } catch (e) {
+      console.error("Failed to load match history", e);
+    }
+  };
+
+  // ---------------- GAMEPLAY MOTIONS ----------------
+
+  const startNewGame = async (mode: "vs-ai" | "local-2p") => {
+    if (category === "choose" && selectedAnimes.length === 0) {
+      return;
+    }
+
+    try {
+      const targets = category === "choose"
+        ? selectedAnimes
+        : ["Jujutsu Kaisen", "One Piece", "Attack on Titan", "Naruto", "Bleach", "Demon Slayer: Kimetsu no Yaiba"];
+
+      for (const anime of targets) {
+        await importCastForAnime(anime);
+      }
+    } catch (error) {
+      console.warn("Auto import failed", error);
+    }
+
+    const latestPool = await fetchTotalCharactersCount();
+    const latestCounts = latestPool ? buildAnimeCatalog(latestPool).animeCounts : animeCounts;
+    const latestSelectedCount = selectedAnimes.reduce(
+      (total, anime) => total + (latestCounts[anime] || 0),
+      0
+    );
+
+    if (category === "choose" && latestSelectedCount < MIN_CHARACTERS_FOR_FULL_DRAFT) {
+      return;
+    }
+
+    setGameMode(mode);
+    setPlayer1Name(player1Name.trim() || "Player 1");
+    setPlayer2Name(mode === "vs-ai" ? "Smart AI" : player2Name.trim() || "Player 2");
+
+    // Reset game states
+    setRound(1);
+    setActiveTurn("p1");
+    setP1Slots(initialSlots);
+    setP2Slots(initialSlots);
+    setP1SkipUsed(false);
+    setP2SkipUsed(false);
+    setExcludedIds([]);
+    setMustPick(false);
+    setResultData(null);
+
+    // Resolve the final active anime list ONCE here and pass it through
+    // the entire game flow — never re-read from state inside async callbacks
+    let activeAnimes: string[] = [];
+    if (category === "choose") {
+      activeAnimes = [...selectedAnimes];
+      // Handle edge case: category is "choose" but user typed a query without selecting
+      if (activeAnimes.length === 0 && animeSearchQuery.trim()) {
+        const query = animeSearchQuery.trim();
+        const match = animeList.find(a => a.toLowerCase().includes(query.toLowerCase()));
+        const resolved = match || query;
+        activeAnimes = [resolved];
+        setSelectedAnimes(activeAnimes);
+      }
+    }
+
+    // Pass activeAnimes explicitly — avoids stale state reads in async callbacks
+    pullNewCharacter([], activeAnimes, initialSlots);
+    setView("draft");
+  };
+
+  /**
+   * Pull a random character from the API.
+   *
+   * @param currentExcludes - IDs already picked/skipped this game
+   * @param activeAnimes    - The resolved anime filter for this game session.
+   *                          Always pass explicitly — never rely on reading
+   *                          `category`/`selectedAnimes` state inside this function,
+   *                          because React state closures inside async code can be stale.
+   */
+  const pullNewCharacter = async (
+    currentExcludes: string[],
+    activeAnimes: string[],
+    targetSlots: SlottedTeam
+  ) => {
+    setIsCardFlipped(true); // Flip card back to hide while loading
+    setActiveCharacter(null); // Clear previous to prevent visual artifacts
+    const requiredRarity = getRequiredRarityForTeam(targetSlots);
+
+    try {
+      let url = `/api/characters/random?exclude=${currentExcludes.join(",")}`;
+      if (activeAnimes.length > 0) {
+        url += `&animes=${encodeURIComponent(activeAnimes.join(","))}`;
+      }
+      if (requiredRarity) {
+        url += `&rarity=${encodeURIComponent(requiredRarity)}`;
+      }
+      const res = await fetch(url);
+      if (!res.ok) throw new Error("API signal lost");
+
+      const character = await res.json();
+      setTimeout(() => {
+        setActiveCharacter(character);
+        setIsCardFlipped(true);
+      }, 300);
+    } catch (er) {
+      // Client-side fallback if network cuts out
+      let available = CHARACTERS.filter((c) => !currentExcludes.includes(c.id));
+      if (activeAnimes.length > 0) {
+        const filtered = available.filter((c) =>
+          c.anime && activeAnimes.some(anime => c.anime.toLowerCase().includes(anime.toLowerCase()))
+        );
+        available = filtered;
+      }
+      if (requiredRarity) {
+        const rarityFiltered = available.filter((c) => c.rarity === requiredRarity);
+        if (rarityFiltered.length > 0) {
+          available = rarityFiltered;
+        }
+      }
+      const backup = available[Math.floor(Math.random() * available.length)];
+      if (!backup) {
+        setActiveCharacter(null);
+        return;
+      }
+      setTimeout(() => {
+        setActiveCharacter(backup);
+        setIsCardFlipped(true);
+      }, 300);
+    }
+  };
+
+  // Handle slot placement manually by drag or select
+  const handleSlotSelect = (roleId: RoleId) => {
+    if (!activeCharacter) return;
+    if (isCardFlipped) return; // Prevent card slot insertion before reveal
+
+    const activeSlots = activeTurn === "p1" ? p1Slots : p2Slots;
+    if (activeSlots[roleId]) return; // slot already occupied
+
+    // Clean up character names to prevent duplicates matching different ID strings (e.g. mal-17 vs anilist-17 or different casing)
+    const normalizeName = (name: string) => name.toLowerCase().replace(/[^a-z0-9]/g, "");
+
+    const pickedCharacters = [...Object.values(p1Slots), ...Object.values(p2Slots)].filter(Boolean) as Character[];
+    const pickedIds = new Set(pickedCharacters.map((c) => c.id));
+    const pickedNames = new Set(pickedCharacters.map((c) => normalizeName(c.name)));
+
+    // Resolve activeAnimes from current state
+    const activeAnimes = category === "choose" ? [...selectedAnimes] : [];
+
+    const updatedExcludes = [...excludedIds, activeCharacter.id];
+    
+    // Check if duplicate ID or if duplicate normalized name exists in the drafted rosters
+    if (pickedIds.has(activeCharacter.id) || pickedNames.has(normalizeName(activeCharacter.name))) {
+      setExcludedIds(updatedExcludes);
+      pullNewCharacter(updatedExcludes, activeAnimes, activeSlots);
+      return;
+    }
+
+    setExcludedIds(updatedExcludes);
+
+    if (activeTurn === "p1") {
+      const nextSlots = { ...p1Slots, [roleId]: activeCharacter };
+      setP1Slots(nextSlots);
+      setMustPick(false);
+
+      const nextTeam = Object.values(nextSlots).filter(Boolean) as Character[];
+
+      if (gameMode === "local-2p") {
+        setActiveTurn("p2");
+        pullNewCharacter(updatedExcludes, activeAnimes, p2Slots);
+      } else {
+        // AI Turn — pass activeAnimes so AI's async flow uses the same filter
+        setActiveTurn("p2");
+        triggerAiTurn(nextTeam, p2Slots, updatedExcludes, activeAnimes);
+      }
+    } else {
+      // Local P2 Turn
+      const nextSlots = { ...p2Slots, [roleId]: activeCharacter };
+      setP2Slots(nextSlots);
+      setMustPick(false);
+
+      const nextTeam = Object.values(nextSlots).filter(Boolean) as Character[];
+
+      if (round < 6) {
+        setRound(round + 1);
+        setActiveTurn("p1");
+        pullNewCharacter(updatedExcludes, activeAnimes, p1Slots);
+      } else {
+        const p1CurrentTeam = Object.values(p1Slots).filter(Boolean) as Character[];
+        calculateWinner(p1CurrentTeam, nextTeam);
+      }
+    }
+  };
+
+  // Quick fallback if player hits "Pick Character" directly
+  const handlePick = (character: Character) => {
+    const activeSlots = activeTurn === "p1" ? p1Slots : p2Slots;
+    const firstEmpty = (Object.keys(activeSlots) as RoleId[]).find((key) => !activeSlots[key]);
+    if (firstEmpty) {
+      handleSlotSelect(firstEmpty);
+    }
+  };
+
+  const handleSkip = () => {
+    if (activeTurn === "p1") {
+      if (p1SkipUsed) return;
+      setP1SkipUsed(true);
+    } else {
+      if (p2SkipUsed) return;
+      setP2SkipUsed(true);
+    }
+
+    if (!activeCharacter) return;
+
+    const activeAnimes = category === "choose" ? [...selectedAnimes] : [];
+    const nextExcludes = [...excludedIds, activeCharacter.id];
+    setExcludedIds(nextExcludes);
+    setMustPick(true); // Player must pick the next revealed fighter
+    pullNewCharacter(nextExcludes, activeAnimes, activeTurn === "p1" ? p1Slots : p2Slots);
+  };
+
+  // ---------------- AI LOGIC SIMULATION ----------------
+
+  const selectAiSlot = (character: Character, currentAiSlots: SlottedTeam): RoleId => {
+    const emptyKeys = (Object.keys(currentAiSlots) as RoleId[]).filter((k) => !currentAiSlots[k]);
+    if (emptyKeys.length === 0) return "captain"; // Safety fallback
+
+    if (emptyKeys.includes("captain") && character.overallPower >= 400) return "captain";
+    if (emptyKeys.includes("tank") && character.stats.defense >= 80) return "tank";
+    if (emptyKeys.includes("healer") && (character.stats.magic >= 80 || character.stats.iq >= 75)) return "healer";
+    if (emptyKeys.includes("vice_captain") && character.overallPower >= 350) return "vice_captain";
+    if (emptyKeys.includes("support_1") && character.stats.speed >= 75) return "support_1";
+    if (emptyKeys.includes("support_2") && character.stats.magic >= 75) return "support_2";
+
+    return emptyKeys[0];
+  };
+
+  /**
+   * Run the AI's turn.
+   *
+   * @param activeAnimes - Passed explicitly so all nested async callbacks
+   *                       use the same filter value without reading stale state.
+   */
+  const triggerAiTurn = (
+    p1CurrentTeam: Character[],
+    currentAiSlots: SlottedTeam,
+    currentExcludes: string[],
+    activeAnimes: string[]
+  ) => {
+    setAiIsProcessing(true);
+
+    // Helper: fetch a random character respecting the anime filter
+    const fetchCandidate = async (excludes: string[], targetSlots: SlottedTeam): Promise<Character> => {
+      const requiredRarity = getRequiredRarityForTeam(targetSlots);
+      try {
+        let url = `/api/characters/random?exclude=${excludes.join(",")}`;
+        if (activeAnimes.length > 0) {
+          url += `&animes=${encodeURIComponent(activeAnimes.join(","))}`;
+        }
+        if (requiredRarity) {
+          url += `&rarity=${encodeURIComponent(requiredRarity)}`;
+        }
+        const res = await fetch(url);
+        if (res.ok) return await res.json();
+      } catch (_) { }
+
+      // Fallback to local pool
+      let available = CHARACTERS.filter((c) => !excludes.includes(c.id));
+      if (activeAnimes.length > 0) {
+        const filtered = available.filter((c) =>
+          c.anime && activeAnimes.some(anime => c.anime.toLowerCase().includes(anime.toLowerCase()))
+        );
+        available = filtered;
+      }
+      if (requiredRarity) {
+        const rarityFiltered = available.filter((c) => c.rarity === requiredRarity);
+        if (rarityFiltered.length > 0) {
+          available = rarityFiltered;
+        }
+      }
+      return available[Math.floor(Math.random() * available.length)] || CHARACTERS[0];
+    };
+
+    setTimeout(async () => {
+      const candidate = await fetchCandidate(currentExcludes, currentAiSlots);
+
+      setActiveCharacter(candidate);
+      setIsCardFlipped(true);
+
+      // AI "thinks" then reveals
+      setTimeout(() => {
+        setIsCardFlipped(false);
+
+        setTimeout(async () => {
+          const decisionCriteria = 430;
+          const shouldSkip = candidate.overallPower < decisionCriteria && !p2SkipUsed;
+
+          if (shouldSkip) {
+            // AI decides to skip
+            setP2SkipUsed(true);
+            const nextExcludes = [...currentExcludes, candidate.id];
+            setExcludedIds(nextExcludes);
+
+            setTimeout(async () => {
+              const forcedCandidate = await fetchCandidate(nextExcludes, currentAiSlots);
+
+              setActiveCharacter(forcedCandidate);
+              setIsCardFlipped(true);
+
+              setTimeout(() => {
+                setIsCardFlipped(false);
+
+                setTimeout(() => {
+                  const chosenSlot = selectAiSlot(forcedCandidate, currentAiSlots);
+                  const nextSlots = { ...currentAiSlots, [chosenSlot]: forcedCandidate };
+                  setP2Slots(nextSlots);
+
+                  const finalTeam = Object.values(nextSlots).filter(Boolean) as Character[];
+                  const finalExcludes = [...nextExcludes, forcedCandidate.id];
+                  setExcludedIds(finalExcludes);
+
+                  advanceRoundOrFinish(p1CurrentTeam, finalTeam, finalExcludes, activeAnimes);
+                }, 1200);
+              }, 1000);
+            }, 800);
+
+          } else {
+            // AI decides to pick
+            const chosenSlot = selectAiSlot(candidate, currentAiSlots);
+            const nextSlots = { ...currentAiSlots, [chosenSlot]: candidate };
+            setP2Slots(nextSlots);
+
+            const finalTeam = Object.values(nextSlots).filter(Boolean) as Character[];
+            const finalExcludes = [...currentExcludes, candidate.id];
+            setExcludedIds(finalExcludes);
+
+            advanceRoundOrFinish(p1CurrentTeam, finalTeam, finalExcludes, activeAnimes);
+          }
+        }, 1500);
+      }, 1000);
+    }, 1000);
+  };
+
+  /**
+   * Advance to the next round or end the game.
+   *
+   * @param activeAnimes - Forwarded explicitly so pullNewCharacter uses
+   *                       the correct filter without a stale state read.
+   */
+  const advanceRoundOrFinish = (
+    team1: Character[],
+    team2: Character[],
+    excludes: string[],
+    activeAnimes: string[]
+  ) => {
+    setAiIsProcessing(false);
+    if (round < 6) {
+      setRound(round + 1);
+      setActiveTurn("p1");
+      pullNewCharacter(excludes, activeAnimes, p1Slots);
+    } else {
+      calculateWinner(team1, team2);
+    }
+  };
+
+  // ---------------- WINNER CALCULATIONS ----------------
+
+  const calculateWinner = async (team1: Character[], team2: Character[]) => {
+    setView("results");
+    setLoadingResult(true);
+
+    try {
+      const res = await fetch("/api/draft/calculate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          player1Name,
+          player2Name,
+          player1Team: team1,
+          player2Team: team2,
+          player1Slots: p1Slots,
+          player2Slots: p2Slots,
+        }),
+      });
+
+      if (res.ok) {
+        const stats = await res.json();
+        setResultData(stats);
+
+        await fetch("/api/draft/save", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            player1Name,
+            player2Name,
+            player1Team: team1,
+            player2Team: team2,
+            player1Power: stats.player1Power,
+            player2Power: stats.player2Power,
+            winner: stats.winner,
+            mvp: stats.mvp,
+            commentary: stats.commentary,
+            createdAt: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+          }),
+        });
+
+        fetchMatchHistory();
+      }
+    } catch (e) {
+      console.error("Match winner calculation error", e);
+    } finally {
+      setLoadingResult(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-[#050816] text-slate-100 flex flex-col justify-between font-sans relative overflow-x-hidden selection:bg-nexus-cyan/30">
+      {/* 🌌 Animated Background */}
+      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,#1e1b4b_0%,#050816_70%)]" />
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e90ff08_1px,transparent_1px),linear-gradient(to_bottom,#1e90ff08_1px,transparent_1px)] bg-[size:40px_40px] [transform:perspective(1000px)_rotateX(60deg)_translateY(-100px)] opacity-40 animate-pulse" />
+        <div className="absolute top-1/4 left-1/4 w-1 h-1 bg-white rounded-full animate-ping opacity-20" />
+        <div className="absolute top-1/2 right-1/3 w-1 h-1 bg-nexus-cyan rounded-full animate-pulse opacity-40 delay-700" />
+        <div className="absolute bottom-1/3 left-1/2 w-1.5 h-1.5 bg-nexus-purple rounded-full animate-bounce opacity-20 delay-1000" />
+      </div>
+
+      {/* HEADER BAR */}
+      <header className="sticky top-0 z-50 nexus-glass border-b border-nexus-blue/20 py-4 px-6">
+        <div className="max-w-7xl mx-auto flex justify-between items-center">
+          <div className="flex items-center gap-3 cursor-pointer group" onClick={() => setView("landing")}>
+            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-nexus-blue to-nexus-purple flex items-center justify-center shadow-[0_0_20px_rgba(30,144,255,0.4)] group-hover:scale-110 transition-transform duration-300">
+              <Swords className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <h1 className="text-lg font-black tracking-[0.1em] uppercase bg-clip-text text-transparent bg-gradient-to-r from-white via-nexus-cyan to-nexus-purple nexus-glow-text">
+                Anime Battle
+              </h1>
+              <div className="flex items-center gap-2">
+                <span className="text-[8px] font-mono tracking-widest text-nexus-cyan/70 uppercase">Battle System v2.0</span>
+                <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              </div>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <button
+              id="btn-leaderboard"
+              onClick={() => {
+                setShowLeaderboard(!showLeaderboard);
+                setView("landing");
+              }}
+              className="py-2 px-4 rounded-lg nexus-glass border border-white/5 hover:border-nexus-cyan/40 text-[10px] font-mono font-bold text-slate-300 transition-all flex items-center gap-2 group"
+            >
+              <Award className="w-3.5 h-3.5 text-nexus-cyan group-hover:scale-125 transition-transform" /> TOP TEAMS
+            </button>
+          </div>
+        </div>
+      </header>
+
+      {/* MAIN CONTAINER */}
+      <main className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 flex flex-col justify-center relative z-10">
+        <AnimatePresence mode="wait">
+          {/* 1. LANDING PAGE VIEW */}
+          {view === "landing" && (
+            <motion.div
+              key="landing"
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -15 }}
+              transition={{ duration: 0.4 }}
+              className="space-y-12"
+            >
+              {showLeaderboard ? (
+                <div className="w-full max-w-3xl mx-auto rounded-2xl border border-neutral-800 bg-neutral-950/80 p-6 space-y-6">
+                  <div className="flex justify-between items-center border-b border-white/5 pb-3">
+                    <div>
+                      <h2 className="text-xl font-black text-white uppercase flex items-center gap-2">
+                        🏆 Legendary Hall of Fame
+                      </h2>
+                      <p className="text-xs text-neutral-500 font-mono">RECORDS OF ALL DIMENSIONAL CROSSOVER COMBATS</p>
+                    </div>
+                    <button
+                      onClick={() => setShowLeaderboard(false)}
+                      className="text-xs font-mono font-bold text-violet-400 hover:text-white"
+                    >
+                      Back to Home
+                    </button>
+                  </div>
+
+                  {matchHistory.length === 0 ? (
+                    <div className="text-center py-10 space-y-2">
+                      <ShieldAlert className="w-8 h-8 text-neutral-700 mx-auto" />
+                      <p className="text-neutral-500 text-xs font-mono">NO RECORDS LOGGED YET. DEPLOY A MATCH FIRST!</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-3.5 max-h-[400px] overflow-y-auto pr-2">
+                      {matchHistory.map((match, idx) => (
+                        <div
+                          key={match.id}
+                          className="p-4 rounded-xl border border-neutral-900 bg-neutral-900/30 flex justify-between items-center hover:border-violet-500/10 transition-all"
+                        >
+                          <div className="space-y-1">
+                            <div className="flex items-center gap-2 text-xs">
+                              <span className="font-bold text-violet-300 font-mono">#{matchHistory.length - idx}</span>
+                              <span className="text-neutral-400">{match.createdAt}</span>
+                            </div>
+                            <p className="text-sm font-black uppercase text-white tracking-wide">
+                              {match.player1Name}{" "}
+                              <span className="text-violet-500 font-normal font-mono text-xs italic">vs</span>{" "}
+                              {match.player2Name}
+                            </p>
+                          </div>
+
+                          <div className="flex items-center gap-6">
+                            <div className="text-right font-mono">
+                              <p className="text-[9px] text-neutral-500 uppercase tracking-widest">RESULT</p>
+                              <p className="text-xs font-bold text-emerald-400">{match.winner} WON</p>
+                              <p className="text-[10px] text-neutral-400">
+                                {match.player1Power} - {match.player2Power} PWR
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <>
+                  {/* Hero Head Banner */}
+                  <div className="text-center space-y-6 max-w-4xl mx-auto">
+                    <div className="inline-flex items-center gap-2 bg-neutral-900/50 border border-violet-500/20 px-3.5 py-1.5 rounded-full text-[10px] text-violet-300 tracking-[0.2em] uppercase font-mono font-black drop-shadow-[0_0_12px_rgba(139,92,246,0.25)]">
+                      ? EPIC REAL-TIME ANIME BATTLE SIMULATOR
+                    </div>
+
+                    <div className="space-y-3">
+                      <h1 className="text-5xl md:text-7xl font-extrabold tracking-tighter uppercase leading-none font-sans">
+                        BUILD THE ULTIMATE <br />
+                        <span className="bg-clip-text text-transparent bg-gradient-to-r from-violet-400 via-fuchsia-400 to-amber-400 filter drop-shadow-[0_0_30px_rgba(168,85,247,0.35)]">
+                          ANIME TEAM
+                        </span>
+                      </h1>
+                      <p className="text-neutral-400 text-sm md:text-base max-w-2xl mx-auto pr-1 leading-relaxed">
+                        A tactical drafting dual simulator. Build a faction from your favorite anime series. Outsmart opponents using tactical skips, secure the high Power Overall fighters, and let the AI Commenters analyze the battle!
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* GAME SETUP MATRIX */}
+                  <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto items-stretch">
+                    {/* Setup Controls */}
+                    <div className="rounded-3xl border border-neutral-800/80 bg-neutral-950/70 p-6 sm:p-8 flex flex-col justify-between space-y-8 relative overflow-hidden backdrop-blur-md shadow-2xl">
+                      <div className="space-y-5">
+                        <div className="flex border-b border-white/5 pb-4 items-center gap-2.5">
+                          <Flame className="w-5 h-5 text-violet-400" />
+                          <h2 className="text-lg font-black uppercase text-white font-mono tracking-wider">
+                            STADIUM MATCH REGISTRATION
+                          </h2>
+                        </div>
+
+                        {/* Mode selectors */}
+                        <div className="space-y-2">
+                          <label className="text-[10px] font-mono text-neutral-400 tracking-widest uppercase">
+                            SELECT BATTLE DESIGN
+                          </label>
+                          <div className="grid grid-cols-2 gap-3.5">
+                            <button
+                              onClick={() => {
+                                setGameMode("vs-ai");
+                                setPlayer2Name("Smart AI");
+                              }}
+                              className={`p-4 rounded-xl border flex flex-col items-center gap-2 text-center transition-all cursor-pointer ${gameMode === "vs-ai"
+                                  ? "border-violet-500 bg-violet-950/10 text-white shadow-[0_0_15px_rgba(139,92,246,0.15)]"
+                                  : "border-neutral-900 bg-neutral-900/20 text-neutral-400 hover:border-neutral-800"
+                                }`}
+                            >
+                              <Computer className="w-5 h-5" />
+                              <div>
+                                <p className="text-xs font-black uppercase tracking-wide">P1 VS AI BOT</p>
+                                <p className="text-[9px] font-mono text-neutral-500 mt-0.5">Solo Training Draft</p>
+                              </div>
+                            </button>
+
+                            <button
+                              onClick={() => {
+                                setGameMode("local-2p");
+                                setPlayer2Name("Hype Guest");
+                              }}
+                              className={`p-4 rounded-xl border flex flex-col items-center gap-2 text-center transition-all cursor-pointer ${gameMode === "local-2p"
+                                  ? "border-violet-500 bg-violet-950/10 text-white shadow-[0_0_15px_rgba(139,92,246,0.15)]"
+                                  : "border-neutral-900 bg-neutral-900/20 text-neutral-400 hover:border-neutral-800"
+                                }`}
+                            >
+                              <Users className="w-5 h-5" />
+                              <div>
+                                <p className="text-xs font-black uppercase tracking-wide">P1 VS P2 DUAL</p>
+                                <p className="text-[9px] font-mono text-neutral-500 mt-0.5">Local Pass & Play</p>
+                              </div>
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Anime Filter */}
+                        <div className="space-y-2 pt-1">
+                          <label className="text-[10px] font-mono text-neutral-400 tracking-widest uppercase">
+                            CHARACTER POOL FILTER
+                          </label>
+                          <div className="grid grid-cols-2 gap-3">
+                            <button
+                              onClick={() => {
+                                setCategory("all");
+                                setSelectedAnimes([]);
+                                setAnimeSearchQuery("");
+                                importStarterAllAnimeCasts();
+                              }}
+                              className={`py-2.5 px-3 rounded-xl border text-[10px] font-black uppercase tracking-wide transition-all cursor-pointer ${category === "all"
+                                  ? "border-purple-500 bg-purple-500/10 text-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.25)]"
+                                  : "border-neutral-800 bg-neutral-900/30 text-neutral-400 hover:border-neutral-700"
+                                }`}
+                            >
+                              🌐 All Anime
+                            </button>
+                            <button
+                              onClick={() => setCategory("choose")}
+                              className={`py-2.5 px-3 rounded-xl border text-[10px] font-black uppercase tracking-wide transition-all cursor-pointer ${category === "choose"
+                                  ? "border-purple-500 bg-purple-500/10 text-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.25)]"
+                                  : "border-neutral-800 bg-neutral-900/30 text-neutral-400 hover:border-neutral-700"
+                                }`}
+                            >
+                              🎯 Choose Anime
+                            </button>
+                          </div>
+
+                          {category === "choose" && (
+                            <div className="space-y-1.5 pt-1 relative">
+                              <input
+                                id="inp-anime-search"
+                                type="text"
+                                value={animeSearchQuery}
+                                onFocus={() => setIsAnimeDropdownOpen(true)}
+                                onBlur={() => {
+                                  setTimeout(() => setIsAnimeDropdownOpen(false), 200);
+                                }}
+                                onChange={(e) => {
+                                  setAnimeSearchQuery(e.target.value);
+                                }}
+                                placeholder="Select or search anime… e.g. Naruto, Bleach"
+                                className="w-full bg-neutral-900/50 border border-neutral-800 rounded-xl py-2.5 px-3.5 text-xs text-white font-mono font-bold focus:border-purple-500 focus:outline-none cursor-pointer"
+                              />
+                              {isAnimeDropdownOpen && (
+                                <div className="absolute z-20 left-0 right-0 top-full mt-1 bg-neutral-900 border border-neutral-700 rounded-xl max-h-40 overflow-y-auto shadow-2xl">
+                                  {animeList
+                                    .filter((a) => !animeSearchQuery.trim() || a.toLowerCase().includes(animeSearchQuery.toLowerCase()))
+                                    .map((anime) => (
+                                      <button
+                                        key={anime}
+                                        onMouseDown={() => {
+                                          if (!selectedAnimes.includes(anime)) {
+                                            setSelectedAnimes((prev) => [...prev, anime]);
+                                            importCastForAnime(anime)
+                                              .catch((error) => {
+                                                console.warn("Auto import failed", error);
+                                              });
+                                          }
+                                          setAnimeSearchQuery("");
+                                          setIsAnimeDropdownOpen(false);
+                                        }}
+                                        className={`w-full text-left px-3.5 py-2 text-xs font-mono hover:bg-purple-500/15 transition-colors cursor-pointer ${selectedAnimes.includes(anime) ? "text-purple-400 bg-purple-500/10" : "text-slate-200"
+                                          }`}
+                                      >
+                                        {anime}
+                                      </button>
+                                    ))}
+                                  {animeList.filter((a) => !animeSearchQuery.trim() || a.toLowerCase().includes(animeSearchQuery.toLowerCase())).length === 0 && (
+                                    <p className="px-3.5 py-2 text-[10px] text-neutral-500 font-mono">No anime found matching "{animeSearchQuery}"</p>
+                                  )}
+                                </div>
+                              )}
+                              {selectedAnimes.length > 0 && (
+                                <div className="flex flex-wrap gap-1.5 mt-2">
+                                  {selectedAnimes.map((anime) => (
+                                    <span
+                                      key={anime}
+                                      className="inline-flex items-center gap-1.5 text-[10px] font-mono font-bold text-purple-400 bg-purple-500/10 border border-purple-500/30 px-2.5 py-1 rounded-lg"
+                                    >
+                                      🎯 {anime}
+                                      <button
+                                        type="button"
+                                        onClick={() => {
+                                          setSelectedAnimes((prev) => prev.filter((a) => a !== anime));
+                                        }}
+                                        className="hover:text-red-400 font-bold font-sans cursor-pointer transition-colors"
+                                      >
+                                        ✕
+                                      </button>
+                                    </span>
+                                  ))}
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      setSelectedAnimes([]);
+                                      setAnimeSearchQuery("");
+                                    }}
+                                    className="text-[9px] font-mono text-slate-400 hover:text-red-400 transition-colors cursor-pointer self-center ml-1"
+                                  >
+                                    ✕ clear all
+                                  </button>
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Player Names */}
+                        <div className="space-y-3 pt-2">
+                          <div className="space-y-1.5">
+                            <label className="text-[10px] font-mono text-neutral-400 tracking-widest uppercase">
+                              PLAYER 1 SIGNATURE CALL
+                            </label>
+                            <input
+                              id="inp-p1-name"
+                              type="text"
+                              value={player1Name}
+                              onChange={(e) => setPlayer1Name(e.target.value)}
+                              placeholder="Fighter 1 Name"
+                              maxLength={16}
+                              className="w-full bg-neutral-900/50 border border-neutral-800 rounded-xl py-2.5 px-3.5 text-xs text-white font-mono font-bold focus:border-violet-500 focus:outline-none"
+                            />
+                          </div>
+
+                          {gameMode === "local-2p" && (
+                            <div className="space-y-1.5">
+                              <label className="text-[10px] font-mono text-neutral-400 tracking-widest uppercase">
+                                PLAYER 2 SIGNATURE CALL
+                              </label>
+                              <input
+                                id="inp-p2-name"
+                                type="text"
+                                value={player2Name}
+                                onChange={(e) => setPlayer2Name(e.target.value)}
+                                placeholder="Fighter 2 Name"
+                                maxLength={16}
+                                className="w-full bg-neutral-900/50 border border-neutral-800 rounded-xl py-2.5 px-3.5 text-xs text-white font-mono font-bold focus:border-violet-500 focus:outline-none"
+                              />
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      {category === "choose" && selectedAnimes.length === 0 && (
+                        <div className="flex items-center gap-2 text-rose-400 bg-rose-500/10 border border-rose-500/20 px-4 py-3 rounded-xl font-mono text-[10px] font-bold leading-normal mt-4 shadow-sm animate-pulse">
+                          <AlertCircle className="w-4 h-4 shrink-0" />
+                          <span>Please select at least one anime before starting the game.</span>
+                        </div>
+                      )}
+
+                      {category === "choose" && selectedAnimes.length > 0 && selectedAnimeCharacterCount < MIN_CHARACTERS_FOR_FULL_DRAFT && (
+                        <div className="flex items-center gap-2 text-amber-300 bg-amber-500/10 border border-amber-500/20 px-4 py-3 rounded-xl font-mono text-[10px] font-bold leading-normal mt-4 shadow-sm">
+                          <AlertCircle className="w-4 h-4 shrink-0" />
+                          <span>
+                            Selected pool has {selectedAnimeCharacterCount}/{MIN_CHARACTERS_FOR_FULL_DRAFT} unique fighters. Add more anime or recruit more characters to avoid repeats.
+                          </span>
+                        </div>
+                      )}
+
+                      <button
+                        id="btn-start-battle"
+                        onClick={() => startNewGame(gameMode)}
+                        disabled={!hasEnoughSelectedCharacters}
+                        className={`w-full py-4 rounded-xl text-xs uppercase tracking-[0.2em] font-black transition-all flex items-center justify-center gap-2 mt-6 cursor-pointer ${!hasEnoughSelectedCharacters
+                            ? "bg-neutral-800 text-neutral-500 border border-neutral-700/50 cursor-not-allowed opacity-50 shadow-none scale-100"
+                            : "bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white shadow-[0_0_30px_rgba(139,92,246,0.35)] hover:shadow-[0_0_35px_rgba(139,92,246,0.45)] active:scale-95"
+                          }`}
+                      >
+                        <Play className="w-4 h-4 fill-white" /> ENTER DRAFTING ARENA <ArrowRight className="w-4 h-4" />
+                      </button>
+                    </div>
+
+                    {/* Spotlight Roster Card */}
+                    <div className="rounded-3xl border border-neutral-800/85 bg-neutral-950/70 p-6 flex flex-col justify-between relative overflow-hidden backdrop-blur-md">
+                      <div className="absolute inset-0 z-0 pointer-events-none opacity-20 filter blur-xl scale-75" style={{ background: hottestSpotlight.themeColor }} />
+
+                      <div className="relative z-10 space-y-4">
+                        <div className="flex justify-between items-center border-b border-white/5 pb-3">
+                          <p className="text-[10px] font-mono text-violet-400 tracking-widest uppercase font-black">
+                            🔥 FEATURED SPOTLIGHT CARDS
+                          </p>
+                          <span className="text-[9px] font-mono bg-neutral-900 border border-white/5 px-2 py-0.5 rounded text-neutral-400 flex items-center gap-1">
+                            <RefreshCw className="w-2.5 h-2.5 animate-spin" style={{ animationDuration: "10s" }} /> Rotating roster
+                          </span>
+                        </div>
+
+                        <div className="flex gap-4 items-center">
+                          <div className="relative w-28 aspect-[3/4] rounded-xl overflow-hidden border shrink-0 shadow-lg" style={{ borderColor: `${hottestSpotlight.themeColor}44` }}>
+                            <CharacterImage
+                              url={hottestSpotlight.image}
+                              name={hottestSpotlight.name}
+                              fallbackUrl={hottestSpotlight.malFallbackUrl}
+                              themeColor={hottestSpotlight.themeColor}
+                              className="absolute inset-0 w-full h-full object-cover"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
+                            <div className="absolute bottom-1.5 left-2">
+                              <p className="text-[10px] font-black truncate max-w-[80px] text-white">{hottestSpotlight.name}</p>
+                            </div>
+                          </div>
+
+                          <div className="space-y-2">
+                            <span className="text-[8px] font-mono font-bold border border-amber-500/30 text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded uppercase">
+                              {hottestSpotlight.rarity}
+                            </span>
+                            <h3 className="text-xl font-extrabold text-white leading-tight">{hottestSpotlight.name}</h3>
+                            <p className="text-[10px] text-neutral-400 font-mono uppercase">{hottestSpotlight.anime}</p>
+                            <p className="text-xs text-neutral-400 leading-relaxed max-w-sm line-clamp-2">
+                              {hottestSpotlight.description}
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-3.5 bg-neutral-900/30 border border-white/5 p-3 rounded-xl font-mono text-[10px]">
+                          <div>
+                            <span className="text-neutral-500">MAX POWER SCORE</span>
+                            <p className="text-lg font-black text-white">{hottestSpotlight.overallPower}</p>
+                          </div>
+                          <div>
+                            <span className="text-neutral-500">SIGNATURE MANIFESTO</span>
+                            <p className="text-xs font-bold text-violet-400 mt-1">{hottestSpotlight.quote ? `"${hottestSpotlight.quote}"` : "Absolute Dominance"}</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="border-t border-white/5 pt-4 mt-6 text-center">
+                        <p className="text-[9px] font-mono uppercase text-neutral-500 tracking-widest">
+                          DATABASE STATUS: {totalCharacters} HEROES SYNCED SUCCESSFULLY
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* MyAnimeList Live Portal Recruiter */}
+                  <div className="max-w-5xl mx-auto">
+                      <MyAnimeListPortal
+                        onPoolUpdated={fetchTotalCharactersCount}
+                      />
+                  </div>
+
+                  {/* HOW TO PLAY */}
+                  <div className="max-w-5xl mx-auto space-y-4">
+                    <h3 className="text-xs font-mono tracking-[0.2em] text-neutral-500 uppercase text-center font-bold">
+                      ⚔️ COVENANT BATTLE RULES
+                    </h3>
+                    <div className="grid sm:grid-cols-3 gap-4.5">
+                      <div className="p-4 rounded-2xl border border-neutral-900 bg-neutral-950/20 text-center space-y-2">
+                        <div className="w-8 h-8 rounded-lg bg-neutral-900 border border-neutral-800 flex items-center justify-center text-violet-400 mx-auto font-mono text-xs font-bold">
+                          1
+                        </div>
+                        <h4 className="text-xs font-bold text-white uppercase">DRAFT SELECTION</h4>
+                        <p className="text-[10.5px] text-neutral-400 leading-relaxed font-sans">
+                          Draft random characters one by one. Check overall stats before picking!
+                        </p>
+                      </div>
+
+                      <div className="p-4 rounded-2xl border border-neutral-900 bg-neutral-950/20 text-center space-y-2">
+                        <div className="w-8 h-8 rounded-lg bg-neutral-900 border border-neutral-800 flex items-center justify-center text-red-400 mx-auto font-mono text-xs font-bold">
+                          2
+                        </div>
+                        <h4 className="text-xs font-bold text-white uppercase">THE STRATEGIC CANCEL</h4>
+                        <p className="text-[10.5px] text-neutral-400 leading-relaxed font-sans">
+                          Only 1 SKIP is allowed. Skip low power candidates, but beware: your next option is mandatory!
+                        </p>
+                      </div>
+
+                      <div className="p-4 rounded-2xl border border-neutral-900 bg-neutral-950/20 text-center space-y-2">
+                        <div className="w-8 h-8 rounded-lg bg-neutral-900 border border-neutral-800 flex items-center justify-center text-amber-400 mx-auto font-mono text-xs font-bold">
+                          3
+                        </div>
+                        <h4 className="text-xs font-bold text-white uppercase">TACTICAL SHOWDOWN</h4>
+                        <p className="text-[10.5px] text-neutral-400 leading-relaxed font-sans">
+                          After 6 picks, every role duels its opposite. Role fit, stats, rarity, and synergy decide the winner.
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex justify-center pt-1">
+                      <button
+                        type="button"
+                        onClick={() => setShowAbout(true)}
+                        className="rounded-lg border border-white/10 bg-white/5 px-4 py-1.5 text-[10px] font-mono font-black uppercase tracking-widest text-slate-300 transition-all hover:border-nexus-cyan/40 hover:bg-nexus-cyan/10 hover:text-white"
+                      >
+                        About
+                      </button>
+                    </div>
+                  </div>
+                </>
+              )}
+            </motion.div>
+          )}
+
+          {/* 2. DRAFTING ROOM VIEW */}
+          {view === "draft" && (
+            <motion.div
+              key="draft"
+              initial={{ opacity: 0, scale: 0.98 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 1.02 }}
+              className="space-y-6"
+            >
+              {/* STAGE HEADER METRICS */}
+              <div className="flex flex-col sm:flex-row justify-between items-center nexus-glass border-nexus-blue/20 rounded-2xl p-5 gap-4 relative overflow-hidden">
+                <div className="absolute inset-0 bg-nexus-blue/5 pointer-events-none" />
+                <div className="flex items-center gap-4 relative z-10">
+                  <div className="px-4 py-1.5 rounded-lg bg-nexus-blue text-white font-mono font-black text-xs shadow-[0_0_15px_rgba(30,144,255,0.4)]">
+                    ROUND {round} / 6
+                  </div>
+                  <div>
+                    <h3 className="text-base font-black uppercase text-white tracking-widest flex items-center gap-2">
+                      {activeTurn === "p1" ? (
+                        <><Swords className="w-4 h-4 text-nexus-cyan" /> {player1Name}'S DECISION</>
+                      ) : (
+                        <><Cpu className="w-4 h-4 text-nexus-purple animate-pulse" /> AI THINKING</>
+                      )}
+                    </h3>
+                    <p className="text-[10px] font-mono text-nexus-cyan/60 font-bold uppercase tracking-widest">
+                      Battle frequency stable
+                    </p>
+                  </div>
+                </div>
+
+                {mustPick && (
+                  <div className="bg-red-500/10 border border-red-500/30 text-red-400 text-[10px] px-4 py-1.5 font-mono font-black rounded-lg animate-pulse flex items-center gap-2">
+                    <AlertCircle className="w-3 h-3" /> MANDATORY LOCK-IN: NO SKIPS REMAINING
+                  </div>
+                )}
+
+                <button
+                  onClick={() => setView("landing")}
+                  className="text-[10px] font-mono font-black text-slate-500 hover:text-red-400 transition-colors uppercase tracking-widest px-4 py-2 rounded-lg border border-white/5 hover:border-red-400/20"
+                >
+                  Terminate Mission
+                </button>
+              </div>
+
+              {/* THREE COLUMN DRAFT COVENANT */}
+              <div className="grid lg:grid-cols-12 gap-6 items-stretch">
+                {/* Left: P1 Roster */}
+                <div className="lg:col-span-3 flex flex-col justify-self-stretch">
+                  <TeamSlots
+                    playerName={player1Name}
+                    slots={p1Slots}
+                    skipUsed={p1SkipUsed}
+                    activeTurn={activeTurn === "p1" && !aiIsProcessing}
+                    onSlotSelect={handleSlotSelect}
+                    isDraggingActive={isDraggingActive}
+                  />
+                </div>
+
+                {/* Center: Active Draft Card */}
+                <div className="lg:col-span-6 flex flex-col items-center justify-center min-h-[700px] p-6 relative nexus-glass rounded-3xl border-nexus-blue/10">
+                  <div className="absolute inset-0 pointer-events-none opacity-10">
+                    <div className="h-px w-full bg-nexus-cyan absolute top-1/4 animate-pulse" />
+                    <div className="h-px w-full bg-nexus-blue absolute top-3/4 animate-pulse delay-500" />
+                  </div>
+
+                  {activeCharacter ? (
+                    <div className="flex flex-col items-center gap-6 w-full animate-fadeIn relative z-10">
+                      {aiIsProcessing && (
+                        <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/60 backdrop-blur-md rounded-3xl border border-nexus-purple/20">
+                          <div className="space-y-6 text-center">
+                            <div className="relative w-24 h-24 mx-auto flex items-center justify-center">
+                              <div className="absolute inset-0 rounded-full border-4 border-dashed border-nexus-purple/20 animate-spin" style={{ animationDuration: '8s' }} />
+                              <div className="absolute inset-4 rounded-full border-2 border-nexus-purple animate-ping" />
+                              <Cpu className="w-10 h-10 text-nexus-purple" />
+                            </div>
+                            <div className="space-y-2">
+                              <p className="text-xs font-mono text-nexus-purple font-black uppercase tracking-[0.3em] animate-pulse">
+                                Analyzing Stats Matrix...
+                              </p>
+                              <p className="text-[10px] text-slate-500 font-mono">Optimizing combat equilibrium</p>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      <CharacterCard
+                        character={activeCharacter}
+                        isFlipped={isCardFlipped}
+                        activePlayerName={activeTurn === "p1" ? player1Name : player2Name}
+                        activeTurn={activeTurn}
+                        onClickBackSide={() => setIsCardFlipped(false)}
+                        onDragStart={(e) => {
+                          if (e.dataTransfer) {
+                            e.dataTransfer.setData("text/plain", activeCharacter.id);
+                            e.dataTransfer.effectAllowed = "move";
+                          }
+                          setIsDraggingActive(true);
+                        }}
+                        onDragEnd={() => setIsDraggingActive(false)}
+                      />
+
+                      <AnimatePresence>
+                        {isCardFlipped ? (
+                          <motion.div
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="flex flex-col items-center gap-3 py-4 select-none"
+                          >
+                            <p className="text-sm font-mono text-nexus-cyan font-black uppercase tracking-[0.4em] flex items-center justify-center gap-3 animate-pulse">
+                              <Sparkles className="w-4 h-4" /> CLICK TO DECRYPT <Sparkles className="w-4 h-4" />
+                            </p>
+                            <p className="text-[10px] font-mono text-slate-500 font-bold uppercase tracking-widest">
+                              Identify your next tactical asset
+                            </p>
+                          </motion.div>
+                        ) : (
+                          <motion.div
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="flex flex-col gap-4 w-full max-w-[360px] px-4"
+                          >
+                            {!aiIsProcessing && (
+                              <>
+                                <button
+                                  id={`btn-pick-${activeCharacter.id}`}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handlePick(activeCharacter);
+                                  }}
+                                  className="group relative w-full py-4 rounded-xl overflow-hidden shadow-[0_0_30px_rgba(30,144,255,0.3)] hover:shadow-[0_0_40px_rgba(0,229,255,0.5)] transition-all active:scale-95 cursor-pointer"
+                                >
+                                  <div className="absolute inset-0 bg-gradient-to-r from-nexus-blue via-nexus-cyan to-nexus-blue bg-[length:200%_100%] animate-pulse" />
+                                  <div className="relative z-10 flex items-center justify-center gap-3 text-white font-black text-xs tracking-[0.2em] uppercase">
+                                    <UserPlus className="w-4 h-4" /> RECRUIT TO TEAM
+                                  </div>
+                                </button>
+
+                                <button
+                                  id={`btn-skip-${activeCharacter.id}`}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleSkip();
+                                  }}
+                                  disabled={activeTurn === "p1" ? p1SkipUsed : p2SkipUsed}
+                                  className={`w-full py-3 rounded-xl border-2 font-black text-[10px] uppercase tracking-[0.3em] transition-all duration-500 flex items-center justify-center gap-2 ${(activeTurn === "p1" ? !p1SkipUsed : !p2SkipUsed)
+                                      ? "border-red-500/20 bg-red-500/5 text-red-400 hover:bg-red-500/10 hover:border-red-500/40 active:scale-95 cursor-pointer shadow-lg"
+                                      : "border-white/5 bg-white/5 text-slate-600 cursor-not-allowed opacity-40"
+                                    }`}
+                                >
+                                  <Zap className="w-3 h-3" /> TACTICAL SKIP {activeTurn === "p1" ? (p1SkipUsed ? "(OFFLINE)" : "(ACTIVE)") : (p2SkipUsed ? "(OFFLINE)" : "(ACTIVE)")}
+                                </button>
+                              </>
+                            )}
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center gap-4">
+                      <Loader2 className="w-12 h-12 text-nexus-blue animate-spin" />
+                      <p className="text-nexus-cyan font-mono text-[10px] font-black uppercase tracking-[0.4em] animate-pulse">Scanning Multiverse...</p>
+                    </div>
+                  )}
+                </div>
+
+                {/* Right: P2 Roster */}
+                <div className="lg:col-span-3 flex flex-col justify-self-stretch">
+                  <TeamSlots
+                    playerName={player2Name}
+                    isAI={gameMode === "vs-ai"}
+                    slots={p2Slots}
+                    skipUsed={p2SkipUsed}
+                    activeTurn={activeTurn === "p2"}
+                    onSlotSelect={gameMode === "local-2p" ? handleSlotSelect : undefined}
+                    isDraggingActive={isDraggingActive}
+                  />
+                </div>
+              </div>
+            </motion.div>
+          )}
+
+          {/* 3. SHOWDOWN RESULTS VIEW */}
+          {view === "results" && (
+            <motion.div
+              key="results"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.4 }}
+              className="space-y-8"
+            >
+              {loadingResult || !resultData ? (
+                <div className="min-h-[500px] flex flex-col items-center justify-center space-y-6">
+                  <div className="relative w-24 h-24 flex items-center justify-center">
+                    <div className="absolute inset-0 rounded-full border-4 border-dashed border-violet-500 animate-spin" />
+                    <div className="absolute inset-2 rounded-full border-2 border-fuchsia-400 animate-ping" />
+                    <Swords className="w-8 h-8 text-white" />
+                  </div>
+
+                  <div className="text-center space-y-1.5">
+                    <h3 className="text-base font-black uppercase tracking-[0.2em] text-white">
+                      EVALUATING TEAM COLLISION...
+                    </h3>
+                    <p className="text-xs text-violet-400 font-mono uppercase tracking-widest animate-pulse">
+                      RESOLVING ROLE DUELS AND TEAM BONUSES
+                    </p>
+                    <p className="text-[10px] text-neutral-500 font-mono">
+                      Querying dimensional caster...
+                    </p>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-8 max-w-5xl mx-auto">
+                  {/* WINNER BLOCK */}
+                  <div className="text-center space-y-4 bg-gradient-to-b from-neutral-900/60 to-neutral-950/40 border border-neutral-800 rounded-3xl p-8 relative overflow-hidden backdrop-blur-md shadow-2xl">
+                    <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-amber-500 via-fuchsia-500 to-amber-500" />
+
+                    <div className="space-y-2">
+                      <p className="text-xs font-mono uppercase tracking-[0.3em] text-amber-400 font-bold">
+                        🏆 SHOWN FINAL SHOWDOWN RESULT
+                      </p>
+                      {resultData.winnerId === "draw" ? (
+                        <h1 className="text-5xl font-black uppercase tracking-tight text-white">
+                          Double-KO Draw!
+                        </h1>
+                      ) : (
+                        <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tighter text-white">
+                          <span className="bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 to-amber-500 animate-pulse">
+                            {resultData.winner === player1Name ? player1Name : resultData.winner}
+                          </span>{" "}
+                          VICTORIOUS!
+                        </h1>
+                      )}
+                    </div>
+
+                    <div className="grid grid-cols-3 max-w-md mx-auto items-center py-4 bg-neutral-900/40 rounded-2xl border border-white/5 font-mono">
+                      <div className="text-center">
+                        <p className="text-[9px] text-neutral-400 leading-none truncate">{player1Name}</p>
+                        <p className="text-3xl font-black text-white mt-1">{resultData.player1Power}</p>
+                        <p className="text-[8px] text-neutral-500 uppercase tracking-widest">Battle Score</p>
+                      </div>
+                      <div className="text-center text-sm font-black text-neutral-600 border-x border-white/5">
+                        VS
+                      </div>
+                      <div className="text-center">
+                        <p className="text-[9px] text-neutral-400 leading-none truncate">{player2Name}</p>
+                        <p className="text-3xl font-black text-white mt-1">{resultData.player2Power}</p>
+                        <p className="text-[8px] text-neutral-500 uppercase tracking-widest">Battle Score</p>
+                      </div>
+                    </div>
+
+                    {resultData.battleReport && (
+                      <div className="grid md:grid-cols-[1.1fr_0.9fr] gap-4 text-left">
+                        <div className="rounded-2xl border border-white/5 bg-black/25 p-4">
+                          <div className="flex items-center justify-between gap-3 mb-3">
+                            <h3 className="text-xs font-mono font-black uppercase tracking-widest text-nexus-cyan">
+                              Role Duel Results
+                            </h3>
+                            <span className="text-[10px] font-mono text-slate-500">
+                              {resultData.battleReport.p1DuelWins}-{resultData.battleReport.p2DuelWins}
+                              {resultData.battleReport.drawDuels > 0 ? `-${resultData.battleReport.drawDuels}` : ""}
+                            </span>
+                          </div>
+                          <div className="space-y-2">
+                            {resultData.battleReport.duels.map((duel) => (
+                              <div key={duel.role} className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 rounded-xl border border-white/5 bg-white/[0.03] p-2.5">
+                                <div className={`min-w-0 ${duel.winner === "p1" ? "text-emerald-300" : "text-slate-400"}`}>
+                                  <p className="truncate text-[10px] font-bold">{duel.p1Name}</p>
+                                  <p className="text-sm font-black">{duel.p1Score}</p>
+                                </div>
+                                <div className="text-center">
+                                  <p className="text-[8px] font-mono font-black uppercase tracking-widest text-slate-500">{duel.label}</p>
+                                  <p className="text-[9px] text-slate-600">VS</p>
+                                </div>
+                                <div className={`min-w-0 text-right ${duel.winner === "p2" ? "text-emerald-300" : "text-slate-400"}`}>
+                                  <p className="truncate text-[10px] font-bold">{duel.p2Name}</p>
+                                  <p className="text-sm font-black">{duel.p2Score}</p>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div className="rounded-2xl border border-white/5 bg-black/25 p-4 space-y-4">
+                          <div>
+                            <h3 className="text-xs font-mono font-black uppercase tracking-widest text-amber-300">
+                              Battle Rules
+                            </h3>
+                            <div className="mt-3 space-y-2">
+                              {resultData.battleReport.rules.map((rule, index) => (
+                                <p key={rule} className="text-[10px] text-slate-400 leading-relaxed">
+                                  <span className="mr-2 font-mono font-black text-slate-600">{index + 1}</span>
+                                  {rule}
+                                </p>
+                              ))}
+                            </div>
+                          </div>
+
+                          <div className="grid grid-cols-2 gap-3 border-t border-white/5 pt-4">
+                            {(["p1", "p2"] as const).map((side) => (
+                              <div key={side} className="space-y-1.5">
+                                <p className="text-[9px] font-mono font-black uppercase tracking-widest text-slate-500">
+                                  {side === "p1" ? player1Name : player2Name}
+                                </p>
+                                {Object.entries(resultData.battleReport!.bonuses[side]).map(([label, value]) => (
+                                  <div key={label} className="flex items-center justify-between gap-2 text-[10px]">
+                                    <span className="capitalize text-slate-500">{label.replace(/([A-Z])/g, " $1")}</span>
+                                    <span className="font-mono font-black text-white">+{value}</span>
+                                  </div>
+                                ))}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="flex justify-center gap-3 mt-4">
+                      <button
+                        id="btn-restart"
+                        onClick={() => startNewGame(gameMode)}
+                        className="py-3 px-6 rounded-xl border border-neutral-800 bg-neutral-900 hover:bg-neutral-800 text-xs font-mono font-black uppercase tracking-widest flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-95 text-white"
+                      >
+                        <RefreshCw className="w-4 h-4 text-violet-400" /> Revenge Match
+                      </button>
+                      <button
+                        id="btn-return-landing"
+                        onClick={() => setView("landing")}
+                        className="py-3 px-6 rounded-xl text-neutral-100 bg-violet-600 hover:bg-violet-500 text-xs font-mono font-black uppercase tracking-widest flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-95 hover:shadow-[0_0_15px_rgba(139,92,246,0.3)]"
+                      >
+                        <RotateCcw className="w-4 h-4" /> Return to Lobby
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* TEAM COMPARISON */}
+                  <div className="grid md:grid-cols-2 gap-6 pt-4">
+                    <div className="p-4 rounded-xl border border-neutral-900 bg-neutral-950/60">
+                      <h4 className="text-xs font-black font-mono uppercase tracking-widest text-violet-400 mb-3">
+                        📋 {player1Name}'s Draft Team
+                      </h4>
+                      <div className="grid grid-cols-5 gap-2">
+                        {p1Team.map((c) => (
+                          <div
+                            key={c.id}
+                            className="aspect-[3/4] border rounded-lg overflow-hidden relative group"
+                            style={{ borderColor: `${c.themeColor}33` }}
+                          >
+                            <CharacterImage
+                              url={c.image}
+                              name={c.name}
+                              themeColor={c.themeColor}
+                              className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-300"
+                            />
+                            <div className="absolute bottom-1 left-1.5 text-left max-w-[50px] truncate leading-none">
+                              <span className="text-[8px] font-black font-sans text-white truncate drop-shadow-md">
+                                {c.name.split(" ")[0]}
+                              </span>
+                            </div>
+                            <div className="absolute top-1 right-1 bg-neutral-950/70 rounded px-1 text-[8px] font-mono text-white">
+                              {c.overallPower}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="p-4 rounded-xl border border-neutral-900 bg-neutral-950/60">
+                      <h4 className="text-xs font-black font-mono uppercase tracking-widest text-violet-400 mb-3">
+                        📋 {player2Name}'s Draft Team
+                      </h4>
+                      <div className="grid grid-cols-5 gap-2">
+                        {p2Team.map((c) => (
+                          <div
+                            key={c.id}
+                            className="aspect-[3/4] border rounded-lg overflow-hidden relative group"
+                            style={{ borderColor: `${c.themeColor}33` }}
+                          >
+                            <CharacterImage
+                              url={c.image}
+                              name={c.name}
+                              themeColor={c.themeColor}
+                              className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-300"
+                            />
+                            <div className="absolute bottom-1 left-1.5 text-left max-w-[50px] truncate leading-none">
+                              <span className="text-[8px] font-black font-sans text-white truncate drop-shadow-md">
+                                {c.name.split(" ")[0]}
+                              </span>
+                            </div>
+                            <div className="absolute top-1 right-1 bg-neutral-950/70 rounded px-1 text-[8px] font-mono text-white">
+                              {c.overallPower}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </main>
+
+      {/* MATCH HISTORY MODAL */}
+      <AnimatePresence>
+        {false && showHistoryModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowHistoryModal(false)}
+              className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+            />
+
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="relative w-full max-w-2xl bg-neutral-950 border border-neutral-800 rounded-2xl shadow-2xl p-6 z-10 max-h-[85vh] overflow-y-auto"
+            >
+              <div className="flex justify-between items-start border-b border-white/5 pb-4 mb-4">
+                <div>
+                  <h3 className="text-base font-black text-white uppercase flex items-center gap-1.5">
+                    Match History
+                  </h3>
+                  <p className="text-[10px] font-mono text-neutral-400">
+                    HISTORIC DRAFT HISTORIES AND CAS COMMENTS
+                  </p>
+                </div>
+                <button
+                  onClick={() => setShowHistoryModal(false)}
+                  className="p-1 rounded-lg border border-neutral-800 hover:border-white text-neutral-400 hover:text-white transition-all text-xs cursor-pointer font-mono font-bold px-2 py-1"
+                >
+                  Close
+                </button>
+              </div>
+
+              {matchHistory.length === 0 ? (
+                <div className="text-center py-10">
+                  <p className="text-neutral-500 font-mono text-xs">NO CHRONICLES RECORDED IN THE LOGS.</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {matchHistory.map((item) => (
+                    <div
+                      key={item.id}
+                      className="p-4 border border-neutral-800 bg-neutral-900/25 rounded-xl hover:border-violet-500/25 transition-all text-left space-y-3"
+                    >
+                      <div className="flex justify-between text-[11px] font-mono text-neutral-400 border-b border-white/5 pb-1.5">
+                        <span>TIMESTAMPS: {item.createdAt}</span>
+                        <span className="text-amber-400">Winner: {item.winner}</span>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <p className="text-xs text-neutral-400 font-mono leading-none">PLAYER 1 TEAM</p>
+                          <p className="text-sm font-black text-white">{item.player1Name}</p>
+                          <p className="text-xs font-mono text-violet-400">∑ {item.player1Power} Power</p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-neutral-400 font-mono leading-none">PLAYER 2 TEAM</p>
+                          <p className="text-sm font-black text-white">{item.player2Name}</p>
+                          <p className="text-xs font-mono text-violet-400">∑ {item.player2Power} Power</p>
+                        </div>
+                      </div>
+
+                      <div className="p-3 bg-neutral-900/50 rounded-lg text-[11px] text-neutral-300 font-sans border border-white/5 max-h-36 overflow-y-auto leading-relaxed whitespace-pre-wrap">
+                        {item.commentary}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* ABOUT MODAL */}
+      <AnimatePresence>
+        {showAbout && view === "landing" && (
+          <motion.div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setShowAbout(false)}
+          >
+            <motion.div
+              className="relative w-full max-w-xs overflow-hidden rounded-2xl border border-nexus-cyan/30 bg-slate-950 shadow-[0_0_40px_rgba(0,229,255,0.18)]"
+              initial={{ y: 24, scale: 0.96, opacity: 0 }}
+              animate={{ y: 0, scale: 1, opacity: 1 }}
+              exit={{ y: 16, scale: 0.96, opacity: 0 }}
+              onClick={(event) => event.stopPropagation()}
+            >
+              <button
+                type="button"
+                onClick={() => setShowAbout(false)}
+                className="absolute right-3 top-3 z-10 rounded-lg border border-white/10 bg-black/50 p-2 text-white/70 transition-colors hover:text-white"
+                aria-label="Close about"
+              >
+                <X className="h-4 w-4" />
+              </button>
+              <div className="aspect-[3/4] w-full overflow-hidden bg-slate-900">
+                <CharacterImage
+                  url={aboutCharacter.image}
+                  name={aboutCharacter.name}
+                  fallbackUrl={aboutCharacter.malFallbackUrl}
+                  themeColor={aboutCharacter.themeColor}
+                  className="h-full w-full object-cover object-top"
+                />
+              </div>
+              <div className="p-5 text-center">
+                <p className="text-[10px] font-mono font-black uppercase tracking-[0.25em] text-nexus-cyan/70">
+                  Anime Battle
+                </p>
+                <h2 className="mt-2 text-xl font-black uppercase tracking-wide text-white">
+                  ANUSHARAN BHATTARAI
+                </h2>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* FOOTER */}
+      <footer className="border-t border-neutral-900 bg-neutral-950/60 backdrop-blur-md py-4 px-6 text-center text-[10px] font-mono text-neutral-500 relative z-10 flex flex-col sm:flex-row justify-between items-center max-w-7xl w-full mx-auto gap-2">
+        <span>© 2026 ANIME BATTLE. ALL RIGHTS RESERVED.</span>
+        <span className="text-violet-400">MADE FOR ANIME ENTHUSIASTS WORLDWIDE</span>
+      </footer>
+    </div>
+  );
+}
+
+

@@ -2278,10 +2278,12 @@ export default function App() {
       </AnimatePresence>
 
       {/* FOOTER */}
-      <footer className="border-t border-neutral-900 bg-neutral-950/60 backdrop-blur-md py-4 px-6 text-center text-[10px] font-mono text-neutral-500 relative z-10 flex flex-col sm:flex-row justify-between items-center max-w-7xl w-full mx-auto gap-2">
-        <span>© 2026 ANIME BATTLE. ALL RIGHTS RESERVED.</span>
-        <span className="text-violet-400">MADE FOR ANIME ENTHUSIASTS WORLDWIDE</span>
-      </footer>
+      {!(isMobile && (view === "draft" || view === "battle")) && (
+        <footer className="border-t border-neutral-900 bg-neutral-950/60 backdrop-blur-md py-4 px-6 text-center text-[10px] font-mono text-neutral-500 relative z-10 flex flex-col sm:flex-row justify-between items-center max-w-7xl w-full mx-auto gap-2">
+          <span>© 2026 ANIME BATTLE. ALL RIGHTS RESERVED.</span>
+          <span className="text-violet-400">MADE FOR ANIME ENTHUSIASTS WORLDWIDE</span>
+        </footer>
+      )}
     </div>
   );
 }

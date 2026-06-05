@@ -902,6 +902,10 @@ async function startServer() {
       socket.to(roomId).emit("game-state-updated", state);
     });
 
+    socket.on("cancel-room", ({ roomId }) => {
+      rooms.delete(roomId);
+    });
+
     socket.on("disconnect", () => {
       console.log(`User disconnected: ${socket.id}`);
       // Find room the player was in

@@ -245,6 +245,12 @@ export default function App() {
     return null;
   };
 
+  // Stable refs so async/socket callbacks always access latest values without stale closures
+  const onlineRoomIdRef = useRef<string | null>(null);
+  const gameModeRef = useRef<"vs-ai" | "local-2p" | "online-2p">("vs-ai");
+  useEffect(() => { onlineRoomIdRef.current = onlineRoomId; }, [onlineRoomId]);
+  useEffect(() => { gameModeRef.current = gameMode; }, [gameMode]);
+
   // Load history and characters on startup
   useEffect(() => {
     fetchMatchHistory();
@@ -260,12 +266,30 @@ export default function App() {
       setIsWaitingForOpponent(true);
     });
 
-    newSocket.on("game-started", ({ roomId, p1Name, p2Name }) => {
+    newSocket.on("game-started", ({ roomId, p1Name, p2Name, side }) => {
       setOnlineRoomId(roomId);
+      onlineRoomIdRef.current = roomId;
       setPlayer1Name(p1Name);
       setPlayer2Name(p2Name);
       setIsWaitingForOpponent(false);
+      // Reset all game state before entering draft
+      setRound(1);
+      setActiveTurn("p1");
+      setP1Slots(initialSlots);
+      setP2Slots(initialSlots);
+      setP1SkipUsed(false);
+      setP2SkipUsed(false);
+      setExcludedIds([]);
+      setMustPick(false);
+      setResultData(null);
       setView("draft");
+      // Only P1 drives the first character pull — P2 will receive it via game-state-updated
+      if (side === "p1") {
+        // slight delay to allow state to settle before pulling
+        setTimeout(() => {
+          pullNewCharacter([], [], initialSlots);
+        }, 200);
+      }
     });
 
     newSocket.on("game-state-updated", (state) => {
@@ -285,6 +309,10 @@ export default function App() {
 
     newSocket.on("player-disconnected", () => {
       alert("Opponent disconnected. Returning to lobby.");
+      setOnlineRoomId(null);
+      onlineRoomIdRef.current = null;
+      setIsWaitingForOpponent(false);
+      setOnlineSide(null);
       setView("landing");
     });
 
@@ -314,8 +342,8 @@ export default function App() {
   };
 
   const syncGameState = (updates: any) => {
-    if (!socket || !onlineRoomId) return;
-    socket.emit("sync-game-state", { roomId: onlineRoomId, state: updates });
+    if (!socket || !onlineRoomIdRef.current) return;
+    socket.emit("sync-game-state", { roomId: onlineRoomIdRef.current, state: updates });
   };
 
   // Spotlight rotation effect
@@ -349,7 +377,15 @@ export default function App() {
 
   // ---------------- GAMEPLAY MOTIONS ----------------
 
-  const startNewGame = async (mode: "vs-ai" | "local-2p") => {
+  const startNewGame = async (mode: "vs-ai" | "local-2p" | "online-2p") => {
+    // Online mode: game start is driven by the server's game-started event, not this button
+    if (mode === "online-2p") {
+      if (!onlineRoomId) {
+        alert("Please create or join a room first.");
+      }
+      return;
+    }
+
     if (category === "choose" && selectedAnimes.length === 0) {
       return;
     }
@@ -445,7 +481,7 @@ export default function App() {
       setTimeout(() => {
         setActiveCharacter(character);
         setIsCardFlipped(true);
-        if (gameMode === "online-2p") {
+        if (gameModeRef.current === "online-2p") {
           syncGameState({ activeCharacter: character, isCardFlipped: true });
         }
       }, 300);
@@ -472,7 +508,7 @@ export default function App() {
       setTimeout(() => {
         setActiveCharacter(backup);
         setIsCardFlipped(true);
-        if (gameMode === "online-2p") {
+        if (gameModeRef.current === "online-2p") {
           syncGameState({ activeCharacter: backup, isCardFlipped: true });
         }
       }, 300);
@@ -536,7 +572,7 @@ export default function App() {
       } else {
         // AI Turn — pass activeAnimes so AI's async flow uses the same filter
         setActiveTurn("p2");
-        triggerAiTurn(nextTeam, p2Slots, updatedExcludes, activeAnimes);
+        triggerAiTurn(nextTeam, p2Slots, updatedExcludes, activeAnimes, round);
       }
     } else {
       // Local or Online P2 Turn
@@ -563,8 +599,11 @@ export default function App() {
         }
       } else {
         const p1CurrentTeam = Object.values(p1Slots).filter(Boolean) as Character[];
-        calculateWinner(p1CurrentTeam, nextTeam);
-        if (gameMode === "online-2p") {
+        // In online mode, only P1 drives the winner calculation to avoid double-saving
+        if (gameModeRef.current !== "online-2p" || onlineSide === "p1") {
+          calculateWinner(p1CurrentTeam, nextTeam);
+        }
+        if (gameModeRef.current === "online-2p") {
           syncGameState({
             p2Slots: nextSlots,
             excludedIds: updatedExcludes,
@@ -642,7 +681,8 @@ export default function App() {
     p1CurrentTeam: Character[],
     currentAiSlots: SlottedTeam,
     currentExcludes: string[],
-    activeAnimes: string[]
+    activeAnimes: string[],
+    currentRound: number
   ) => {
     setAiIsProcessing(true);
 
@@ -716,7 +756,7 @@ export default function App() {
                   const finalExcludes = [...nextExcludes, forcedCandidate.id];
                   setExcludedIds(finalExcludes);
 
-                  advanceRoundOrFinish(p1CurrentTeam, finalTeam, finalExcludes, activeAnimes);
+                  advanceRoundOrFinish(p1CurrentTeam, finalTeam, finalExcludes, activeAnimes, currentRound);
                 }, 1200);
               }, 1000);
             }, 800);
@@ -731,7 +771,7 @@ export default function App() {
             const finalExcludes = [...currentExcludes, candidate.id];
             setExcludedIds(finalExcludes);
 
-            advanceRoundOrFinish(p1CurrentTeam, finalTeam, finalExcludes, activeAnimes);
+            advanceRoundOrFinish(p1CurrentTeam, finalTeam, finalExcludes, activeAnimes, currentRound);
           }
         }, 1500);
       }, 1000);
@@ -748,11 +788,13 @@ export default function App() {
     team1: Character[],
     team2: Character[],
     excludes: string[],
-    activeAnimes: string[]
+    activeAnimes: string[],
+    currentRound: number
   ) => {
     setAiIsProcessing(false);
-    if (round < 6) {
-      setRound(round + 1);
+    if (currentRound < 6) {
+      const nextRound = currentRound + 1;
+      setRound(nextRound);
       setActiveTurn("p1");
       pullNewCharacter(excludes, activeAnimes, p1Slots);
     } else {
@@ -1045,16 +1087,31 @@ export default function App() {
                         )}
 
                         {onlineRoomId && isWaitingForOpponent && (
-                          <div className="p-6 rounded-2xl border border-emerald-500/20 bg-emerald-500/5 text-center space-y-3 animate-pulse">
+                          <div className="p-6 rounded-2xl border border-emerald-500/20 bg-emerald-500/5 text-center space-y-3">
                             <p className="text-[10px] font-mono text-emerald-400 uppercase tracking-widest">Room Created! Share code with friend</p>
-                            <h3 className="text-3xl font-black text-white tracking-widest">{onlineRoomId}</h3>
-                            <div className="flex items-center justify-center gap-2 text-[9px] text-neutral-500 uppercase font-mono">
+                            <div className="flex items-center justify-center gap-3">
+                              <h3 className="text-3xl font-black text-white tracking-widest">{onlineRoomId}</h3>
+                              <button
+                                onClick={() => {
+                                  navigator.clipboard.writeText(onlineRoomId).catch(() => {});
+                                }}
+                                className="text-[9px] font-mono text-emerald-400 border border-emerald-500/30 rounded-lg px-2 py-1 hover:bg-emerald-500/10 transition-all"
+                                title="Copy room code"
+                              >
+                                Copy
+                              </button>
+                            </div>
+                            <div className="flex items-center justify-center gap-2 text-[9px] text-neutral-500 uppercase font-mono animate-pulse">
                               <Loader2 className="w-3 h-3 animate-spin" /> Waiting for opponent...
                             </div>
                             <button 
                               onClick={() => {
+                                if (socket && onlineRoomId) {
+                                  socket.emit("cancel-room", { roomId: onlineRoomId });
+                                }
                                 setOnlineRoomId(null);
                                 setIsWaitingForOpponent(false);
+                                setGameMode("vs-ai");
                               }}
                               className="text-[9px] text-red-400 hover:underline"
                             >
@@ -1378,8 +1435,10 @@ export default function App() {
                     <h3 className="text-base font-black uppercase text-white tracking-widest flex items-center gap-2">
                       {activeTurn === "p1" ? (
                         <><Swords className="w-4 h-4 text-nexus-cyan" /> {player1Name}'S DECISION</>
-                      ) : (
+                      ) : gameMode === "vs-ai" ? (
                         <><Cpu className="w-4 h-4 text-nexus-purple animate-pulse" /> AI THINKING</>
+                      ) : (
+                        <><Swords className="w-4 h-4 text-fuchsia-400" /> {player2Name}'S DECISION</>
                       )}
                     </h3>
                     <p className="text-[10px] font-mono text-nexus-cyan/60 font-bold uppercase tracking-widest">
@@ -1528,7 +1587,13 @@ export default function App() {
                   ) : (
                     <div className="flex flex-col items-center gap-4">
                       <Loader2 className="w-12 h-12 text-nexus-blue animate-spin" />
-                      <p className="text-nexus-cyan font-mono text-[10px] font-black uppercase tracking-[0.4em] animate-pulse">Scanning Multiverse...</p>
+                      {gameMode === "online-2p" && activeTurn !== onlineSide ? (
+                        <p className="text-fuchsia-400 font-mono text-[10px] font-black uppercase tracking-[0.4em] animate-pulse">
+                          Waiting for {activeTurn === "p1" ? player1Name : player2Name}...
+                        </p>
+                      ) : (
+                        <p className="text-nexus-cyan font-mono text-[10px] font-black uppercase tracking-[0.4em] animate-pulse">Scanning Multiverse...</p>
+                      )}
                     </div>
                   )}
                 </div>
@@ -1774,7 +1839,7 @@ export default function App() {
 
       {/* MATCH HISTORY MODAL */}
       <AnimatePresence>
-        {false && showHistoryModal && (
+        {showHistoryModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             <motion.div
               initial={{ opacity: 0 }}
@@ -1903,5 +1968,3 @@ export default function App() {
     </div>
   );
 }
-
-

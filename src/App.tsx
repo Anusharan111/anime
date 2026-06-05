@@ -322,6 +322,7 @@ export default function App() {
         if (state.isCardFlipped !== undefined) setIsCardFlipped(state.isCardFlipped);
         if (state.mustPick !== undefined) setMustPick(state.mustPick);
         if (state.view) setView(state.view);
+        if (state.loadingResult !== undefined) setLoadingResult(state.loadingResult);
         if (statsMatch(state.resultData)) setResultData(state.resultData);
       });
 
@@ -356,6 +357,19 @@ export default function App() {
       socketRef.current = null;
     };
   }, []);
+
+  // Auto-calculate winner in online mode when both teams are full (driven by P1)
+  useEffect(() => {
+    if (gameMode === "online-2p" && onlineSide === "p1") {
+      const p1Full = Object.values(p1Slots).every(v => v !== null);
+      const p2Full = Object.values(p2Slots).every(v => v !== null);
+      if (p1Full && p2Full && view === "draft") {
+        const team1 = Object.values(p1Slots).filter(Boolean) as Character[];
+        const team2 = Object.values(p2Slots).filter(Boolean) as Character[];
+        calculateWinner(team1, team2);
+      }
+    }
+  }, [p1Slots, p2Slots, gameMode, onlineSide, view]);
 
   const statsMatch = (data: any) => {
     return data && data.winnerId;
@@ -415,11 +429,46 @@ export default function App() {
   // ---------------- GAMEPLAY MOTIONS ----------------
 
   const startNewGame = async (mode: "vs-ai" | "local-2p" | "online-2p") => {
-    // Online mode: game start is driven by the server's game-started event, not this button
     if (mode === "online-2p") {
-      if (!onlineRoomId) {
+      if (!onlineRoomIdRef.current) {
         alert("Please create or join a room first.");
+        return;
       }
+      if (onlineSideRef.current !== "p1") {
+        alert("Only the host can start a Revenge Match.");
+        return;
+      }
+
+      // Reset game states locally
+      setRound(1);
+      setActiveTurn("p1");
+      setP1Slots(initialSlots);
+      setP2Slots(initialSlots);
+      setP1SkipUsed(false);
+      setP2SkipUsed(false);
+      setExcludedIds([]);
+      setMustPick(false);
+      setResultData(null);
+      setView("draft");
+
+      // Sync the initial states and view to P2
+      syncGameState({
+        round: 1,
+        activeTurn: "p1",
+        p1Slots: initialSlots,
+        p2Slots: initialSlots,
+        p1SkipUsed: false,
+        p2SkipUsed: false,
+        excludedIds: [],
+        mustPick: false,
+        resultData: null,
+        view: "draft",
+        activeCharacter: null,
+        isCardFlipped: true,
+      });
+
+      // Pull first card for P1
+      pullNewCharacter([], [], initialSlots);
       return;
     }
 
@@ -648,8 +697,8 @@ export default function App() {
         }
       } else {
         const p1CurrentTeam = Object.values(p1Slots).filter(Boolean) as Character[];
-        // In online mode, only P1 drives the winner calculation to avoid double-saving
-        if (gameModeRef.current !== "online-2p" || onlineSideRef.current === "p1") {
+        // In online mode, the useEffect hook triggers the winner calculation on P1's client to synchronize both sides
+        if (gameModeRef.current !== "online-2p") {
           calculateWinner(p1CurrentTeam, nextTeam);
         }
         if (gameModeRef.current === "online-2p") {
@@ -856,6 +905,9 @@ export default function App() {
   const calculateWinner = async (team1: Character[], team2: Character[]) => {
     setView("results");
     setLoadingResult(true);
+    if (gameMode === "online-2p") {
+      syncGameState({ view: "results", loadingResult: true });
+    }
 
     try {
       const res = await fetch(`${API_BASE}/api/draft/calculate`, {
@@ -875,7 +927,7 @@ export default function App() {
         const stats = await res.json();
         setResultData(stats);
         if (gameMode === "online-2p") {
-          syncGameState({ resultData: stats, view: "results" });
+          syncGameState({ resultData: stats, view: "results", loadingResult: false });
         }
 
         await fetch(`${API_BASE}/api/draft/save`, {
@@ -899,6 +951,9 @@ export default function App() {
       }
     } catch (e) {
       console.error("Match winner calculation error", e);
+      if (gameMode === "online-2p") {
+        syncGameState({ loadingResult: false });
+      }
     } finally {
       setLoadingResult(false);
     }
@@ -1799,17 +1854,36 @@ export default function App() {
                     )}
 
                     <div className="flex justify-center gap-3 mt-4">
-                      <button
-                        id="btn-restart"
-                        onClick={() => startNewGame(gameMode)}
-                        className="py-3 px-6 rounded-xl border border-neutral-800 bg-neutral-900 hover:bg-neutral-800 text-xs font-mono font-black uppercase tracking-widest flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-95 text-white"
-                      >
-                        <RefreshCw className="w-4 h-4 text-violet-400" /> Revenge Match
-                      </button>
+                      {gameMode === "online-2p" && onlineSide !== "p1" ? (
+                        <button
+                          id="btn-restart"
+                          disabled
+                          className="py-3 px-6 rounded-xl border border-neutral-800 bg-neutral-950 text-neutral-500 text-xs font-mono font-black uppercase tracking-widest flex items-center justify-center gap-2 cursor-not-allowed opacity-50 font-bold"
+                        >
+                          <RefreshCw className="w-4 h-4 animate-spin text-neutral-600" /> Waiting for Host
+                        </button>
+                      ) : (
+                        <button
+                          id="btn-restart"
+                          onClick={() => startNewGame(gameMode)}
+                          className="py-3 px-6 rounded-xl border border-neutral-800 bg-neutral-900 hover:bg-neutral-800 text-xs font-mono font-black uppercase tracking-widest flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-95 text-white font-bold"
+                        >
+                          <RefreshCw className="w-4 h-4 text-violet-400" /> Revenge Match
+                        </button>
+                      )}
                       <button
                         id="btn-return-landing"
-                        onClick={() => setView("landing")}
-                        className="py-3 px-6 rounded-xl text-neutral-100 bg-violet-600 hover:bg-violet-500 text-xs font-mono font-black uppercase tracking-widest flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-95 hover:shadow-[0_0_15px_rgba(139,92,246,0.3)]"
+                        onClick={() => {
+                          if (gameMode === "online-2p") {
+                            if (socketRef.current && onlineRoomId) {
+                              socketRef.current.emit("cancel-room", { roomId: onlineRoomId });
+                            }
+                            resetOnlineLobby();
+                          } else {
+                            setView("landing");
+                          }
+                        }}
+                        className="py-3 px-6 rounded-xl text-neutral-100 bg-violet-600 hover:bg-violet-500 text-xs font-mono font-black uppercase tracking-widest flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-95 hover:shadow-[0_0_15px_rgba(139,92,246,0.3)] font-bold"
                       >
                         <RotateCcw className="w-4 h-4" /> Return to Lobby
                       </button>

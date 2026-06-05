@@ -1045,7 +1045,7 @@ export default function App() {
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="flex flex-col gap-2.5 w-full max-w-[280px] sm:max-w-[360px] px-2"
+                  className="flex flex-col gap-2.5 w-full max-w-[320px] sm:max-w-[360px] px-2"
                 >
                   {!aiIsProcessing && (
                     <>
@@ -1056,7 +1056,7 @@ export default function App() {
                           if (gameMode === "online-2p" && activeTurn !== onlineSide) return;
                           setIsDeployModalOpen(true);
                         }}
-                        className="group relative w-full py-3 sm:py-4 rounded-xl overflow-hidden shadow-[0_0_30px_rgba(30,144,255,0.3)] hover:shadow-[0_0_40px_rgba(0,229,255,0.5)] transition-all active:scale-95 cursor-pointer"
+                        className="group relative w-full py-4 sm:py-4 rounded-xl overflow-hidden shadow-[0_0_30px_rgba(30,144,255,0.3)] hover:shadow-[0_0_40px_rgba(0,229,255,0.5)] transition-all active:scale-95 cursor-pointer touch-manipulation"
                       >
                         <div className="absolute inset-0 bg-gradient-to-r from-nexus-blue via-nexus-cyan to-nexus-blue bg-[length:200%_100%] animate-pulse" />
                         <div className="relative z-10 flex items-center justify-center gap-2 sm:gap-3 text-white font-black text-[10px] sm:text-xs tracking-[0.2em] uppercase">
@@ -1071,7 +1071,7 @@ export default function App() {
                           handleSkip();
                         }}
                         disabled={activeTurn === "p1" ? p1SkipUsed : p2SkipUsed}
-                        className={`w-full py-2 sm:py-3 rounded-xl border-2 font-black text-[9px] sm:text-[10px] uppercase tracking-[0.25em] sm:tracking-[0.3em] transition-all duration-500 flex items-center justify-center gap-1.5 sm:gap-2 ${(activeTurn === "p1" ? !p1SkipUsed : !p2SkipUsed)
+                        className={`w-full py-3 sm:py-3 rounded-xl border-2 font-black text-[9px] sm:text-[10px] uppercase tracking-[0.25em] sm:tracking-[0.3em] transition-all duration-500 flex items-center justify-center gap-1.5 sm:gap-2 touch-manipulation ${(activeTurn === "p1" ? !p1SkipUsed : !p2SkipUsed)
                             ? "border-red-500/20 bg-red-500/5 text-red-400 hover:bg-red-500/10 hover:border-red-500/40 active:scale-95 cursor-pointer shadow-lg"
                             : "border-white/5 bg-white/5 text-slate-600 cursor-not-allowed opacity-40"
                           }`}
@@ -1768,10 +1768,10 @@ export default function App() {
                     </div>
                   )}
 
-                  <div className="flex items-stretch justify-between gap-1 sm:gap-3 w-full flex-1">
+                  <div className="flex items-stretch justify-between gap-1.5 sm:gap-3 w-full flex-1">
                     {/* Left Column: P1 in Local 2P mode */}
                     {gameMode === "local-2p" ? (
-                      <div className="w-16 sm:w-20 flex-shrink-0 flex flex-col justify-self-stretch animate-fadeInLeft">
+                      <div className="w-20 sm:w-24 flex-shrink-0 flex flex-col justify-self-stretch animate-fadeInLeft">
                         <TeamSlots
                           playerName={player1Name}
                           slots={p1Slots}
@@ -1783,7 +1783,7 @@ export default function App() {
                         />
                       </div>
                     ) : (
-                      <div className="w-4" /> /* Spacer for balance if needed */
+                      <div className="w-2 sm:w-4 flex-shrink-0" /> /* Spacer for balance */
                     )}
 
                     {/* Center Column: Active Card */}
@@ -1793,9 +1793,7 @@ export default function App() {
                         <div className="h-px w-full bg-nexus-blue absolute top-3/4 animate-pulse delay-500" />
                       </div>
                       
-                      <div className="scale-90 sm:scale-100 transform transition-transform">
-                        {renderDraftCardArea()}
-                      </div>
+                      {renderDraftCardArea()}
 
                       {/* Mobile Skip status display */}
                       <div className="flex gap-4 items-center justify-center mt-4 text-[8px] font-mono font-black uppercase tracking-widest text-slate-500 bg-black/20 px-3 py-1 rounded-full border border-white/5">
@@ -1811,7 +1809,7 @@ export default function App() {
                     </div>
 
                     {/* Right Column: Player or P2 Slots */}
-                    <div className="w-16 sm:w-20 flex-shrink-0 flex flex-col justify-self-stretch animate-fadeInRight">
+                    <div className="w-20 sm:w-24 flex-shrink-0 flex flex-col justify-self-stretch animate-fadeInRight">
                       <TeamSlots
                         playerName={gameMode === "local-2p" ? player2Name : (onlineSide === "p2" ? player2Name : player1Name)}
                         slots={gameMode === "local-2p" ? p2Slots : (onlineSide === "p2" ? p2Slots : p1Slots)}

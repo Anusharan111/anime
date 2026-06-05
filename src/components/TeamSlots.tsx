@@ -135,14 +135,14 @@ export default function TeamSlots({
                 onDrop={(e) => handleDrop(e, role.id)}
                 onClick={() => isInteractive && onSlotSelect?.(role.id)}
                 className={`
-                  relative rounded-lg border transition-all duration-300 group
-                  ${layout === "compact-horizontal-top" ? 'w-8 h-8 sm:w-10 sm:h-10' : (isMobile ? 'w-12 h-12 sm:w-14 sm:h-14' : 'w-11 h-11 sm:w-13 sm:h-13')}
+                  relative rounded-lg border transition-all duration-300 group touch-manipulation
+                  ${layout === "compact-horizontal-top" ? 'w-8 h-8 sm:w-10 sm:h-10' : (isMobile ? 'w-14 h-14 sm:w-16 sm:h-16' : 'w-11 h-11 sm:w-13 sm:h-13')}
                   ${isOccupied 
                     ? 'border-nexus-blue/40 bg-nexus-blue/10 shadow-[0_0_15px_rgba(30,144,255,0.1)]' 
                     : canDrop 
                       ? 'border-nexus-cyan animate-nexus-pulse bg-nexus-cyan/20 cursor-pointer scale-110 z-20 shadow-[0_0_20px_rgba(0,229,255,0.3)]' 
                       : isInteractive
-                        ? 'border-white/20 bg-white/10 hover:border-nexus-cyan/40 hover:bg-white/15 cursor-pointer shadow-lg' 
+                        ? 'border-white/20 bg-white/10 hover:border-nexus-cyan/40 hover:bg-white/15 cursor-pointer shadow-lg active:scale-95' 
                         : 'border-white/5 bg-white/5 opacity-50'
                   }
                 `}

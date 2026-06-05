@@ -105,7 +105,7 @@ export default function CharacterCard({
 
   return (
     <div 
-      className="relative w-[160px] h-[280px] sm:w-[260px] sm:h-[460px] md:w-[340px] md:h-[600px] perspective-1000 z-10 select-none group"
+      className="relative w-[140px] h-[250px] sm:w-[260px] sm:h-[460px] md:w-[340px] md:h-[600px] perspective-1000 z-10 select-none group"
       onMouseMove={handleMouseMove}
     >
       <motion.div
@@ -122,9 +122,9 @@ export default function CharacterCard({
       >
         {/* FRONT SIDE */}
         <div
-          draggable={!isFlipped}
+          draggable={!isFlipped && !isMobileDevice}
           onDragStart={(e) => {
-            if (isFlipped) {
+            if (isFlipped || isMobileDevice) {
               e.preventDefault();
               return;
             }
@@ -157,7 +157,7 @@ export default function CharacterCard({
           </div>
 
           {/* Portrait Container */}
-          <div className="relative w-full h-[160px] sm:h-[240px] md:h-[320px] rounded-xl border border-white/10 overflow-hidden bg-black/40 group/portrait z-10 flex items-center justify-center mb-2 sm:mb-4">
+          <div className="relative w-full h-[130px] sm:h-[240px] md:h-[320px] rounded-xl border border-white/10 overflow-hidden bg-black/40 group/portrait z-10 flex items-center justify-center mb-2 sm:mb-4">
             {/* Digital Scan Line */}
             <div className="absolute inset-0 z-20 pointer-events-none">
               <div className={`w-full h-[2px] bg-gradient-to-r from-transparent via-${config.color} to-transparent opacity-50 absolute animate-nexus-scan`} 

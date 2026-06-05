@@ -126,7 +126,7 @@ export default function DeployModal({ character, slots, onSelect, onClose }: Dep
                   disabled={isOccupied}
                   onClick={() => onSelect(role.id)}
                   className={`
-                    w-full relative flex items-center justify-between p-3 rounded-xl border transition-all duration-300
+                    w-full relative flex items-center justify-between p-3 rounded-xl border transition-all duration-300 touch-manipulation
                     ${isOccupied
                       ? "border-white/5 bg-white/2 cursor-not-allowed opacity-50"
                       : "border-white/10 bg-white/5 hover:border-nexus-cyan/50 hover:bg-nexus-cyan/5 active:scale-98 cursor-pointer group"

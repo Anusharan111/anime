@@ -472,6 +472,9 @@ export default function App() {
       setTimeout(() => {
         setActiveCharacter(backup);
         setIsCardFlipped(true);
+        if (gameMode === "online-2p") {
+          syncGameState({ activeCharacter: backup, isCardFlipped: true });
+        }
       }, 300);
     }
   };
@@ -1446,12 +1449,17 @@ export default function App() {
                         activePlayerName={activeTurn === "p1" ? player1Name : player2Name}
                         activeTurn={activeTurn}
                         onClickBackSide={() => {
+                          if (gameMode === "online-2p" && activeTurn !== onlineSide) return;
                           setIsCardFlipped(false);
                           if (gameMode === "online-2p") {
                             syncGameState({ isCardFlipped: false });
                           }
                         }}
                         onDragStart={(e) => {
+                          if (gameMode === "online-2p" && activeTurn !== onlineSide) {
+                            e.preventDefault();
+                            return;
+                          }
                           if (e.dataTransfer) {
                             e.dataTransfer.setData("text/plain", activeCharacter.id);
                             e.dataTransfer.effectAllowed = "move";

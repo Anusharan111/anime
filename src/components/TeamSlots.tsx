@@ -110,7 +110,7 @@ export default function TeamSlots({
             </span>
             {activeTurn && (
               <span className="text-[6px] font-mono font-black text-nexus-cyan tracking-tighter uppercase animate-pulse">
-                ● ACTIVE
+                ACTIVE
               </span>
             )}
           </div>

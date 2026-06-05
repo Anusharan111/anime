@@ -230,7 +230,7 @@ export default function CharacterCard({
 
   return (
     <div 
-      className={`relative ${isCompact ? 'w-[130px] h-[230px]' : 'w-[140px] h-[250px]'} sm:w-[260px] sm:h-[460px] md:w-[340px] md:h-[600px] perspective-1000 z-10 select-none group transition-transform duration-300 ${isSelected ? 'scale-105' : ''}`}
+      className={`relative ${isCompact ? 'w-[130px] h-[230px]' : 'w-[160px] h-[286px]'} sm:w-[260px] sm:h-[460px] md:w-[340px] md:h-[600px] perspective-1000 z-10 select-none group transition-transform duration-300 ${isSelected ? 'scale-105' : ''}`}
       style={{ touchAction: isMobileDevice && onTouchDrop ? "none" : undefined }}
       onMouseMove={handleMouseMove}
       onClick={handleCardTap}
@@ -291,11 +291,15 @@ export default function CharacterCard({
           </div>
 
           {/* Portrait Container */}
-          <div className={`relative w-full ${isCompact ? 'h-[125px]' : 'h-[150px] sm:h-[260px] md:h-[350px]'} rounded-xl border border-white/10 overflow-hidden bg-black/40 group/portrait z-10 flex items-center justify-center ${isCompact ? 'mb-1' : 'mb-1.5 sm:mb-2'}`}>
+          <div className={`relative w-full ${isCompact ? 'h-[125px]' : 'h-[168px] sm:h-[260px] md:h-[350px]'} rounded-xl border border-white/10 overflow-hidden bg-black/40 group/portrait z-10 flex items-center justify-center ${isCompact ? 'mb-1' : 'mb-1.5 sm:mb-2'}`}>
             {/* Digital Scan Line */}
             <div className="absolute inset-0 z-20 pointer-events-none">
-              <div className={`w-full h-[2px] bg-gradient-to-r from-transparent via-${config.color} to-transparent opacity-50 absolute animate-nexus-scan`} 
-                   style={{ backgroundColor: config.color }} />
+              <div
+                className="w-full h-[2px] opacity-50 absolute animate-nexus-scan"
+                style={{
+                  background: `linear-gradient(90deg, transparent, ${config.color}, transparent)`,
+                }}
+              />
             </div>
 
             <CharacterImage 

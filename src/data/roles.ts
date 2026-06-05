@@ -4,7 +4,7 @@ export const ROLE_CATEGORIES: RoleCategory[] = [
   {
     id: "captain",
     name: "Captain",
-    emoji: "👑",
+    emoji: "C",
     icon: "crown",
     color: "#eab308", // Yellow / Gold
     description: "Team leader. Commands tactical power coordinates."
@@ -12,7 +12,7 @@ export const ROLE_CATEGORIES: RoleCategory[] = [
   {
     id: "vice_captain",
     name: "Vice Captain",
-    emoji: "🥈",
+    emoji: "VC",
     icon: "award",
     color: "#a855f7", // Purple
     description: "Co-leader. Anchors active battle plans if leader falters."
@@ -20,7 +20,7 @@ export const ROLE_CATEGORIES: RoleCategory[] = [
   {
     id: "tank",
     name: "Defender",
-    emoji: "🛡️",
+    emoji: "D",
     icon: "shield",
     color: "#10b981", // Emerald / Green
     description: "Heavy vanguard. Absorbs and deflects opposing strike vectors."
@@ -28,7 +28,7 @@ export const ROLE_CATEGORIES: RoleCategory[] = [
   {
     id: "healer",
     name: "Healer",
-    emoji: "💚",
+    emoji: "H",
     icon: "heart",
     color: "#ec4899", // Pink
     description: "Vitality master. Restores spiritual force fields and power pools."
@@ -36,7 +36,7 @@ export const ROLE_CATEGORIES: RoleCategory[] = [
   {
     id: "support_1",
     name: "Speed Support",
-    emoji: "⚡",
+    emoji: "S",
     icon: "zap",
     color: "#06b6d4", // Cyan
     description: "Utility buff. Accelerates spatial movement speeds."
@@ -44,7 +44,7 @@ export const ROLE_CATEGORIES: RoleCategory[] = [
   {
     id: "support_2",
     name: "Power Support",
-    emoji: "💫",
+    emoji: "P",
     icon: "sparkles",
     color: "#f97316", // Orange
     description: "Catalyst force. Elevates magic intensity and cosmic fields."

@@ -1283,7 +1283,7 @@ export default function App() {
                   {/* Hero Head Banner */}
                   <div className="text-center space-y-6 max-w-4xl mx-auto">
                     <div className="inline-flex items-center gap-2 bg-neutral-900/50 border border-violet-500/20 px-3.5 py-1.5 rounded-full text-[10px] text-violet-300 tracking-[0.2em] uppercase font-mono font-black drop-shadow-[0_0_12px_rgba(139,92,246,0.25)]">
-                      ? EPIC REAL-TIME ANIME BATTLE SIMULATOR
+                      EPIC REAL-TIME ANIME BATTLE SIMULATOR
                     </div>
 
                     <div className="space-y-3">
@@ -1656,7 +1656,7 @@ export default function App() {
                       <div className="relative z-10 space-y-4">
                         <div className="flex justify-between items-center border-b border-white/5 pb-3">
                           <p className="text-[10px] font-mono text-violet-400 tracking-widest uppercase font-black">
-                            🔥 FEATURED SPOTLIGHT CARDS
+                            FEATURED SPOTLIGHT CARDS
                           </p>
                           <span className="text-[9px] font-mono bg-neutral-900 border border-white/5 px-2 py-0.5 rounded text-neutral-400 flex items-center gap-1">
                             <RefreshCw className="w-2.5 h-2.5 animate-spin" style={{ animationDuration: "10s" }} /> Rotating roster
@@ -1720,7 +1720,7 @@ export default function App() {
                   {/* HOW TO PLAY */}
                   <div className="max-w-5xl mx-auto space-y-4">
                     <h3 className="text-xs font-mono tracking-[0.2em] text-neutral-500 uppercase text-center font-bold">
-                      ⚔️ COVENANT BATTLE RULES
+                      COVENANT BATTLE RULES
                     </h3>
                     <div className="grid sm:grid-cols-3 gap-4.5">
                       <div className="p-4 rounded-2xl border border-neutral-900 bg-neutral-950/20 text-center space-y-2">
@@ -2027,7 +2027,7 @@ export default function App() {
 
                     <div className="space-y-2">
                       <p className="text-xs font-mono uppercase tracking-[0.3em] text-amber-400 font-bold">
-                        🏆 SHOWN FINAL SHOWDOWN RESULT
+                        FINAL SHOWDOWN RESULT
                       </p>
                       {resultData.winnerId === "draw" ? (
                         <h1 className="text-5xl font-black uppercase tracking-tight text-white">
@@ -2355,9 +2355,9 @@ export default function App() {
       </AnimatePresence>
 
       {/* FOOTER */}
-      {!(isMobile && (view === "draft" || view === "battle")) && (
+      {!(isMobile && view === "draft") && (
         <footer className="border-t border-neutral-900 bg-neutral-950/60 backdrop-blur-md py-4 px-6 text-center text-[10px] font-mono text-neutral-500 relative z-10 flex flex-col sm:flex-row justify-between items-center max-w-7xl w-full mx-auto gap-2">
-          <span>© 2026 ANIME BATTLE. ALL RIGHTS RESERVED.</span>
+          <span>(c) 2026 ANIME BATTLE. ALL RIGHTS RESERVED.</span>
           <span className="text-violet-400">MADE FOR ANIME ENTHUSIASTS WORLDWIDE</span>
         </footer>
       )}

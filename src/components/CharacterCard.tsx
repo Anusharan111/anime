@@ -105,7 +105,7 @@ export default function CharacterCard({
 
   return (
     <div 
-      className="relative w-[190px] h-[340px] sm:w-[260px] sm:h-[460px] md:w-[340px] md:h-[600px] perspective-1000 z-10 select-none group"
+      className="relative w-[160px] h-[280px] sm:w-[260px] sm:h-[460px] md:w-[340px] md:h-[600px] perspective-1000 z-10 select-none group"
       onMouseMove={handleMouseMove}
     >
       <motion.div
@@ -122,7 +122,7 @@ export default function CharacterCard({
       >
         {/* FRONT SIDE */}
         <div
-          draggable={!isFlipped && !isMobileDevice}
+          draggable={!isFlipped}
           onDragStart={(e) => {
             if (isFlipped) {
               e.preventDefault();
@@ -131,7 +131,7 @@ export default function CharacterCard({
             if (onDragStart) onDragStart(e);
           }}
           onDragEnd={onDragEnd}
-          className={`absolute inset-0 w-full h-full rounded-2xl bg-gradient-to-b ${config.bg} border-2 ${config.border} ${config.glow} backface-hidden overflow-hidden flex flex-col p-2.5 sm:p-4 ${isFlipped ? "pointer-events-none" : isMobileDevice ? "cursor-default" : "cursor-grab active:cursor-grabbing"}`}
+          className={`absolute inset-0 w-full h-full rounded-2xl bg-gradient-to-b ${config.bg} border-2 ${config.border} ${config.glow} backface-hidden overflow-hidden flex flex-col p-2 sm:p-4 ${isFlipped ? "pointer-events-none" : isMobileDevice ? "cursor-default" : "cursor-grab active:cursor-grabbing"}`}
         >
           {/* Holographic Shimmer Overlay */}
           <div 

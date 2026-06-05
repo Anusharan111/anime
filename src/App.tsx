@@ -1750,44 +1750,68 @@ export default function App() {
 
               {/* THREE COLUMN DRAFT COVENANT */}
               {isMobile ? (
-                <div className="flex flex-col gap-4 w-full">
-                  <div className="flex items-stretch justify-between gap-1.5 sm:gap-3 w-full">
-                    {/* Left Column: Opponent or P1 Slots */}
-                    <div className="w-11 sm:w-13 flex-shrink-0 flex flex-col justify-self-stretch">
-                      <TeamSlots
-                        playerName={gameMode === "local-2p" ? player1Name : (gameMode === "vs-ai" ? "Smart AI" : (onlineSide === "p2" ? player1Name : player2Name))}
-                        isAI={gameMode === "vs-ai" && gameMode !== "local-2p"}
-                        slots={gameMode === "local-2p" ? p1Slots : (onlineSide === "p2" ? p1Slots : p2Slots)}
-                        skipUsed={gameMode === "local-2p" ? p1SkipUsed : (onlineSide === "p2" ? p1SkipUsed : p2SkipUsed)}
-                        activeTurn={gameMode === "local-2p" ? activeTurn === "p1" : false}
-                        onSlotSelect={gameMode === "local-2p" ? handleSlotSelect : undefined}
-                        layout="compact-vertical"
-                      />
+                <div className="flex flex-col gap-2 w-full h-full min-h-[500px]">
+                  {/* Top Area: Opponent in Online/AI mode */}
+                  {(gameMode === "online-2p" || gameMode === "vs-ai") && (
+                    <div className="w-full flex justify-center px-4 animate-fadeInDown">
+                      <div className="w-full max-w-md">
+                        <TeamSlots
+                          playerName={gameMode === "vs-ai" ? "Smart AI" : (onlineSide === "p2" ? player1Name : player2Name)}
+                          isAI={gameMode === "vs-ai"}
+                          slots={onlineSide === "p2" ? p1Slots : p2Slots}
+                          skipUsed={onlineSide === "p2" ? p1SkipUsed : p2SkipUsed}
+                          activeTurn={activeTurn === (onlineSide === "p2" ? "p1" : "p2")}
+                          layout="compact-horizontal-top"
+                          isMobile={true}
+                        />
+                      </div>
                     </div>
+                  )}
+
+                  <div className="flex items-stretch justify-between gap-1 sm:gap-3 w-full flex-1">
+                    {/* Left Column: P1 in Local 2P mode */}
+                    {gameMode === "local-2p" ? (
+                      <div className="w-16 sm:w-20 flex-shrink-0 flex flex-col justify-self-stretch animate-fadeInLeft">
+                        <TeamSlots
+                          playerName={player1Name}
+                          slots={p1Slots}
+                          skipUsed={p1SkipUsed}
+                          activeTurn={activeTurn === "p1"}
+                          onSlotSelect={handleSlotSelect}
+                          layout="compact-vertical"
+                          isMobile={true}
+                        />
+                      </div>
+                    ) : (
+                      <div className="w-4" /> /* Spacer for balance if needed */
+                    )}
 
                     {/* Center Column: Active Card */}
-                    <div className="flex-1 flex flex-col items-center justify-center min-h-[440px] sm:min-h-[550px] p-2.5 sm:p-4 relative nexus-glass rounded-2xl border-nexus-blue/10 overflow-hidden">
+                    <div className="flex-1 flex flex-col items-center justify-center p-1 sm:p-4 relative">
                       <div className="absolute inset-0 pointer-events-none opacity-5">
                         <div className="h-px w-full bg-nexus-cyan absolute top-1/4 animate-pulse" />
                         <div className="h-px w-full bg-nexus-blue absolute top-3/4 animate-pulse delay-500" />
                       </div>
-                      {renderDraftCardArea()}
+                      
+                      <div className="scale-90 sm:scale-100 transform transition-transform">
+                        {renderDraftCardArea()}
+                      </div>
 
                       {/* Mobile Skip status display */}
-                      <div className="flex gap-3 sm:gap-4 items-center justify-center mt-3 text-[7.5px] sm:text-[9px] font-mono font-bold uppercase tracking-wider text-slate-500">
-                        <div className="flex items-center gap-1">
+                      <div className="flex gap-4 items-center justify-center mt-4 text-[8px] font-mono font-black uppercase tracking-widest text-slate-500 bg-black/20 px-3 py-1 rounded-full border border-white/5">
+                        <div className="flex items-center gap-1.5">
                           <div className={`w-1.5 h-1.5 rounded-full ${p1SkipUsed ? 'bg-red-500' : 'bg-nexus-purple animate-pulse'}`} />
-                          <span>{player1Name.split(" ")[0]}: {p1SkipUsed ? "USED" : "SKIP"}</span>
+                          <span>P1: {p1SkipUsed ? "USED" : "SKIP"}</span>
                         </div>
-                        <div className="flex items-center gap-1">
+                        <div className="flex items-center gap-1.5">
                           <div className={`w-1.5 h-1.5 rounded-full ${p2SkipUsed ? 'bg-red-500' : 'bg-nexus-purple animate-pulse'}`} />
-                          <span>{player2Name.split(" ")[0]}: {p2SkipUsed ? "USED" : "SKIP"}</span>
+                          <span>P2: {p2SkipUsed ? "USED" : "SKIP"}</span>
                         </div>
                       </div>
                     </div>
 
                     {/* Right Column: Player or P2 Slots */}
-                    <div className="w-11 sm:w-13 flex-shrink-0 flex flex-col justify-self-stretch">
+                    <div className="w-16 sm:w-20 flex-shrink-0 flex flex-col justify-self-stretch animate-fadeInRight">
                       <TeamSlots
                         playerName={gameMode === "local-2p" ? player2Name : (onlineSide === "p2" ? player2Name : player1Name)}
                         slots={gameMode === "local-2p" ? p2Slots : (onlineSide === "p2" ? p2Slots : p1Slots)}
@@ -1798,6 +1822,7 @@ export default function App() {
                           : ((gameMode !== "online-2p" || activeTurn === onlineSide) ? handleSlotSelect : undefined)
                         }
                         layout="compact-vertical"
+                        isMobile={true}
                       />
                     </div>
                   </div>

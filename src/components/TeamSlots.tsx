@@ -15,6 +15,7 @@ interface TeamSlotsProps {
   isDraggingActive?: boolean;
   layout?: "standard" | "compact-vertical" | "compact-horizontal" | "compact-horizontal-top";
   isMobile?: boolean;
+  selectedCardId?: string | null;
 }
 
 const RoleIcon = ({ id, className }: { id: string; className?: string }) => {
@@ -50,6 +51,7 @@ export default function TeamSlots({
   isDraggingActive = false,
   layout = "standard",
   isMobile = false,
+  selectedCardId = null,
 }: TeamSlotsProps) {
   const handleDragOver = (e: React.DragEvent) => {
     if (!activeTurn || isAI || layout === "compact-horizontal" || layout === "compact-horizontal-top") return;
@@ -126,6 +128,7 @@ export default function TeamSlots({
           const isOccupied = !!char;
           const isInteractive = activeTurn && !isAI && layout !== "compact-horizontal" && layout !== "compact-horizontal-top";
           const canDrop = isInteractive && isDraggingActive && !isOccupied;
+          const canTapPlace = isInteractive && !!selectedCardId && !isOccupied;
 
           if (isCompact) {
             return (
@@ -139,7 +142,7 @@ export default function TeamSlots({
                   ${layout === "compact-horizontal-top" ? 'w-8 h-8 sm:w-10 sm:h-10' : (isMobile ? 'w-14 h-14 sm:w-16 sm:h-16' : 'w-11 h-11 sm:w-13 sm:h-13')}
                   ${isOccupied 
                     ? 'border-nexus-blue/40 bg-nexus-blue/10 shadow-[0_0_15px_rgba(30,144,255,0.1)]' 
-                    : canDrop 
+                    : canDrop || canTapPlace
                       ? 'border-nexus-cyan animate-nexus-pulse bg-nexus-cyan/20 cursor-pointer scale-110 z-20 shadow-[0_0_20px_rgba(0,229,255,0.3)]' 
                       : isInteractive
                         ? 'border-white/20 bg-white/10 hover:border-nexus-cyan/40 hover:bg-white/15 cursor-pointer shadow-lg active:scale-95' 
@@ -179,7 +182,10 @@ export default function TeamSlots({
                     </motion.div>
                   ) : (
                     <div className="absolute inset-0 flex flex-col items-center justify-center p-0.5">
-                      <RoleIcon id={role.id} className={`${layout === "compact-horizontal-top" ? 'w-2.5 h-2.5' : 'w-4 h-4'} ${canDrop ? 'text-nexus-cyan' : 'text-slate-600'}`} />
+                      <RoleIcon id={role.id} className={`${layout === "compact-horizontal-top" ? 'w-2.5 h-2.5' : 'w-4 h-4'} ${canDrop || canTapPlace ? 'text-nexus-cyan' : 'text-slate-600'}`} />
+                      {canTapPlace && (
+                        <span className="text-[5px] font-mono font-black text-nexus-cyan uppercase tracking-wider mt-0.5 animate-pulse">TAP</span>
+                      )}
                     </div>
                   )}
                 </AnimatePresence>

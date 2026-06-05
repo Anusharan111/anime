@@ -13,6 +13,8 @@ interface CharacterCardProps {
   onDragStart?: (e: React.DragEvent) => void;
   onDragEnd?: () => void;
   onClickBackSide?: () => void;
+  isSelected?: boolean;
+  onTapSelect?: () => void;
 }
 
 export default function CharacterCard({
@@ -24,6 +26,8 @@ export default function CharacterCard({
   onDragStart,
   onDragEnd,
   onClickBackSide,
+  isSelected = false,
+  onTapSelect,
 }: CharacterCardProps) {
   
   const [isSpinning, setIsSpinning] = React.useState(false);
@@ -103,11 +107,22 @@ export default function CharacterCard({
   const config = rarityConfig[character.rarity] || rarityConfig.Common;
 
 
+  const handleCardTap = () => {
+    if (isMobileDevice && !isFlipped && onTapSelect) {
+      onTapSelect();
+    }
+  };
+
   return (
     <div 
-      className="relative w-[140px] h-[250px] sm:w-[260px] sm:h-[460px] md:w-[340px] md:h-[600px] perspective-1000 z-10 select-none group"
+      className={`relative w-[140px] h-[250px] sm:w-[260px] sm:h-[460px] md:w-[340px] md:h-[600px] perspective-1000 z-10 select-none group transition-transform duration-300 ${isSelected ? 'scale-105' : ''}`}
       onMouseMove={handleMouseMove}
+      onClick={handleCardTap}
     >
+      {/* Selected card glow ring */}
+      {isSelected && (
+        <div className="absolute -inset-2 rounded-3xl border-2 border-nexus-cyan shadow-[0_0_30px_rgba(0,229,255,0.5),inset_0_0_30px_rgba(0,229,255,0.1)] animate-pulse pointer-events-none z-50" />
+      )}
       <motion.div
         className="w-full h-full relative preserve-3d"
         animate={isSpinning ? { rotateY: [180, 360, 540, 720] } : { rotateY: isFlipped ? 180 : 0 }}

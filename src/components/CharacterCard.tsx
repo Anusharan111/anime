@@ -29,6 +29,20 @@ export default function CharacterCard({
   const [isSpinning, setIsSpinning] = React.useState(false);
   const [hoverX, setHoverX] = React.useState(0);
   const [hoverY, setHoverY] = React.useState(0);
+  const [isMobileDevice, setIsMobileDevice] = React.useState(false);
+
+  React.useEffect(() => {
+    const checkMobile = () => {
+      setIsMobileDevice(
+        window.innerWidth < 1024 ||
+        'ontouchstart' in window ||
+        navigator.maxTouchPoints > 0
+      );
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   // Reset spinning state when character changes
   React.useEffect(() => {
@@ -91,7 +105,7 @@ export default function CharacterCard({
 
   return (
     <div 
-      className="relative w-[340px] h-[600px] perspective-1000 z-10 select-none group"
+      className="relative w-[280px] h-[490px] sm:w-[340px] sm:h-[600px] perspective-1000 z-10 select-none group"
       onMouseMove={handleMouseMove}
     >
       <motion.div
@@ -108,7 +122,7 @@ export default function CharacterCard({
       >
         {/* FRONT SIDE */}
         <div
-          draggable={!isFlipped}
+          draggable={!isFlipped && !isMobileDevice}
           onDragStart={(e) => {
             if (isFlipped) {
               e.preventDefault();
@@ -117,7 +131,7 @@ export default function CharacterCard({
             if (onDragStart) onDragStart(e);
           }}
           onDragEnd={onDragEnd}
-          className={`absolute inset-0 w-full h-full rounded-2xl bg-gradient-to-b ${config.bg} border-2 ${config.border} ${config.glow} backface-hidden overflow-hidden flex flex-col p-4 ${isFlipped ? "pointer-events-none" : "cursor-grab active:cursor-grabbing"}`}
+          className={`absolute inset-0 w-full h-full rounded-2xl bg-gradient-to-b ${config.bg} border-2 ${config.border} ${config.glow} backface-hidden overflow-hidden flex flex-col p-4 ${isFlipped ? "pointer-events-none" : isMobileDevice ? "cursor-default" : "cursor-grab active:cursor-grabbing"}`}
         >
           {/* Holographic Shimmer Overlay */}
           <div 
@@ -143,7 +157,7 @@ export default function CharacterCard({
           </div>
 
           {/* Portrait Container */}
-          <div className="relative w-full h-[320px] rounded-xl border border-white/10 overflow-hidden bg-black/40 group/portrait z-10 flex items-center justify-center mb-4">
+          <div className="relative w-full h-[240px] sm:h-[320px] rounded-xl border border-white/10 overflow-hidden bg-black/40 group/portrait z-10 flex items-center justify-center mb-4">
             {/* Digital Scan Line */}
             <div className="absolute inset-0 z-20 pointer-events-none">
               <div className={`w-full h-[2px] bg-gradient-to-r from-transparent via-${config.color} to-transparent opacity-50 absolute animate-nexus-scan`} 
@@ -179,7 +193,7 @@ export default function CharacterCard({
 
           {/* Stats HUD Matrix */}
 
-          <div className="grid grid-cols-2 gap-2 mb-3 z-30">
+          <div className="grid grid-cols-2 gap-1.5 sm:gap-2 mb-3 z-30">
             {[
               { label: "STR", val: character.stats.strength, icon: Swords, color: "text-red-400" },
               { label: "SPD", val: character.stats.speed, icon: Zap, color: "text-yellow-400" },
@@ -210,9 +224,9 @@ export default function CharacterCard({
           )}
 
           {/* Abilities / Lore Footer */}
-          <div className="mt-auto relative z-30 bg-black/40 border border-white/5 rounded-xl p-3 backdrop-blur-md overflow-hidden group/lore">
+          <div className="mt-auto relative z-30 bg-black/40 border border-white/5 rounded-xl p-2.5 sm:p-3 backdrop-blur-md overflow-hidden group/lore">
             <div className={`absolute top-0 left-0 w-1 h-full ${config.text}`} style={{ backgroundColor: config.color }} />
-            <p className="text-[11px] leading-relaxed text-slate-300 font-medium italic line-clamp-2">
+            <p className="text-[10px] sm:text-[11px] leading-relaxed text-slate-300 font-medium italic line-clamp-2">
               "{character.quote || character.description}"
             </p>
           </div>
@@ -249,22 +263,22 @@ export default function CharacterCard({
               </div>
             </div>
 
-            <div className="relative z-10 flex flex-col items-center gap-8">
+            <div className="relative z-10 flex flex-col items-center gap-4 sm:gap-8">
               <div className="relative">
-                <div className="w-32 h-32 rounded-3xl border-2 border-nexus-cyan/30 rotate-45 animate-nexus-float flex items-center justify-center bg-nexus-blue/5 shadow-[0_0_20px_rgba(0,229,255,0.1)]">
-                  <div className="w-20 h-20 rounded-2xl border border-nexus-purple/40 -rotate-45 flex items-center justify-center bg-black/40 backdrop-blur-xl">
-                    <Trophy className="w-10 h-10 text-nexus-cyan drop-shadow-[0_0_10px_rgba(0,229,255,0.8)]" />
+                <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-3xl border-2 border-nexus-cyan/30 rotate-45 animate-nexus-float flex items-center justify-center bg-nexus-blue/5 shadow-[0_0_20px_rgba(0,229,255,0.1)]">
+                  <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl border border-nexus-purple/40 -rotate-45 flex items-center justify-center bg-black/40 backdrop-blur-xl">
+                    <Trophy className="w-7 h-7 sm:w-10 sm:h-10 text-nexus-cyan drop-shadow-[0_0_10px_rgba(0,229,255,0.8)]" />
                   </div>
                 </div>
               </div>
 
-              <div className="text-center space-y-3">
-                <h2 className="text-4xl font-black text-white tracking-[0.1em] font-serif nexus-glow-text uppercase">
+              <div className="text-center space-y-2 sm:space-y-3">
+                <h2 className="text-2xl sm:text-4xl font-black text-white tracking-[0.1em] font-serif nexus-glow-text uppercase">
                   Anime Battle
                 </h2>
-                <div className="inline-flex items-center gap-2 bg-nexus-blue/10 border border-nexus-blue/20 px-4 py-1 rounded-full">
+                <div className="inline-flex items-center gap-2 bg-nexus-blue/10 border border-nexus-blue/20 px-3 py-0.5 sm:px-4 sm:py-1 rounded-full">
                   <div className="w-1.5 h-1.5 rounded-full bg-nexus-cyan animate-ping" />
-                  <span className="text-[10px] text-nexus-cyan font-mono font-black tracking-widest uppercase">Ready to reveal</span>
+                  <span className="text-[9px] sm:text-[10px] text-nexus-cyan font-mono font-black tracking-widest uppercase">Ready to reveal</span>
                 </div>
               </div>
             </div>

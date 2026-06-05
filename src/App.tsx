@@ -30,6 +30,7 @@ import { CHARACTERS } from "./data/characters";
 import CharacterCard from "./components/CharacterCard";
 import TeamSlots from "./components/TeamSlots";
 import MyAnimeListPortal from "./components/MyAnimeListPortal";
+import DeployModal from "./components/DeployModal";
 
 type ViewState = "landing" | "draft" | "results";
 
@@ -148,6 +149,7 @@ export default function App() {
   const [excludedIds, setExcludedIds] = useState<string[]>([]);
   const [mustPick, setMustPick] = useState(false);
   const [aiIsProcessing, setAiIsProcessing] = useState(false);
+  const [isDeployModalOpen, setIsDeployModalOpen] = useState(false);
 
   // Result States
   const [loadingResult, setLoadingResult] = useState(false);
@@ -264,6 +266,7 @@ export default function App() {
     setOnlineSide(null);
     onlineSideRef.current = null;
     setView("landing");
+    setIsDeployModalOpen(false);
   }, []);
 
   const ensureSocket = useCallback(() => {
@@ -304,6 +307,7 @@ export default function App() {
         setMustPick(false);
         setResultData(null);
         setView("draft");
+        setIsDeployModalOpen(false);
         importStarterAllAnimeCasts().catch(() => {});
         // Only P1 pulls the first card; P2 receives it via game-state-updated
         if (side === "p1") {
@@ -453,6 +457,7 @@ export default function App() {
       setMustPick(false);
       setResultData(null);
       setView("draft");
+      setIsDeployModalOpen(false);
 
       // Sync the initial states and view to P2
       syncGameState({
@@ -516,6 +521,7 @@ export default function App() {
     setExcludedIds([]);
     setMustPick(false);
     setResultData(null);
+    setIsDeployModalOpen(false);
 
     // Resolve the final active anime list ONCE here and pass it through
     // the entire game flow — never re-read from state inside async callbacks
@@ -1625,7 +1631,7 @@ export default function App() {
                 </div>
 
                 {/* Center: Active Draft Card */}
-                <div className="lg:col-span-6 flex flex-col items-center justify-center min-h-[700px] p-6 relative nexus-glass rounded-3xl border-nexus-blue/10">
+                <div className="lg:col-span-6 flex flex-col items-center justify-center min-h-[550px] sm:min-h-[700px] p-4 sm:p-6 relative nexus-glass rounded-3xl border-nexus-blue/10">
                   <div className="absolute inset-0 pointer-events-none opacity-10">
                     <div className="h-px w-full bg-nexus-cyan absolute top-1/4 animate-pulse" />
                     <div className="h-px w-full bg-nexus-blue absolute top-3/4 animate-pulse delay-500" />
@@ -1703,7 +1709,8 @@ export default function App() {
                                   id={`btn-pick-${activeCharacter.id}`}
                                   onClick={(e) => {
                                     e.stopPropagation();
-                                    handlePick(activeCharacter);
+                                    if (gameMode === "online-2p" && activeTurn !== onlineSide) return;
+                                    setIsDeployModalOpen(true);
                                   }}
                                   className="group relative w-full py-4 rounded-xl overflow-hidden shadow-[0_0_30px_rgba(30,144,255,0.3)] hover:shadow-[0_0_40px_rgba(0,229,255,0.5)] transition-all active:scale-95 cursor-pointer"
                                 >
@@ -1760,6 +1767,21 @@ export default function App() {
                   />
                 </div>
               </div>
+
+              {/* Deploy Modal for scroll-free selection */}
+              <AnimatePresence>
+                {isDeployModalOpen && activeCharacter && (
+                  <DeployModal
+                    character={activeCharacter}
+                    slots={activeTurn === "p1" ? p1Slots : p2Slots}
+                    onSelect={(roleId) => {
+                      handleSlotSelect(roleId);
+                      setIsDeployModalOpen(false);
+                    }}
+                    onClose={() => setIsDeployModalOpen(false)}
+                  />
+                )}
+              </AnimatePresence>
             </motion.div>
           )}
 

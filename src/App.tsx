@@ -1,3 +1,4 @@
+// Anime Battle Main Application - Mobile Optimized
 import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { io, Socket } from "socket.io-client";

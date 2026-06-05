@@ -15,6 +15,8 @@ interface CharacterCardProps {
   onClickBackSide?: () => void;
   isSelected?: boolean;
   onTapSelect?: () => void;
+  isCompact?: boolean;
+  onTouchDrop?: (roleId: string) => void;
 }
 
 export default function CharacterCard({
@@ -28,6 +30,8 @@ export default function CharacterCard({
   onClickBackSide,
   isSelected = false,
   onTapSelect,
+  isCompact = false,
+  onTouchDrop,
 }: CharacterCardProps) {
   
   const [isSpinning, setIsSpinning] = React.useState(false);
@@ -107,6 +111,115 @@ export default function CharacterCard({
   const config = rarityConfig[character.rarity] || rarityConfig.Common;
 
 
+
+  const ghostRef = React.useRef<HTMLDivElement | null>(null);
+  const isDraggingRef = React.useRef(false);
+  const touchStartPos = React.useRef({ x: 0, y: 0 });
+  const lastHighlighted = React.useRef<Element | null>(null);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (isFlipped || !isMobileDevice || !onTouchDrop) return;
+    const touch = e.touches[0];
+    touchStartPos.current = { x: touch.clientX, y: touch.clientY };
+    isDraggingRef.current = false;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (isFlipped || !isMobileDevice || !onTouchDrop) return;
+    const touch = e.touches[0];
+    const dx = touch.clientX - touchStartPos.current.x;
+    const dy = touch.clientY - touchStartPos.current.y;
+
+    // Start drag after 10px movement
+    if (!isDraggingRef.current && Math.sqrt(dx * dx + dy * dy) > 10) {
+      isDraggingRef.current = true;
+      // Create ghost
+      const ghost = document.createElement('div');
+      ghost.id = 'touch-drag-ghost';
+      ghost.style.cssText = `
+        position: fixed;
+        width: 64px;
+        height: 64px;
+        border-radius: 12px;
+        border: 2px solid #00e5ff;
+        box-shadow: 0 0 20px rgba(0,229,255,0.6), 0 0 40px rgba(0,229,255,0.3);
+        background-size: cover;
+        background-position: center top;
+        background-image: url(${character.image});
+        pointer-events: none;
+        z-index: 99999;
+        transform: translate(-50%, -50%) scale(1.1);
+        transition: transform 0.1s;
+        opacity: 0.95;
+      `;
+      document.body.appendChild(ghost);
+      ghostRef.current = ghost;
+    }
+
+    if (isDraggingRef.current && ghostRef.current) {
+      e.preventDefault();
+      ghostRef.current.style.left = touch.clientX + 'px';
+      ghostRef.current.style.top = touch.clientY + 'px';
+
+      // Highlight slot under finger
+      ghostRef.current.style.display = 'none';
+      const el = document.elementFromPoint(touch.clientX, touch.clientY);
+      ghostRef.current.style.display = '';
+
+      // Remove previous highlight
+      if (lastHighlighted.current) {
+        lastHighlighted.current.classList.remove('touch-drag-hover');
+        lastHighlighted.current = null;
+      }
+
+      // Find slot
+      if (el) {
+        const slot = el.closest('[data-role-id]');
+        if (slot && !slot.getAttribute('data-occupied')) {
+          slot.classList.add('touch-drag-hover');
+          lastHighlighted.current = slot;
+        }
+      }
+    }
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (!isDraggingRef.current) {
+      // It was a tap, not a drag
+      if (isMobileDevice && !isFlipped && onTapSelect) {
+        onTapSelect();
+      }
+      return;
+    }
+
+    isDraggingRef.current = false;
+
+    // Clean up ghost
+    if (ghostRef.current) {
+      ghostRef.current.remove();
+      ghostRef.current = null;
+    }
+
+    // Clean up highlight
+    if (lastHighlighted.current) {
+      lastHighlighted.current.classList.remove('touch-drag-hover');
+      lastHighlighted.current = null;
+    }
+
+    // Find slot under finger
+    const touch = e.changedTouches[0];
+    const el = document.elementFromPoint(touch.clientX, touch.clientY);
+    if (el) {
+      const slot = el.closest('[data-role-id]');
+      if (slot && !slot.getAttribute('data-occupied') && onTouchDrop) {
+        const roleId = slot.getAttribute('data-role-id');
+        if (roleId) {
+          onTouchDrop(roleId);
+        }
+      }
+    }
+  };
+
   const handleCardTap = () => {
     if (isMobileDevice && !isFlipped && onTapSelect) {
       onTapSelect();
@@ -115,9 +228,12 @@ export default function CharacterCard({
 
   return (
     <div 
-      className={`relative w-[140px] h-[250px] sm:w-[260px] sm:h-[460px] md:w-[340px] md:h-[600px] perspective-1000 z-10 select-none group transition-transform duration-300 ${isSelected ? 'scale-105' : ''}`}
+      className={`relative ${isCompact ? 'w-[130px] h-[230px]' : 'w-[140px] h-[250px]'} sm:w-[260px] sm:h-[460px] md:w-[340px] md:h-[600px] perspective-1000 z-10 select-none group transition-transform duration-300 ${isSelected ? 'scale-105' : ''}`}
       onMouseMove={handleMouseMove}
       onClick={handleCardTap}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
     >
       {/* Selected card glow ring */}
       {isSelected && (
@@ -146,7 +262,7 @@ export default function CharacterCard({
             if (onDragStart) onDragStart(e);
           }}
           onDragEnd={onDragEnd}
-          className={`absolute inset-0 w-full h-full rounded-2xl bg-gradient-to-b ${config.bg} border-2 ${config.border} ${config.glow} backface-hidden overflow-hidden flex flex-col p-2 sm:p-4 ${isFlipped ? "pointer-events-none" : isMobileDevice ? "cursor-default" : "cursor-grab active:cursor-grabbing"}`}
+          className={`absolute inset-0 w-full h-full rounded-2xl bg-gradient-to-b ${config.bg} border-2 ${config.border} ${config.glow} backface-hidden overflow-hidden flex flex-col ${isCompact ? 'p-1.5' : 'p-2 sm:p-4'} ${isFlipped ? "pointer-events-none" : isMobileDevice ? "cursor-default" : "cursor-grab active:cursor-grabbing"}`}
         >
           {/* Holographic Shimmer Overlay */}
           <div 
@@ -157,10 +273,10 @@ export default function CharacterCard({
           />
 
           {/* Rarity Tag Header */}
-          <div className="flex justify-between items-center mb-2 sm:mb-3 z-30">
-            <div className={`px-2 py-0.5 sm:px-3 sm:py-1 rounded-md border ${config.border} bg-black/60 backdrop-blur-md flex items-center gap-1 sm:gap-1.5`}>
-              <Sparkles className={`w-2.5 h-2.5 sm:w-3 sm:h-3 ${config.text} animate-pulse`} />
-              <span className={`text-[8px] sm:text-[10px] font-black tracking-[0.2em] uppercase ${config.text}`}>
+          <div className={`flex justify-between items-center ${isCompact ? 'mb-1' : 'mb-2 sm:mb-3'} z-30`}>
+            <div className={`${isCompact ? 'px-1 py-0' : 'px-2 py-0.5 sm:px-3 sm:py-1'} rounded-md border ${config.border} bg-black/60 backdrop-blur-md flex items-center gap-1 sm:gap-1.5`}>
+              <Sparkles className={`${isCompact ? 'w-2 h-2' : 'w-2.5 h-2.5 sm:w-3 sm:h-3'} ${config.text} animate-pulse`} />
+              <span className={`${isCompact ? 'text-[6px]' : 'text-[8px] sm:text-[10px]'} font-black tracking-[0.2em] uppercase ${config.text}`}>
                 {character.rarity}
               </span>
             </div>
@@ -172,7 +288,7 @@ export default function CharacterCard({
           </div>
 
           {/* Portrait Container */}
-          <div className="relative w-full h-[130px] sm:h-[240px] md:h-[320px] rounded-xl border border-white/10 overflow-hidden bg-black/40 group/portrait z-10 flex items-center justify-center mb-2 sm:mb-4">
+          <div className={`relative w-full ${isCompact ? 'h-[110px]' : 'h-[130px] sm:h-[240px] md:h-[320px]'} rounded-xl border border-white/10 overflow-hidden bg-black/40 group/portrait z-10 flex items-center justify-center ${isCompact ? 'mb-1.5' : 'mb-2 sm:mb-4'}`}>
             {/* Digital Scan Line */}
             <div className="absolute inset-0 z-20 pointer-events-none">
               <div className={`w-full h-[2px] bg-gradient-to-r from-transparent via-${config.color} to-transparent opacity-50 absolute animate-nexus-scan`} 
@@ -192,15 +308,15 @@ export default function CharacterCard({
             {/* Image HUD Overlay */}
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-80" />
             
-            <div className="absolute top-2 left-2 sm:top-3 sm:left-3 bg-black/60 backdrop-blur-md px-1.5 py-0.5 rounded border border-white/10 z-20">
-              <span className="text-[8px] sm:text-[10px] font-mono font-bold text-white/70">PWR {character.overallPower}</span>
+            <div className={`absolute ${isCompact ? 'top-1 left-1' : 'top-2 left-2 sm:top-3 sm:left-3'} bg-black/60 backdrop-blur-md ${isCompact ? 'px-1' : 'px-1.5 py-0.5'} rounded border border-white/10 z-20`}>
+              <span className={`${isCompact ? 'text-[7px]' : 'text-[8px] sm:text-[10px]'} font-mono font-bold text-white/70`}>PWR {character.overallPower}</span>
             </div>
 
-            <div className="absolute bottom-2 left-2 right-2 sm:bottom-4 sm:left-4 sm:right-4 z-20">
-               <p className={`text-[7.5px] sm:text-[9px] font-mono font-bold uppercase tracking-[0.3em] ${config.text} opacity-90 mb-0.5 sm:mb-1`}>
+            <div className={`absolute ${isCompact ? 'bottom-1 left-1 right-1' : 'bottom-2 left-2 right-2 sm:bottom-4 sm:left-4 sm:right-4'} z-20`}>
+               <p className={`${isCompact ? 'text-[6px]' : 'text-[7.5px] sm:text-[9px]'} font-mono font-bold uppercase tracking-[0.3em] ${config.text} opacity-90 mb-0.5 sm:mb-1`}>
                 {character.anime}
               </p>
-              <h3 className="text-sm sm:text-lg md:text-2xl font-black text-white uppercase tracking-tighter leading-none nexus-glow-text">
+              <h3 className={`${isCompact ? 'text-xs' : 'text-sm sm:text-lg md:text-2xl'} font-black text-white uppercase tracking-tighter leading-none nexus-glow-text`}>
                 {character.name}
               </h3>
             </div>
@@ -208,7 +324,7 @@ export default function CharacterCard({
 
           {/* Stats HUD Matrix */}
 
-          <div className="grid grid-cols-2 gap-1 sm:gap-2 mb-2 sm:mb-3 z-30">
+          <div className={`grid grid-cols-2 ${isCompact ? 'gap-0.5 mb-1.5' : 'gap-1 sm:gap-2 mb-2 sm:mb-3'} z-30`}>
             {[
               { label: "STR", val: character.stats.strength, icon: Swords, color: "text-red-400" },
               { label: "SPD", val: character.stats.speed, icon: Zap, color: "text-yellow-400" },
@@ -216,18 +332,18 @@ export default function CharacterCard({
               { label: "INT", val: character.stats.iq, icon: Brain, color: "text-cyan-400" },
               { label: "MAG", val: character.stats.magic, icon: Sparkles, color: "text-purple-400" },
             ].map((s, idx) => (
-              <div key={idx} className={`flex items-center justify-between bg-white/5 border border-white/5 p-1 sm:p-1.5 rounded-lg backdrop-blur-sm group-hover:border-white/10 transition-colors ${idx === 4 ? 'col-span-2' : ''}`}>
+              <div key={idx} className={`flex items-center justify-between bg-white/5 border border-white/5 ${isCompact ? 'p-0.5 px-1' : 'p-1 sm:p-1.5'} rounded-lg backdrop-blur-sm group-hover:border-white/10 transition-colors ${idx === 4 ? 'col-span-2' : ''}`}>
                 <div className="flex items-center gap-1 sm:gap-2">
-                  <s.icon className={`w-2.5 h-2.5 sm:w-3.5 sm:h-3.5 ${s.color}`} />
-                  <span className="text-[7.5px] sm:text-[9px] font-mono font-bold text-slate-400">{s.label}</span>
+                  <s.icon className={`${isCompact ? 'w-2 h-2' : 'w-2.5 h-2.5 sm:w-3.5 sm:h-3.5'} ${s.color}`} />
+                  <span className={`${isCompact ? 'text-[6px]' : 'text-[7.5px] sm:text-[9px]'} font-mono font-bold text-slate-400`}>{s.label}</span>
                 </div>
-                <span className="text-[10px] sm:text-xs font-black text-white">{s.val}</span>
+                <span className={`${isCompact ? 'text-[8px]' : 'text-[10px] sm:text-xs'} font-black text-white`}>{s.val}</span>
               </div>
             ))}
           </div>
 
           {/* Skills Section */}
-          {character.skills && character.skills.length > 0 && (
+          {character.skills && character.skills.length > 0 && !isCompact && (
             <div className="flex flex-wrap gap-1 mb-2 sm:mb-3 z-30">
               {character.skills.slice(0, 2).map((skill, i) => (
                 <div key={i} className="px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-md bg-white/5 border border-white/5 flex items-center gap-1 sm:gap-1.5 backdrop-blur-sm group-hover:border-white/10 transition-all">
@@ -239,9 +355,9 @@ export default function CharacterCard({
           )}
 
           {/* Abilities / Lore Footer */}
-          <div className="mt-auto relative z-30 bg-black/40 border border-white/5 rounded-xl p-1.5 sm:p-2.5 md:p-3 backdrop-blur-md overflow-hidden group/lore">
+          <div className={`mt-auto relative z-30 bg-black/40 border border-white/5 rounded-xl ${isCompact ? 'p-1' : 'p-1.5 sm:p-2.5 md:p-3'} backdrop-blur-md overflow-hidden group/lore`}>
             <div className={`absolute top-0 left-0 w-1 h-full ${config.text}`} style={{ backgroundColor: config.color }} />
-            <p className="text-[8px] sm:text-[10px] md:text-[11px] leading-tight sm:leading-relaxed text-slate-300 font-medium italic line-clamp-2">
+            <p className={`${isCompact ? 'text-[7px]' : 'text-[8px] sm:text-[10px] md:text-[11px]'} leading-tight sm:leading-relaxed text-slate-300 font-medium italic line-clamp-2`}>
               "{character.quote || character.description}"
             </p>
           </div>

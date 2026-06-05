@@ -16,6 +16,7 @@ interface TeamSlotsProps {
   layout?: "standard" | "compact-vertical" | "compact-horizontal" | "compact-horizontal-top";
   isMobile?: boolean;
   selectedCardId?: string | null;
+  isLarge?: boolean;
 }
 
 const RoleIcon = ({ id, className }: { id: string; className?: string }) => {
@@ -52,6 +53,7 @@ export default function TeamSlots({
   layout = "standard",
   isMobile = false,
   selectedCardId = null,
+  isLarge = false,
 }: TeamSlotsProps) {
   const handleDragOver = (e: React.DragEvent) => {
     if (!activeTurn || isAI || layout === "compact-horizontal" || layout === "compact-horizontal-top") return;
@@ -134,12 +136,14 @@ export default function TeamSlots({
             return (
               <div
                 key={role.id}
+                data-role-id={role.id}
+                data-occupied={isOccupied ? 'true' : undefined}
                 onDragOver={handleDragOver}
                 onDrop={(e) => handleDrop(e, role.id)}
                 onClick={() => isInteractive && onSlotSelect?.(role.id)}
                 className={`
                   relative rounded-lg border transition-all duration-300 group touch-manipulation
-                  ${layout === "compact-horizontal-top" ? 'w-8 h-8 sm:w-10 sm:h-10' : (isMobile ? 'w-14 h-14 sm:w-16 sm:h-16' : 'w-11 h-11 sm:w-13 sm:h-13')}
+                  ${layout === "compact-horizontal-top" ? 'w-8 h-8 sm:w-10 sm:h-10' : (isMobile ? (isLarge ? 'w-18 h-18 sm:w-20 sm:h-20' : 'w-14 h-14 sm:w-16 sm:h-16') : 'w-11 h-11 sm:w-13 sm:h-13')}
                   ${isOccupied 
                     ? 'border-nexus-blue/40 bg-nexus-blue/10 shadow-[0_0_15px_rgba(30,144,255,0.1)]' 
                     : canDrop || canTapPlace
@@ -197,6 +201,8 @@ export default function TeamSlots({
           return (
             <div
               key={role.id}
+              data-role-id={role.id}
+              data-occupied={isOccupied ? 'true' : undefined}
               onDragOver={handleDragOver}
               onDrop={(e) => handleDrop(e, role.id)}
               onClick={() => activeTurn && !isAI && onSlotSelect?.(role.id)}

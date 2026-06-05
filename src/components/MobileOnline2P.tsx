@@ -46,64 +46,73 @@ export default function MobileOnline2P({
   };
 
   return (
-    <div className="flex flex-col h-full p-2 bg-black/30 backdrop-blur-lg rounded-xl">
-      {/* Opponent slots (compact) */}
-      <div className="h-[70px] mb-2">
-        <TeamSlots
-          playerName={opponentName}
-          slots={opponentSlots}
-          skipUsed={false}
-          activeTurn={false}
-          isAI={false}
-          layout="compact-vertical"
-          isMobile={true}
-        />
-      </div>
-
-      {/* Central draft card area */}
-      <div className="flex-1 flex items-center justify-center mb-2">
-        <div className="w-full max-w-[260px]">
+    <div className="flex flex-row h-full p-2 bg-black/30 backdrop-blur-lg rounded-xl gap-3">
+      {/* Left side: Central draft card area */}
+      <div className="flex-1 flex items-center justify-center">
+        <div className="w-full flex justify-center">
           <CharacterCard
             character={draftCharacter as any}
             isFlipped={false}
             activePlayerName={playerName}
+            isCompact={true}
             onClickBackSide={() => {
               // No back side for draft card
             }}
             onDragStart={() => {}}
             onDragEnd={() => {}}
+            onTouchDrop={(roleId) => {
+              if (onSlotSelect) onSlotSelect(roleId as RoleId);
+            }}
           />
         </div>
       </div>
 
-      {/* Player slots (bottom) */}
-      <div className="h-[70px] mb-2">
-        <TeamSlots
-          playerName={playerName}
-          slots={playerSlots}
-          skipUsed={false}
-          activeTurn={activeTurn}
-          isAI={isAI}
-          layout="compact-vertical"
-          isMobile={true}
-          onSlotSelect={onSlotSelect}
-        />
-      </div>
+      {/* Right side: Panels area */}
+      <div className="flex-[0.8] flex flex-col gap-2 overflow-y-auto">
+        {/* Opponent slots (Increased size) */}
+        <div className="flex-1 min-h-[200px]">
+          <TeamSlots
+            playerName={opponentName}
+            slots={opponentSlots}
+            skipUsed={false}
+            activeTurn={false}
+            isAI={false}
+            layout="compact-vertical"
+            isMobile={true}
+            isLarge={true}
+          />
+        </div>
 
-      {/* Action bar */}
-      <div className="flex justify-center gap-4 mt-2">
-        <button
-          className="px-4 py-2 bg-nexus-cyan text-white rounded-lg shadow-md hover:bg-nexus-cyan/80 transition"
-          onClick={onDeploy}
-        >
-          Deploy
-        </button>
-        <button
-          className="px-4 py-2 bg-nexus-purple text-white rounded-lg shadow-md hover:bg-nexus-purple/80 transition"
-          onClick={onSkip}
-        >
-          Skip
-        </button>
+        {/* Player slots (Increased size) */}
+        <div className="flex-1 min-h-[200px]">
+          <TeamSlots
+            playerName={playerName}
+            slots={playerSlots}
+            skipUsed={false}
+            activeTurn={activeTurn}
+            isAI={isAI}
+            layout="compact-vertical"
+            isMobile={true}
+            onSlotSelect={onSlotSelect}
+            isLarge={true}
+          />
+        </div>
+
+        {/* Action bar (Compact) */}
+        <div className="flex justify-center gap-2 mt-1">
+          <button
+            className="flex-1 py-1.5 bg-nexus-cyan text-white text-xs font-bold rounded-lg shadow-md hover:bg-nexus-cyan/80 transition"
+            onClick={onDeploy}
+          >
+            Deploy
+          </button>
+          <button
+            className="flex-1 py-1.5 bg-nexus-purple text-white text-xs font-bold rounded-lg shadow-md hover:bg-nexus-purple/80 transition"
+            onClick={onSkip}
+          >
+            Skip
+          </button>
+        </div>
       </div>
     </div>
   );

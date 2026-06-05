@@ -152,6 +152,7 @@ export default function App() {
   const [isDeployModalOpen, setIsDeployModalOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
+  const [isStartingGame, setIsStartingGame] = useState(false);
 
   useEffect(() => {
     const checkWidth = () => {
@@ -231,9 +232,7 @@ export default function App() {
     ];
 
     try {
-      for (const anime of starterAnimes) {
-        await importCastForAnime(anime);
-      }
+      await Promise.all(starterAnimes.map(anime => importCastForAnime(anime)));
     } catch (error) {
       console.warn("Auto import failed", error);
     }
@@ -495,19 +494,21 @@ export default function App() {
       return;
     }
 
+    setIsStartingGame(true);
     try {
       const targets = category === "choose"
         ? selectedAnimes
         : ["Jujutsu Kaisen", "One Piece", "Attack on Titan", "Naruto", "Bleach", "Demon Slayer: Kimetsu no Yaiba"];
 
-      for (const anime of targets) {
-        await importCastForAnime(anime);
-      }
+      // Parallelize imports to save time
+      await Promise.all(targets.map(anime => importCastForAnime(anime)));
     } catch (error) {
       console.warn("Auto import failed", error);
     }
 
     const latestPool = await fetchTotalCharactersCount();
+    setIsStartingGame(false);
+
     const latestCounts = latestPool ? buildAnimeCatalog(latestPool).animeCounts : animeCounts;
     const latestSelectedCount = selectedAnimes.reduce(
       (total, anime) => total + (latestCounts[anime] || 0),
@@ -1026,6 +1027,10 @@ export default function App() {
                 setIsDraggingActive(true);
               }}
               onDragEnd={() => setIsDraggingActive(false)}
+              onTouchDrop={(roleId) => {
+                if (gameMode === "online-2p" && activeTurn !== onlineSide) return;
+                handleSlotSelect(roleId as RoleId);
+              }}
             />
 
             <AnimatePresence>
@@ -1156,8 +1161,35 @@ export default function App() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -15 }}
               transition={{ duration: 0.4 }}
-              className="space-y-12"
+              className="space-y-12 relative"
             >
+              {/* Startup Loading Overlay */}
+              <AnimatePresence>
+                {isStartingGame && (
+                  <motion.div 
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="absolute inset-0 z-[100] flex flex-col items-center justify-center bg-black/60 backdrop-blur-md rounded-3xl border border-nexus-blue/20"
+                  >
+                    <div className="space-y-6 text-center p-8 bg-neutral-950/80 rounded-2xl border border-white/5 shadow-2xl">
+                      <div className="relative w-24 h-24 mx-auto flex items-center justify-center">
+                        <div className="absolute inset-0 rounded-full border-4 border-dashed border-nexus-cyan/20 animate-spin" style={{ animationDuration: '6s' }} />
+                        <div className="absolute inset-4 rounded-full border-2 border-nexus-cyan animate-ping" />
+                        <RefreshCw className="w-10 h-10 text-nexus-cyan animate-spin" style={{ animationDuration: '3s' }} />
+                      </div>
+                      <div className="space-y-2">
+                        <h3 className="text-xl font-black text-white uppercase tracking-widest nexus-glow-text">Syncing Multiverse</h3>
+                        <p className="text-xs font-mono text-nexus-cyan/70 font-black uppercase tracking-[0.2em] animate-pulse">
+                          Recruiting Tactical Assets...
+                        </p>
+                        <p className="text-[10px] text-slate-500 font-mono max-w-[200px] mx-auto">Connecting to AniList database to fetch the latest character stats</p>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
               {showLeaderboard ? (
                 <div className="w-full max-w-3xl mx-auto rounded-2xl border border-neutral-800 bg-neutral-950/80 p-6 space-y-6">
                   <div className="flex justify-between items-center border-b border-white/5 pb-3">

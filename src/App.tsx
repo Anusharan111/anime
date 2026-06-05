@@ -151,6 +151,7 @@ export default function App() {
   const [aiIsProcessing, setAiIsProcessing] = useState(false);
   const [isDeployModalOpen, setIsDeployModalOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
 
   useEffect(() => {
     const checkWidth = () => {

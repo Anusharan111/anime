@@ -5,6 +5,7 @@ import {
   Zap, Wand2, X, Sword, Brain, Shield, Star,
 } from "lucide-react";
 import { Character } from "../types";
+import { API_BASE } from "../config";
 import CharacterImage from "./CharacterImage";
 
 interface MALPortalProps {
@@ -209,7 +210,7 @@ export default function MyAnimeListPortal({ onPoolUpdated }: MALPortalProps) {
       const animeName   = aChar.media?.nodes?.[0]?.title?.english || aChar.media?.nodes?.[0]?.title?.userPreferred || aChar.media?.nodes?.[0]?.title?.romaji || "Unknown Anime";
       const description = aChar.description?.slice(0, 400) ?? "";
 
-      const genRes = await fetch("/api/characters/generate-ai", {
+      const genRes = await fetch(`${API_BASE}/api/characters/generate-ai`, {
         method:  "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -251,7 +252,7 @@ export default function MyAnimeListPortal({ onPoolUpdated }: MALPortalProps) {
     setSummoning(true);
     setError("");
     try {
-      const res  = await fetch("/api/characters/generate-ai", {
+      const res  = await fetch(`${API_BASE}/api/characters/generate-ai`, {
         method:  "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ prompt: aiPrompt }),
@@ -272,7 +273,7 @@ export default function MyAnimeListPortal({ onPoolUpdated }: MALPortalProps) {
 
   // ── Add to pool ──────────────────────────────────────────────────────────
   const addToPool = async (char: Character) => {
-    const res = await fetch("/api/characters/import", {
+    const res = await fetch(`${API_BASE}/api/characters/import`, {
       method:  "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ character: char }),

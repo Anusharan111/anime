@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { io, Socket } from "socket.io-client";
 import {
@@ -66,6 +66,7 @@ const initialSlots: SlottedTeam = {
 };
 
 import CharacterImage from "./components/CharacterImage";
+import { API_BASE, SOCKET_URL } from "./config";
 
 const MIN_CHARACTERS_FOR_FULL_DRAFT = 14;
 type Rarity = Character["rarity"];
@@ -107,8 +108,6 @@ const getRequiredRarityForTeam = (slots: SlottedTeam): Rarity | null => {
   return null;
 };
 
-const API_BASE = import.meta.env.VITE_API_URL || "https://animebattle.up.railway.app";
-
 export default function App() {
   // Game Setup States
   const [view, setView] = useState<ViewState>("landing");
@@ -122,7 +121,6 @@ export default function App() {
   const [gameMode, setGameMode] = useState<"vs-ai" | "local-2p" | "online-2p">("vs-ai");
 
   // Online Multiplayer States
-  const [socket, setSocket] = useState<Socket | null>(null);
   const [onlineRoomId, setOnlineRoomId] = useState<string | null>(null);
   const [onlineSide, setOnlineSide] = useState<"p1" | "p2" | null>(null);
   const [isWaitingForOpponent, setIsWaitingForOpponent] = useState(false);
@@ -247,81 +245,115 @@ export default function App() {
 
   // Stable refs so async/socket callbacks always access latest values without stale closures
   const onlineRoomIdRef = useRef<string | null>(null);
+  const onlineSideRef = useRef<"p1" | "p2" | null>(null);
   const gameModeRef = useRef<"vs-ai" | "local-2p" | "online-2p">("vs-ai");
+  const socketRef = useRef<Socket | null>(null);
+  const pullNewCharacterRef = useRef<
+    (excludes: string[], animes: string[], slots: SlottedTeam) => Promise<void>
+  >(async () => {});
+
   useEffect(() => { onlineRoomIdRef.current = onlineRoomId; }, [onlineRoomId]);
+  useEffect(() => { onlineSideRef.current = onlineSide; }, [onlineSide]);
   useEffect(() => { gameModeRef.current = gameMode; }, [gameMode]);
 
-  // Load history and characters on startup
+  const resetOnlineLobby = useCallback(() => {
+    setOnlineRoomId(null);
+    onlineRoomIdRef.current = null;
+    setIsWaitingForOpponent(false);
+    setOnlineSide(null);
+    onlineSideRef.current = null;
+    setView("landing");
+  }, []);
+
+  const ensureSocket = useCallback(() => {
+    if (socketRef.current?.connected) return socketRef.current;
+
+    if (!socketRef.current) {
+      const newSocket = io(SOCKET_URL, {
+        transports: ["websocket", "polling"],
+        reconnection: true,
+        reconnectionAttempts: 8,
+        reconnectionDelay: 1000,
+      });
+
+      newSocket.on("room-created", ({ roomId, side }) => {
+        setOnlineRoomId(roomId);
+        setOnlineSide(side);
+        onlineSideRef.current = side;
+        setIsWaitingForOpponent(true);
+      });
+
+      newSocket.on("game-started", ({ roomId, p1Name, p2Name, side }) => {
+        setOnlineRoomId(roomId);
+        onlineRoomIdRef.current = roomId;
+        setOnlineSide(side);
+        onlineSideRef.current = side;
+        setPlayer1Name(p1Name);
+        setPlayer2Name(p2Name);
+        setIsWaitingForOpponent(false);
+        setRound(1);
+        setActiveTurn("p1");
+        setP1Slots(initialSlots);
+        setP2Slots(initialSlots);
+        setP1SkipUsed(false);
+        setP2SkipUsed(false);
+        setExcludedIds([]);
+        setMustPick(false);
+        setResultData(null);
+        setView("draft");
+        importStarterAllAnimeCasts().catch(() => {});
+        // Only P1 pulls the first card; P2 receives it via game-state-updated
+        if (side === "p1") {
+          requestAnimationFrame(() => {
+            pullNewCharacterRef.current([], [], initialSlots);
+          });
+        }
+      });
+
+      newSocket.on("game-state-updated", (state) => {
+        if (state.round) setRound(state.round);
+        if (state.activeTurn) setActiveTurn(state.activeTurn);
+        if (state.p1Slots) setP1Slots(state.p1Slots);
+        if (state.p2Slots) setP2Slots(state.p2Slots);
+        if (state.p1SkipUsed !== undefined) setP1SkipUsed(state.p1SkipUsed);
+        if (state.p2SkipUsed !== undefined) setP2SkipUsed(state.p2SkipUsed);
+        if (state.excludedIds) setExcludedIds(state.excludedIds);
+        if (state.activeCharacter !== undefined) setActiveCharacter(state.activeCharacter);
+        if (state.isCardFlipped !== undefined) setIsCardFlipped(state.isCardFlipped);
+        if (state.mustPick !== undefined) setMustPick(state.mustPick);
+        if (state.view) setView(state.view);
+        if (statsMatch(state.resultData)) setResultData(state.resultData);
+      });
+
+      newSocket.on("player-disconnected", () => {
+        alert("Opponent disconnected. Returning to lobby.");
+        resetOnlineLobby();
+      });
+
+      newSocket.on("room-cancelled", () => {
+        alert("Host cancelled the room.");
+        resetOnlineLobby();
+      });
+
+      newSocket.on("error", (msg) => {
+        alert(msg);
+      });
+
+      socketRef.current = newSocket;
+    } else {
+      socketRef.current.connect();
+    }
+
+    return socketRef.current;
+  }, [resetOnlineLobby]);
+
+  // Load history and characters on startup (socket connects lazily for online mode)
   useEffect(() => {
     fetchMatchHistory();
     fetchTotalCharactersCount();
-
-    const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || "https://animebattle.up.railway.app";
-    const newSocket = io(SOCKET_URL, { transports: ["websocket", "polling"] });
-    setSocket(newSocket);
-
-    newSocket.on("room-created", ({ roomId, side }) => {
-      setOnlineRoomId(roomId);
-      setOnlineSide(side);
-      setIsWaitingForOpponent(true);
-    });
-
-    newSocket.on("game-started", ({ roomId, p1Name, p2Name, side }) => {
-      setOnlineRoomId(roomId);
-      onlineRoomIdRef.current = roomId;
-      setPlayer1Name(p1Name);
-      setPlayer2Name(p2Name);
-      setIsWaitingForOpponent(false);
-      // Reset all game state before entering draft
-      setRound(1);
-      setActiveTurn("p1");
-      setP1Slots(initialSlots);
-      setP2Slots(initialSlots);
-      setP1SkipUsed(false);
-      setP2SkipUsed(false);
-      setExcludedIds([]);
-      setMustPick(false);
-      setResultData(null);
-      setView("draft");
-      // Only P1 drives the first character pull — P2 will receive it via game-state-updated
-      if (side === "p1") {
-        // slight delay to allow state to settle before pulling
-        setTimeout(() => {
-          pullNewCharacter([], [], initialSlots);
-        }, 200);
-      }
-    });
-
-    newSocket.on("game-state-updated", (state) => {
-      if (state.round) setRound(state.round);
-      if (state.activeTurn) setActiveTurn(state.activeTurn);
-      if (state.p1Slots) setP1Slots(state.p1Slots);
-      if (state.p2Slots) setP2Slots(state.p2Slots);
-      if (state.p1SkipUsed !== undefined) setP1SkipUsed(state.p1SkipUsed);
-      if (state.p2SkipUsed !== undefined) setP2SkipUsed(state.p2SkipUsed);
-      if (state.excludedIds) setExcludedIds(state.excludedIds);
-      if (state.activeCharacter !== undefined) setActiveCharacter(state.activeCharacter);
-      if (state.isCardFlipped !== undefined) setIsCardFlipped(state.isCardFlipped);
-      if (state.mustPick !== undefined) setMustPick(state.mustPick);
-      if (state.view) setView(state.view);
-      if (statsMatch(state.resultData)) setResultData(state.resultData);
-    });
-
-    newSocket.on("player-disconnected", () => {
-      alert("Opponent disconnected. Returning to lobby.");
-      setOnlineRoomId(null);
-      onlineRoomIdRef.current = null;
-      setIsWaitingForOpponent(false);
-      setOnlineSide(null);
-      setView("landing");
-    });
-
-    newSocket.on("error", (msg) => {
-      alert(msg);
-    });
-
     return () => {
-      newSocket.close();
+      socketRef.current?.close();
+      socketRef.current = null;
     };
   }, []);
 
@@ -330,20 +362,25 @@ export default function App() {
   };
 
   const createOnlineRoom = () => {
-    if (!socket) return;
+    const activeSocket = ensureSocket();
     setGameMode("online-2p");
-    socket.emit("create-room", player1Name);
+    activeSocket.emit("create-room", player1Name.trim() || "Player 1");
   };
 
   const joinOnlineRoom = () => {
-    if (!socket || !joinRoomId) return;
+    if (!joinRoomId.trim()) return;
+    const activeSocket = ensureSocket();
     setGameMode("online-2p");
-    socket.emit("join-room", { roomId: joinRoomId.toUpperCase(), playerName: player1Name });
+    activeSocket.emit("join-room", {
+      roomId: joinRoomId.toUpperCase(),
+      playerName: player1Name.trim() || "Player 2",
+    });
   };
 
-  const syncGameState = (updates: any) => {
-    if (!socket || !onlineRoomIdRef.current) return;
-    socket.emit("sync-game-state", { roomId: onlineRoomIdRef.current, state: updates });
+  const syncGameState = (updates: Record<string, unknown>) => {
+    const activeSocket = socketRef.current;
+    if (!activeSocket?.connected || !onlineRoomIdRef.current) return;
+    activeSocket.emit("sync-game-state", { roomId: onlineRoomIdRef.current, state: updates });
   };
 
   // Spotlight rotation effect
@@ -478,13 +515,18 @@ export default function App() {
       if (!res.ok) throw new Error("API signal lost");
 
       const character = await res.json();
-      setTimeout(() => {
+      const reveal = () => {
         setActiveCharacter(character);
         setIsCardFlipped(true);
         if (gameModeRef.current === "online-2p") {
           syncGameState({ activeCharacter: character, isCardFlipped: true });
         }
-      }, 300);
+      };
+      if (gameModeRef.current === "online-2p") {
+        reveal();
+      } else {
+        setTimeout(reveal, 300);
+      }
     } catch (er) {
       // Client-side fallback if network cuts out
       let available = CHARACTERS.filter((c) => !currentExcludes.includes(c.id));
@@ -505,15 +547,22 @@ export default function App() {
         setActiveCharacter(null);
         return;
       }
-      setTimeout(() => {
+      const revealBackup = () => {
         setActiveCharacter(backup);
         setIsCardFlipped(true);
         if (gameModeRef.current === "online-2p") {
           syncGameState({ activeCharacter: backup, isCardFlipped: true });
         }
-      }, 300);
+      };
+      if (gameModeRef.current === "online-2p") {
+        revealBackup();
+      } else {
+        setTimeout(revealBackup, 300);
+      }
     }
   };
+
+  pullNewCharacterRef.current = pullNewCharacter;
 
   // Handle slot placement manually by drag or select
   const handleSlotSelect = (roleId: RoleId) => {
@@ -600,7 +649,7 @@ export default function App() {
       } else {
         const p1CurrentTeam = Object.values(p1Slots).filter(Boolean) as Character[];
         // In online mode, only P1 drives the winner calculation to avoid double-saving
-        if (gameModeRef.current !== "online-2p" || onlineSide === "p1") {
+        if (gameModeRef.current !== "online-2p" || onlineSideRef.current === "p1") {
           calculateWinner(p1CurrentTeam, nextTeam);
         }
         if (gameModeRef.current === "online-2p") {
@@ -1106,11 +1155,10 @@ export default function App() {
                             </div>
                             <button 
                               onClick={() => {
-                                if (socket && onlineRoomId) {
-                                  socket.emit("cancel-room", { roomId: onlineRoomId });
+                                if (socketRef.current && onlineRoomId) {
+                                  socketRef.current.emit("cancel-room", { roomId: onlineRoomId });
                                 }
-                                setOnlineRoomId(null);
-                                setIsWaitingForOpponent(false);
+                                resetOnlineLobby();
                                 setGameMode("vs-ai");
                               }}
                               className="text-[9px] text-red-400 hover:underline"

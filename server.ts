@@ -889,13 +889,16 @@ async function startServer() {
       socket.join(roomId);
       
       const p1 = room.players.find((p: any) => p.side === "p1");
-      
-      io.to(roomId).emit("game-started", {
-        roomId,
-        players: room.players,
-        p1Name: p1.name,
-        p2Name: playerName
-      });
+
+      // Send each player their own side so turn guards work correctly
+      for (const player of room.players) {
+        io.to(player.id).emit("game-started", {
+          roomId,
+          side: player.side,
+          p1Name: p1.name,
+          p2Name: playerName,
+        });
+      }
     });
 
     socket.on("sync-game-state", ({ roomId, state }) => {
@@ -903,6 +906,7 @@ async function startServer() {
     });
 
     socket.on("cancel-room", ({ roomId }) => {
+      socket.to(roomId).emit("room-cancelled");
       rooms.delete(roomId);
     });
 

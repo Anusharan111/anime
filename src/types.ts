@@ -20,10 +20,12 @@ export interface Character {
   malFallbackUrl?: string; // Original MAL URL fallback if AI image fails
 }
 
+import { API_BASE } from "./config";
+
 export function getProxyImageUrl(url: string): string {
   if (!url) return "";
   if (url.startsWith("https://cdn.myanimelist.net/")) {
-    return `/api/image-proxy?url=${encodeURIComponent(url)}`;
+    return `${API_BASE}/api/image-proxy?url=${encodeURIComponent(url)}`;
   }
   return url;
 }

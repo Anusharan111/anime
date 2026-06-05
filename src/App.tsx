@@ -1804,7 +1804,7 @@ export default function App() {
 
                   <div className="flex items-stretch justify-between gap-1.5 sm:gap-3 w-full flex-1">
                     {/* Left Column: P1 in Local 2P mode */}
-                    {gameMode === "local-2p" ? (
+                    {gameMode === "local-2p" && (
                       <div className="w-20 sm:w-24 flex-shrink-0 flex flex-col justify-self-stretch animate-fadeInLeft">
                         <TeamSlots
                           playerName={player1Name}
@@ -1816,12 +1816,10 @@ export default function App() {
                           isMobile={true}
                         />
                       </div>
-                    ) : (
-                      <div className="w-2 sm:w-4 flex-shrink-0" /> /* Spacer for balance */
                     )}
 
                     {/* Center Column: Active Card */}
-                    <div className="flex-1 flex flex-col items-center justify-center p-1 sm:p-4 relative">
+                    <div className={`flex-1 flex flex-col items-center ${gameMode === "local-2p" ? "justify-center" : "justify-start"} p-1 sm:p-4 relative`}>
                       <div className="absolute inset-0 pointer-events-none opacity-5">
                         <div className="h-px w-full bg-nexus-cyan absolute top-1/4 animate-pulse" />
                         <div className="h-px w-full bg-nexus-blue absolute top-3/4 animate-pulse delay-500" />

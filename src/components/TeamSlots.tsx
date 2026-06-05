@@ -143,7 +143,7 @@ export default function TeamSlots({
                 onClick={() => isInteractive && onSlotSelect?.(role.id)}
                 className={`
                   relative rounded-lg border transition-all duration-300 group touch-manipulation
-                  ${layout === "compact-horizontal-top" ? 'w-8 h-8 sm:w-10 sm:h-10' : (isMobile ? (isLarge ? 'w-18 h-18 sm:w-20 sm:h-20' : 'w-14 h-14 sm:w-16 sm:h-16') : 'w-11 h-11 sm:w-13 sm:h-13')}
+                  ${layout === "compact-horizontal-top" ? 'w-10 h-10 sm:w-12 sm:h-12' : (isMobile ? 'w-16 h-16 sm:w-20 sm:h-20' : 'w-11 h-11 sm:w-13 sm:h-13')}
                   ${isOccupied 
                     ? 'border-nexus-blue/40 bg-nexus-blue/10 shadow-[0_0_15px_rgba(30,144,255,0.1)]' 
                     : canDrop || canTapPlace
@@ -186,7 +186,7 @@ export default function TeamSlots({
                     </motion.div>
                   ) : (
                     <div className="absolute inset-0 flex flex-col items-center justify-center p-0.5">
-                      <RoleIcon id={role.id} className={`${layout === "compact-horizontal-top" ? 'w-2.5 h-2.5' : 'w-4 h-4'} ${canDrop || canTapPlace ? 'text-nexus-cyan' : 'text-slate-600'}`} />
+                      <RoleIcon id={role.id} className={`${layout === "compact-horizontal-top" ? 'w-3 h-3' : 'w-5 h-5'} ${canDrop || canTapPlace ? 'text-nexus-cyan' : 'text-slate-600'}`} />
                       {canTapPlace && (
                         <span className="text-[5px] font-mono font-black text-nexus-cyan uppercase tracking-wider mt-0.5 animate-pulse">TAP</span>
                       )}

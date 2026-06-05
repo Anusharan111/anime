@@ -273,10 +273,10 @@ export default function CharacterCard({
           />
 
           {/* Rarity Tag Header */}
-          <div className={`flex justify-between items-center ${isCompact ? 'mb-1' : 'mb-2 sm:mb-3'} z-30`}>
-            <div className={`${isCompact ? 'px-1 py-0' : 'px-2 py-0.5 sm:px-3 sm:py-1'} rounded-md border ${config.border} bg-black/60 backdrop-blur-md flex items-center gap-1 sm:gap-1.5`}>
-              <Sparkles className={`${isCompact ? 'w-2 h-2' : 'w-2.5 h-2.5 sm:w-3 sm:h-3'} ${config.text} animate-pulse`} />
-              <span className={`${isCompact ? 'text-[6px]' : 'text-[8px] sm:text-[10px]'} font-black tracking-[0.2em] uppercase ${config.text}`}>
+          <div className={`flex justify-between items-center ${isCompact ? 'mb-1' : 'mb-1.5 sm:mb-2'} z-30`}>
+            <div className={`${isCompact ? 'px-1 py-0' : 'px-1.5 py-0.5 sm:px-2 sm:py-1'} rounded-md border ${config.border} bg-black/60 backdrop-blur-md flex items-center gap-1 sm:gap-1.5`}>
+              <Sparkles className={`${isCompact ? 'w-2 h-2' : 'w-2 h-2 sm:w-2.5 sm:h-2.5'} ${config.text} animate-pulse`} />
+              <span className={`${isCompact ? 'text-[6px]' : 'text-[7px] sm:text-[9px]'} font-black tracking-[0.2em] uppercase ${config.text}`}>
                 {character.rarity}
               </span>
             </div>
@@ -288,7 +288,7 @@ export default function CharacterCard({
           </div>
 
           {/* Portrait Container */}
-          <div className={`relative w-full ${isCompact ? 'h-[110px]' : 'h-[130px] sm:h-[240px] md:h-[320px]'} rounded-xl border border-white/10 overflow-hidden bg-black/40 group/portrait z-10 flex items-center justify-center ${isCompact ? 'mb-1.5' : 'mb-2 sm:mb-4'}`}>
+          <div className={`relative w-full ${isCompact ? 'h-[125px]' : 'h-[150px] sm:h-[260px] md:h-[350px]'} rounded-xl border border-white/10 overflow-hidden bg-black/40 group/portrait z-10 flex items-center justify-center ${isCompact ? 'mb-1' : 'mb-1.5 sm:mb-2'}`}>
             {/* Digital Scan Line */}
             <div className="absolute inset-0 z-20 pointer-events-none">
               <div className={`w-full h-[2px] bg-gradient-to-r from-transparent via-${config.color} to-transparent opacity-50 absolute animate-nexus-scan`} 
@@ -308,15 +308,15 @@ export default function CharacterCard({
             {/* Image HUD Overlay */}
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-80" />
             
-            <div className={`absolute ${isCompact ? 'top-1 left-1' : 'top-2 left-2 sm:top-3 sm:left-3'} bg-black/60 backdrop-blur-md ${isCompact ? 'px-1' : 'px-1.5 py-0.5'} rounded border border-white/10 z-20`}>
-              <span className={`${isCompact ? 'text-[7px]' : 'text-[8px] sm:text-[10px]'} font-mono font-bold text-white/70`}>PWR {character.overallPower}</span>
+            <div className={`absolute ${isCompact ? 'top-1 left-1' : 'top-1.5 left-1.5 sm:top-2 sm:left-2'} bg-black/60 backdrop-blur-md ${isCompact ? 'px-1' : 'px-1.5 py-0.5'} rounded border border-white/10 z-20`}>
+              <span className={`${isCompact ? 'text-[6px]' : 'text-[7px] sm:text-[9px]'} font-mono font-bold text-white/70`}>PWR {character.overallPower}</span>
             </div>
 
-            <div className={`absolute ${isCompact ? 'bottom-1 left-1 right-1' : 'bottom-2 left-2 right-2 sm:bottom-4 sm:left-4 sm:right-4'} z-20`}>
-               <p className={`${isCompact ? 'text-[6px]' : 'text-[7.5px] sm:text-[9px]'} font-mono font-bold uppercase tracking-[0.3em] ${config.text} opacity-90 mb-0.5 sm:mb-1`}>
+            <div className={`absolute ${isCompact ? 'bottom-1 left-1 right-1' : 'bottom-1.5 left-1.5 right-1.5 sm:bottom-2 sm:left-2 sm:right-2'} z-20`}>
+               <p className={`${isCompact ? 'text-[5px]' : 'text-[6px] sm:text-[7px]'} font-mono font-bold uppercase tracking-[0.3em] ${config.text} opacity-90 mb-0.5`}>
                 {character.anime}
               </p>
-              <h3 className={`${isCompact ? 'text-xs' : 'text-sm sm:text-lg md:text-2xl'} font-black text-white uppercase tracking-tighter leading-none nexus-glow-text`}>
+              <h3 className={`${isCompact ? 'text-[10px]' : 'text-xs sm:text-base md:text-xl'} font-black text-white uppercase tracking-tighter leading-none nexus-glow-text`}>
                 {character.name}
               </h3>
             </div>
@@ -324,7 +324,7 @@ export default function CharacterCard({
 
           {/* Stats HUD Matrix */}
 
-          <div className={`grid grid-cols-2 ${isCompact ? 'gap-0.5 mb-1.5' : 'gap-1 sm:gap-2 mb-2 sm:mb-3'} z-30`}>
+          <div className={`grid grid-cols-2 ${isCompact ? 'gap-0.5 mb-1' : 'gap-1 sm:gap-1.5 mb-1.5 sm:mb-2'} z-30`}>
             {[
               { label: "STR", val: character.stats.strength, icon: Swords, color: "text-red-400" },
               { label: "SPD", val: character.stats.speed, icon: Zap, color: "text-yellow-400" },
@@ -332,32 +332,32 @@ export default function CharacterCard({
               { label: "INT", val: character.stats.iq, icon: Brain, color: "text-cyan-400" },
               { label: "MAG", val: character.stats.magic, icon: Sparkles, color: "text-purple-400" },
             ].map((s, idx) => (
-              <div key={idx} className={`flex items-center justify-between bg-white/5 border border-white/5 ${isCompact ? 'p-0.5 px-1' : 'p-1 sm:p-1.5'} rounded-lg backdrop-blur-sm group-hover:border-white/10 transition-colors ${idx === 4 ? 'col-span-2' : ''}`}>
-                <div className="flex items-center gap-1 sm:gap-2">
-                  <s.icon className={`${isCompact ? 'w-2 h-2' : 'w-2.5 h-2.5 sm:w-3.5 sm:h-3.5'} ${s.color}`} />
-                  <span className={`${isCompact ? 'text-[6px]' : 'text-[7.5px] sm:text-[9px]'} font-mono font-bold text-slate-400`}>{s.label}</span>
+              <div key={idx} className={`flex items-center justify-between bg-white/5 border border-white/5 ${isCompact ? 'p-0.5 px-1' : 'p-0.5 sm:p-1'} rounded-lg backdrop-blur-sm group-hover:border-white/10 transition-colors ${idx === 4 ? 'col-span-2' : ''}`}>
+                <div className="flex items-center gap-1 sm:gap-1.5">
+                  <s.icon className={`${isCompact ? 'w-2 h-2' : 'w-2 h-2 sm:w-2.5 sm:h-2.5'} ${s.color}`} />
+                  <span className={`${isCompact ? 'text-[5px]' : 'text-[6px] sm:text-[7px]'} font-mono font-bold text-slate-400`}>{s.label}</span>
                 </div>
-                <span className={`${isCompact ? 'text-[8px]' : 'text-[10px] sm:text-xs'} font-black text-white`}>{s.val}</span>
+                <span className={`${isCompact ? 'text-[7px]' : 'text-[8px] sm:text-[10px]'} font-black text-white`}>{s.val}</span>
               </div>
             ))}
           </div>
 
           {/* Skills Section */}
           {character.skills && character.skills.length > 0 && !isCompact && (
-            <div className="flex flex-wrap gap-1 mb-2 sm:mb-3 z-30">
+            <div className="flex flex-wrap gap-1 mb-1.5 sm:mb-2 z-30">
               {character.skills.slice(0, 2).map((skill, i) => (
-                <div key={i} className="px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-md bg-white/5 border border-white/5 flex items-center gap-1 sm:gap-1.5 backdrop-blur-sm group-hover:border-white/10 transition-all">
+                <div key={i} className="px-1.5 py-0.5 sm:px-1.5 sm:py-0.5 rounded-md bg-white/5 border border-white/5 flex items-center gap-1 sm:gap-1 backdrop-blur-sm group-hover:border-white/10 transition-all">
                    <div className="w-0.5 h-0.5 sm:w-1 sm:h-1 rounded-full bg-nexus-cyan animate-pulse" />
-                   <span className="text-[7px] sm:text-[8px] font-mono font-bold text-slate-300 uppercase tracking-tighter truncate max-w-[80px] sm:max-w-[120px]">{skill}</span>
+                   <span className="text-[6px] sm:text-[7px] font-mono font-bold text-slate-300 uppercase tracking-tighter truncate max-w-[80px] sm:max-w-[120px]">{skill}</span>
                 </div>
               ))}
             </div>
           )}
 
           {/* Abilities / Lore Footer */}
-          <div className={`mt-auto relative z-30 bg-black/40 border border-white/5 rounded-xl ${isCompact ? 'p-1' : 'p-1.5 sm:p-2.5 md:p-3'} backdrop-blur-md overflow-hidden group/lore`}>
+          <div className="mt-auto relative z-30 bg-black/40 border border-white/5 rounded-xl p-1 sm:p-1.5 md:p-2 backdrop-blur-md overflow-hidden group/lore">
             <div className={`absolute top-0 left-0 w-1 h-full ${config.text}`} style={{ backgroundColor: config.color }} />
-            <p className={`${isCompact ? 'text-[7px]' : 'text-[8px] sm:text-[10px] md:text-[11px]'} leading-tight sm:leading-relaxed text-slate-300 font-medium italic line-clamp-2`}>
+            <p className="text-[7px] sm:text-[8px] md:text-[9px] leading-tight sm:leading-relaxed text-slate-300 font-medium italic line-clamp-2">
               "{character.quote || character.description}"
             </p>
           </div>

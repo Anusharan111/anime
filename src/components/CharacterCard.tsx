@@ -119,6 +119,7 @@ export default function CharacterCard({
 
   const handleTouchStart = (e: React.TouchEvent) => {
     if (isFlipped || !isMobileDevice || !onTouchDrop) return;
+    e.preventDefault();
     const touch = e.touches[0];
     touchStartPos.current = { x: touch.clientX, y: touch.clientY };
     isDraggingRef.current = false;
@@ -126,6 +127,7 @@ export default function CharacterCard({
 
   const handleTouchMove = (e: React.TouchEvent) => {
     if (isFlipped || !isMobileDevice || !onTouchDrop) return;
+    e.preventDefault();
     const touch = e.touches[0];
     const dx = touch.clientX - touchStartPos.current.x;
     const dy = touch.clientY - touchStartPos.current.y;
@@ -229,6 +231,7 @@ export default function CharacterCard({
   return (
     <div 
       className={`relative ${isCompact ? 'w-[130px] h-[230px]' : 'w-[140px] h-[250px]'} sm:w-[260px] sm:h-[460px] md:w-[340px] md:h-[600px] perspective-1000 z-10 select-none group transition-transform duration-300 ${isSelected ? 'scale-105' : ''}`}
+      style={{ touchAction: isMobileDevice && onTouchDrop ? "none" : undefined }}
       onMouseMove={handleMouseMove}
       onClick={handleCardTap}
       onTouchStart={handleTouchStart}

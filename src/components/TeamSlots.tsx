@@ -68,6 +68,7 @@ export default function TeamSlots({
   };
 
   const isCompact = layout === "compact-vertical" || layout === "compact-horizontal" || layout === "compact-horizontal-top";
+  const showCompactLabels = layout === "compact-vertical" && isMobile && isLarge;
 
   return (
     <div className={`flex flex-col gap-2.5 h-full ${activeTurn ? 'opacity-100' : 'opacity-60'} transition-all duration-500 ${isMobile && layout === "compact-vertical" ? 'bg-black/40 backdrop-blur-md border border-white/10 rounded-2xl p-2 shadow-2xl' : ''}`}>
@@ -121,7 +122,7 @@ export default function TeamSlots({
         ${layout === "compact-horizontal" || layout === "compact-horizontal-top"
           ? "flex flex-row gap-1 justify-center" 
           : layout === "compact-vertical"
-            ? "flex flex-col gap-2 flex-1 justify-center items-center"
+            ? `flex flex-col ${showCompactLabels ? "gap-1.5" : "gap-2"} flex-1 justify-center items-center`
             : "grid grid-cols-2 gap-3 flex-1"
         }
       `}>
@@ -143,7 +144,7 @@ export default function TeamSlots({
                 onClick={() => isInteractive && onSlotSelect?.(role.id)}
                 className={`
                   relative rounded-lg border transition-all duration-300 group touch-manipulation
-                  ${layout === "compact-horizontal-top" ? 'w-10 h-10 sm:w-12 sm:h-12' : (isMobile ? 'w-16 h-16 sm:w-20 sm:h-20' : 'w-11 h-11 sm:w-13 sm:h-13')}
+                  ${layout === "compact-horizontal-top" ? 'w-10 h-10 sm:w-12 sm:h-12' : (isMobile ? (isLarge ? 'w-full h-[12.5vh] max-h-[78px] min-h-[54px]' : 'w-16 h-16 sm:w-20 sm:h-20') : 'w-11 h-11 sm:w-13 sm:h-13')}
                   ${isOccupied 
                     ? 'border-nexus-blue/40 bg-nexus-blue/10 shadow-[0_0_15px_rgba(30,144,255,0.1)]' 
                     : canDrop || canTapPlace
@@ -183,10 +184,22 @@ export default function TeamSlots({
                       <div className="absolute -bottom-1 -right-1 w-3 h-3 rounded bg-black border border-white/10 flex items-center justify-center shadow-md z-20">
                         <RoleIcon id={role.id} className="w-1.5 h-1.5 text-nexus-cyan" />
                       </div>
+                      {showCompactLabels && (
+                        <div className="absolute inset-x-0 bottom-0 bg-black/75 px-1 py-0.5 text-center">
+                          <span className="block truncate text-[7px] font-mono font-black uppercase tracking-wide text-white">
+                            {role.name}
+                          </span>
+                        </div>
+                      )}
                     </motion.div>
                   ) : (
-                    <div className="absolute inset-0 flex flex-col items-center justify-center p-0.5">
+                    <div className="absolute inset-0 flex flex-col items-center justify-center p-0.5 text-center">
                       <RoleIcon id={role.id} className={`${layout === "compact-horizontal-top" ? 'w-3 h-3' : 'w-5 h-5'} ${canDrop || canTapPlace ? 'text-nexus-cyan' : 'text-slate-600'}`} />
+                      {showCompactLabels && (
+                        <span className={`mt-1 max-w-full px-1 text-[7px] font-mono font-black uppercase leading-tight ${canDrop || canTapPlace ? 'text-nexus-cyan' : 'text-slate-400'}`}>
+                          {role.name}
+                        </span>
+                      )}
                       {canTapPlace && (
                         <span className="text-[5px] font-mono font-black text-nexus-cyan uppercase tracking-wider mt-0.5 animate-pulse">TAP</span>
                       )}

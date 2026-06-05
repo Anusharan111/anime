@@ -164,6 +164,28 @@ export default function App() {
     return () => window.removeEventListener("resize", checkWidth);
   }, []);
 
+  useEffect(() => {
+    const lockDraftScroll = isMobile && view === "draft";
+    const previousBodyOverflow = document.body.style.overflow;
+    const previousHtmlOverflow = document.documentElement.style.overflow;
+    const previousBodyHeight = document.body.style.height;
+    const previousHtmlHeight = document.documentElement.style.height;
+
+    if (lockDraftScroll) {
+      document.body.style.overflow = "hidden";
+      document.documentElement.style.overflow = "hidden";
+      document.body.style.height = "100dvh";
+      document.documentElement.style.height = "100dvh";
+    }
+
+    return () => {
+      document.body.style.overflow = previousBodyOverflow;
+      document.documentElement.style.overflow = previousHtmlOverflow;
+      document.body.style.height = previousBodyHeight;
+      document.documentElement.style.height = previousHtmlHeight;
+    };
+  }, [isMobile, view]);
+
   // Result States
   const [loadingResult, setLoadingResult] = useState(false);
   const [resultData, setResultData] = useState<{
@@ -1107,8 +1129,18 @@ export default function App() {
     );
   };
 
+  const isMobileDraft = isMobile && view === "draft";
+  const isMobileOnlineDraft = isMobileDraft && gameMode === "online-2p";
+  const ownOnlineSide = onlineSide ?? activeTurn;
+  const ownOnlineSlots = ownOnlineSide === "p2" ? p2Slots : p1Slots;
+  const opponentOnlineSlots = ownOnlineSide === "p2" ? p1Slots : p2Slots;
+  const ownOnlineSkipUsed = ownOnlineSide === "p2" ? p2SkipUsed : p1SkipUsed;
+  const opponentOnlineSkipUsed = ownOnlineSide === "p2" ? p1SkipUsed : p2SkipUsed;
+  const ownOnlineName = ownOnlineSide === "p2" ? player2Name : player1Name;
+  const opponentOnlineName = ownOnlineSide === "p2" ? player1Name : player2Name;
+
   return (
-    <div className="min-h-screen bg-[#050816] text-slate-100 flex flex-col justify-between font-sans relative overflow-x-hidden selection:bg-nexus-cyan/30">
+    <div className={`${isMobileDraft ? "h-[100dvh] overflow-hidden" : "min-h-screen overflow-x-hidden"} bg-[#050816] text-slate-100 flex flex-col justify-between font-sans relative selection:bg-nexus-cyan/30`}>
       {/* 🌌 Animated Background */}
       <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,#1e1b4b_0%,#050816_70%)]" />
@@ -1152,7 +1184,7 @@ export default function App() {
       </header>
 
       {/* MAIN CONTENT AREA */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-1 py-2 sm:p-6 flex flex-col justify-center relative z-10">
+      <main className={`flex-1 max-w-7xl w-full mx-auto px-1 py-2 sm:p-6 flex flex-col justify-center relative z-10 ${isMobileDraft ? "min-h-0 overflow-hidden" : ""}`}>
         <AnimatePresence mode="wait">
           {/* 1. LANDING PAGE VIEW */}
           {view === "landing" && (
@@ -1743,17 +1775,17 @@ export default function App() {
               initial={{ opacity: 0, scale: 0.98 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 1.02 }}
-              className="space-y-2 sm:space-y-6 flex flex-col h-full"
+              className={`${isMobileOnlineDraft ? "gap-1" : "space-y-2 sm:space-y-6"} flex flex-col h-full`}
             >
               {/* STAGE HEADER METRICS */}
-              <div className="flex flex-col sm:flex-row justify-between items-center nexus-glass border-nexus-blue/20 rounded-2xl p-2 sm:p-5 gap-2 sm:gap-4 relative overflow-hidden flex-shrink-0">
+              <div className={`flex ${isMobileOnlineDraft ? "flex-row" : "flex-col sm:flex-row"} justify-between items-center nexus-glass border-nexus-blue/20 ${isMobileOnlineDraft ? "rounded-xl p-1.5 gap-1" : "rounded-2xl p-2 sm:p-5 gap-2 sm:gap-4"} relative overflow-hidden flex-shrink-0`}>
                 <div className="absolute inset-0 bg-nexus-blue/5 pointer-events-none" />
-                <div className="flex items-center gap-4 relative z-10">
-                  <div className="px-4 py-1.5 rounded-lg bg-nexus-blue text-white font-mono font-black text-xs shadow-[0_0_15px_rgba(30,144,255,0.4)]">
+                <div className={`flex items-center ${isMobileOnlineDraft ? "gap-2 min-w-0" : "gap-4"} relative z-10`}>
+                  <div className={`${isMobileOnlineDraft ? "px-2 py-1 text-[9px]" : "px-4 py-1.5 text-xs"} rounded-lg bg-nexus-blue text-white font-mono font-black shadow-[0_0_15px_rgba(30,144,255,0.4)] whitespace-nowrap`}>
                     ROUND {round} / 6
                   </div>
-                  <div>
-                    <h3 className="text-base font-black uppercase text-white tracking-widest flex items-center gap-2">
+                  <div className="min-w-0">
+                    <h3 className={`${isMobileOnlineDraft ? "text-[10px] tracking-wide truncate" : "text-base tracking-widest"} font-black uppercase text-white flex items-center gap-2`}>
                       {activeTurn === "p1" ? (
                         <><Swords className="w-4 h-4 text-nexus-cyan" /> {player1Name}'S DECISION</>
                       ) : gameMode === "vs-ai" ? (
@@ -1762,7 +1794,7 @@ export default function App() {
                         <><Swords className="w-4 h-4 text-fuchsia-400" /> {player2Name}'S DECISION</>
                       )}
                     </h3>
-                    <p className="text-[10px] font-mono text-nexus-cyan/60 font-bold uppercase tracking-widest">
+                    <p className={`${isMobileOnlineDraft ? "hidden" : ""} text-[10px] font-mono text-nexus-cyan/60 font-bold uppercase tracking-widest`}>
                       Battle frequency stable
                     </p>
                   </div>
@@ -1776,7 +1808,7 @@ export default function App() {
 
                 <button
                   onClick={() => setView("landing")}
-                  className="text-[10px] font-mono font-black text-slate-500 hover:text-red-400 transition-colors uppercase tracking-widest px-4 py-2 rounded-lg border border-white/5 hover:border-red-400/20"
+                  className={`${isMobileOnlineDraft ? "px-2 py-1 text-[8px] tracking-wide" : "px-4 py-2 text-[10px] tracking-widest"} font-mono font-black text-slate-500 hover:text-red-400 transition-colors uppercase rounded-lg border border-white/5 hover:border-red-400/20 whitespace-nowrap`}
                 >
                   Terminate Mission
                 </button>
@@ -1784,6 +1816,50 @@ export default function App() {
 
               {/* THREE COLUMN DRAFT COVENANT */}
               {isMobile ? (
+                isMobileOnlineDraft ? (
+                  <div className="flex min-h-0 w-full flex-1 flex-col gap-1.5 overflow-hidden touch-none">
+                    <div className="h-[54px] w-full flex-shrink-0 px-1">
+                      <TeamSlots
+                        playerName={opponentOnlineName}
+                        slots={opponentOnlineSlots}
+                        skipUsed={opponentOnlineSkipUsed}
+                        activeTurn={activeTurn !== ownOnlineSide}
+                        layout="compact-horizontal-top"
+                        isMobile={true}
+                      />
+                    </div>
+
+                    <div className="grid min-h-0 flex-1 grid-cols-[minmax(0,1fr)_38vw] gap-2 overflow-hidden">
+                      <div className="relative min-w-0 overflow-hidden rounded-2xl border border-nexus-blue/10 bg-black/20 p-1.5">
+                        <div className="absolute inset-0 pointer-events-none opacity-5">
+                          <div className="h-px w-full bg-nexus-cyan absolute top-1/4 animate-pulse" />
+                          <div className="h-px w-full bg-nexus-blue absolute top-3/4 animate-pulse delay-500" />
+                        </div>
+                        <div className="flex h-full min-h-0 flex-col items-center justify-center overflow-hidden">
+                          {renderDraftCardArea()}
+                          <div className="mt-1 flex flex-shrink-0 gap-3 rounded-full border border-white/5 bg-black/30 px-2 py-1 text-[7px] font-mono font-black uppercase tracking-wider text-slate-500">
+                            <span>P1 {p1SkipUsed ? "USED" : "SKIP"}</span>
+                            <span>P2 {p2SkipUsed ? "USED" : "SKIP"}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="min-h-0 min-w-[136px] overflow-hidden">
+                        <TeamSlots
+                          playerName={ownOnlineName}
+                          slots={ownOnlineSlots}
+                          skipUsed={ownOnlineSkipUsed}
+                          activeTurn={activeTurn === ownOnlineSide}
+                          onSlotSelect={activeTurn === ownOnlineSide ? handleSlotSelect : undefined}
+                          isDraggingActive={isDraggingActive && activeTurn === ownOnlineSide}
+                          layout="compact-vertical"
+                          isMobile={true}
+                          isLarge={true}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ) : (
                 <div className="flex flex-col gap-1 sm:gap-2 w-full flex-1">
                   {/* Top Area: Opponent in Online/AI mode */}
                   {(gameMode === "online-2p" || gameMode === "vs-ai") && (
@@ -1857,6 +1933,7 @@ export default function App() {
                     </div>
                   </div>
                 </div>
+                )
               ) : (
                 <div className="grid lg:grid-cols-12 gap-6 items-stretch">
                   {/* Left: P1 Roster */}

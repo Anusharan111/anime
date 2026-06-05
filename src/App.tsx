@@ -1119,7 +1119,7 @@ export default function App() {
       </div>
 
       {/* HEADER BAR */}
-      <header className="sticky top-0 z-50 nexus-glass border-b border-nexus-blue/20 py-4 px-6">
+      <header className="sticky top-0 z-50 nexus-glass border-b border-nexus-blue/20 py-2 px-2 sm:py-4 sm:px-6">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <div className="flex items-center gap-3 cursor-pointer group" onClick={() => setView("landing")}>
             <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-nexus-blue to-nexus-purple flex items-center justify-center shadow-[0_0_20px_rgba(30,144,255,0.4)] group-hover:scale-110 transition-transform duration-300">
@@ -1143,16 +1143,16 @@ export default function App() {
                 setShowLeaderboard(!showLeaderboard);
                 setView("landing");
               }}
-              className="py-2 px-4 rounded-lg nexus-glass border border-white/5 hover:border-nexus-cyan/40 text-[10px] font-mono font-bold text-slate-300 transition-all flex items-center gap-2 group"
+              className="py-1.5 px-3 rounded-lg nexus-glass border border-white/5 hover:border-nexus-cyan/40 text-[9px] sm:text-[10px] font-mono font-bold text-slate-300 transition-all flex items-center gap-1.5 group"
             >
-              <Award className="w-3.5 h-3.5 text-nexus-cyan group-hover:scale-125 transition-transform" /> TOP TEAMS
+              <Award className="w-3 h-3 text-nexus-cyan group-hover:scale-125 transition-transform" /> TOP
             </button>
           </div>
         </div>
       </header>
 
-      {/* MAIN CONTAINER */}
-      <main className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 flex flex-col justify-center relative z-10">
+      {/* MAIN CONTENT AREA */}
+      <main className="flex-1 max-w-7xl w-full mx-auto px-1 py-2 sm:p-6 flex flex-col justify-center relative z-10">
         <AnimatePresence mode="wait">
           {/* 1. LANDING PAGE VIEW */}
           {view === "landing" && (
@@ -1743,10 +1743,10 @@ export default function App() {
               initial={{ opacity: 0, scale: 0.98 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 1.02 }}
-              className="space-y-6"
+              className="space-y-2 sm:space-y-6 flex flex-col h-full"
             >
               {/* STAGE HEADER METRICS */}
-              <div className="flex flex-col sm:flex-row justify-between items-center nexus-glass border-nexus-blue/20 rounded-2xl p-5 gap-4 relative overflow-hidden">
+              <div className="flex flex-col sm:flex-row justify-between items-center nexus-glass border-nexus-blue/20 rounded-2xl p-2 sm:p-5 gap-2 sm:gap-4 relative overflow-hidden flex-shrink-0">
                 <div className="absolute inset-0 bg-nexus-blue/5 pointer-events-none" />
                 <div className="flex items-center gap-4 relative z-10">
                   <div className="px-4 py-1.5 rounded-lg bg-nexus-blue text-white font-mono font-black text-xs shadow-[0_0_15px_rgba(30,144,255,0.4)]">
@@ -1784,7 +1784,7 @@ export default function App() {
 
               {/* THREE COLUMN DRAFT COVENANT */}
               {isMobile ? (
-                <div className="flex flex-col gap-2 w-full h-full min-h-[500px]">
+                <div className="flex flex-col gap-1 sm:gap-2 w-full flex-1">
                   {/* Top Area: Opponent in Online/AI mode */}
                   {(gameMode === "online-2p" || gameMode === "vs-ai") && (
                     <div className="w-full flex justify-center px-4 animate-fadeInDown">

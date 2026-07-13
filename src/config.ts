@@ -5,4 +5,4 @@ export const API_BASE =
 
 /** Socket.io server — must be a long-running Node host (not Vercel serverless). */
 export const SOCKET_URL =
-  import.meta.env.VITE_SOCKET_URL || API_BASE || "http://localhost:6000";
+  import.meta.env.VITE_SOCKET_URL || API_BASE || "http://localhost:5174";

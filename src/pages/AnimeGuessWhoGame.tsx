@@ -60,10 +60,12 @@ export default function AnimeGuessWhoGame({ onExit }: AnimeGuessWhoGameProps) {
   const channelRef = useRef<any>(null);
   const roomIdRef = useRef<string | null>(null);
   const mySideRef = useRef<"p1" | "p2" | null>(null);
+  const phaseRef = useRef<"lobby" | "playing" | "gameover">("lobby");
 
   // Keep refs in sync
   useEffect(() => { roomIdRef.current = roomId; }, [roomId]);
   useEffect(() => { mySideRef.current = mySide; }, [mySide]);
+  useEffect(() => { phaseRef.current = phase; }, [phase]);
 
   // Lazy Pusher initialization
   const ensurePusher = useCallback(async (playerName: string) => {
@@ -158,7 +160,8 @@ export default function AnimeGuessWhoGame({ onExit }: AnimeGuessWhoGameProps) {
         roomIdRef.current = rid;
         setMySide("p2");
         mySideRef.current = "p2";
-        setIsWaiting(false);
+        // P2 is in the room — show a "waiting for host to start" screen
+        setIsWaiting(true);
       }
     });
 
@@ -241,8 +244,11 @@ export default function AnimeGuessWhoGame({ onExit }: AnimeGuessWhoGameProps) {
 
     channel.bind("pusher:member_removed", (member: any) => {
       console.log("Member left:", member.id, member.info);
-      alert("Opponent disconnected!");
-      handleExit();
+      // Only alert disconnect if game was actually in progress (not during lobby handshake)
+      if (phaseRef.current === "playing" || phaseRef.current === "gameover") {
+        alert("Opponent disconnected!");
+        handleExit();
+      }
     });
   }, [handleExit]);
 
@@ -257,15 +263,24 @@ export default function AnimeGuessWhoGame({ onExit }: AnimeGuessWhoGameProps) {
     const p1Secret = grid[secretIndices[0]];
     const p2Secret = grid[secretIndices[1]];
 
+    const gameData = { roomId: rid, p1Name, p2Name, grid, p1Secret, p2Secret };
+
     setTimeout(() => {
-      channel.trigger("client-gw-game-started", {
-        roomId: rid,
-        p1Name,
-        p2Name,
-        grid,
-        p1Secret,
-        p2Secret
-      });
+      // Pusher does NOT echo client events back to the sender, so P1 must
+      // apply the game state locally immediately after triggering.
+      channel.trigger("client-gw-game-started", gameData);
+
+      // P1 applies state locally (P2 will receive the event above)
+      setMyName(p1Name);
+      setOpponentName(p2Name);
+      setGrid(grid);
+      setP1Secret(p1Secret);
+      setP2Secret(p2Secret);
+      setMySecret(p1Secret); // P1's secret is p1Secret
+      setCurrentTurn("p1");
+      setIsWaiting(false);
+      setPhase("playing");
+      sfx.playCorrect();
     }, 500);
   };
 
@@ -415,6 +430,7 @@ export default function AnimeGuessWhoGame({ onExit }: AnimeGuessWhoGameProps) {
               onBack={handleExit}
               isWaiting={isWaiting}
               roomId={roomId}
+              mySide={mySide}
               error={lobbyError}
             />
           </motion.div>

@@ -19,6 +19,7 @@ interface GWLobbyProps {
   onBack: () => void;
   isWaiting: boolean;
   roomId: string | null;
+  mySide: "p1" | "p2" | null;
   error: string | null;
 }
 
@@ -28,6 +29,7 @@ export default function GWLobby({
   onBack,
   isWaiting,
   roomId,
+  mySide,
   error,
 }: GWLobbyProps) {
   const [playerName, setPlayerName] = useState("");
@@ -91,46 +93,74 @@ export default function GWLobby({
               exit={{ opacity: 0, y: -10 }}
               className="space-y-6"
             >
-              <div className="text-center space-y-3">
-                <div className="inline-flex items-center gap-2 text-fuchsia-400 text-sm font-medium">
-                  <Sparkles className="w-4 h-4" />
-                  Room Created!
-                </div>
-
-                {/* Room ID Display */}
-                <div className="bg-slate-950/80 border border-violet-500/30 rounded-xl p-4">
-                  <p className="text-[10px] uppercase tracking-widest text-slate-500 mb-2">
-                    Share this Room Code
-                  </p>
-                  <div className="flex items-center justify-center gap-3">
-                    <span className="text-3xl font-mono font-bold tracking-[0.3em] text-violet-300">
+              {mySide === "p2" ? (
+                /* P2: Connected, waiting for host to start */
+                <div className="text-center space-y-5 py-4">
+                  <div className="inline-flex items-center gap-2 text-emerald-400 text-sm font-medium">
+                    <Sparkles className="w-4 h-4" />
+                    Connected to Room!
+                  </div>
+                  <div className="bg-slate-950/80 border border-emerald-500/30 rounded-xl p-4">
+                    <p className="text-[10px] uppercase tracking-widest text-slate-500 mb-1">
+                      Room Code
+                    </p>
+                    <span className="text-2xl font-mono font-bold tracking-[0.3em] text-emerald-300">
                       {roomId}
                     </span>
-                    <button
-                      onClick={handleCopy}
-                      className="p-2 rounded-lg bg-violet-600/20 hover:bg-violet-600/40 border border-violet-500/30 transition duration-200"
-                      title="Copy Room ID"
-                    >
-                      {copied ? (
-                        <Check className="w-4 h-4 text-green-400" />
-                      ) : (
-                        <Copy className="w-4 h-4 text-violet-400" />
-                      )}
-                    </button>
+                  </div>
+                  <div className="flex flex-col items-center gap-3 py-2">
+                    <div className="relative">
+                      <Loader2 className="w-8 h-8 text-emerald-400 animate-spin" />
+                      <div className="absolute inset-0 w-8 h-8 rounded-full bg-emerald-500/20 animate-ping" />
+                    </div>
+                    <p className="text-sm text-slate-400">
+                      Waiting for host to start the game...
+                    </p>
                   </div>
                 </div>
+              ) : (
+                /* P1: Host waiting for opponent */
+                <div className="text-center space-y-3">
+                  <div className="inline-flex items-center gap-2 text-fuchsia-400 text-sm font-medium">
+                    <Sparkles className="w-4 h-4" />
+                    Room Created!
+                  </div>
 
-                {/* Waiting Spinner */}
-                <div className="flex flex-col items-center gap-3 py-4">
-                  <div className="relative">
-                    <Loader2 className="w-8 h-8 text-violet-400 animate-spin" />
-                    <div className="absolute inset-0 w-8 h-8 rounded-full bg-violet-500/20 animate-ping" />
+                  {/* Room ID Display */}
+                  <div className="bg-slate-950/80 border border-violet-500/30 rounded-xl p-4">
+                    <p className="text-[10px] uppercase tracking-widest text-slate-500 mb-2">
+                      Share this Room Code
+                    </p>
+                    <div className="flex items-center justify-center gap-3">
+                      <span className="text-3xl font-mono font-bold tracking-[0.3em] text-violet-300">
+                        {roomId}
+                      </span>
+                      <button
+                        onClick={handleCopy}
+                        className="p-2 rounded-lg bg-violet-600/20 hover:bg-violet-600/40 border border-violet-500/30 transition duration-200"
+                        title="Copy Room ID"
+                      >
+                        {copied ? (
+                          <Check className="w-4 h-4 text-green-400" />
+                        ) : (
+                          <Copy className="w-4 h-4 text-violet-400" />
+                        )}
+                      </button>
+                    </div>
                   </div>
-                  <p className="text-sm text-slate-400">
-                    Waiting for opponent to join...
-                  </p>
+
+                  {/* Waiting Spinner */}
+                  <div className="flex flex-col items-center gap-3 py-4">
+                    <div className="relative">
+                      <Loader2 className="w-8 h-8 text-violet-400 animate-spin" />
+                      <div className="absolute inset-0 w-8 h-8 rounded-full bg-violet-500/20 animate-ping" />
+                    </div>
+                    <p className="text-sm text-slate-400">
+                      Waiting for opponent to join...
+                    </p>
+                  </div>
                 </div>
-              </div>
+              )}
             </motion.div>
           ) : mode === "select" ? (
             /* Mode Selection */

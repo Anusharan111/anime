@@ -290,7 +290,7 @@ export default function AnimeGuessWhoGame({ onExit }: AnimeGuessWhoGameProps) {
     const pusher = await ensurePusher(name);
     if (!pusher) return;
 
-    const generatedId = "GW-" + Math.random().toString(36).substring(2, 8).toUpperCase();
+    const generatedId = Math.random().toString(36).substring(2, 8).toUpperCase();
     subscribeToChannel(pusher, generatedId, "p1", name);
   };
 

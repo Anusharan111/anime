@@ -473,6 +473,31 @@ export default function App() {
         p1Name,
         p2Name
       });
+
+      // P1 must apply the game start state locally since Pusher does not echo client events to the sender
+      console.log("Applying game start state locally for P1...");
+      setOnlineRoomId(roomId);
+      onlineRoomIdRef.current = roomId;
+      setPlayer1Name(p1Name);
+      setPlayer2Name(p2Name);
+      setIsWaitingForOpponent(false);
+      setOnlineAction(null);
+      setRound(1);
+      setActiveTurn("p1");
+      setP1Slots(initialSlots);
+      setP2Slots(initialSlots);
+      setP1SkipUsed(false);
+      setP2SkipUsed(false);
+      setExcludedIds([]);
+      setMustPick(false);
+      setResultData(null);
+      setView("draft");
+      setIsDeployModalOpen(false);
+      importStarterAllAnimeCasts().catch(() => {});
+
+      requestAnimationFrame(() => {
+        pullNewCharacterRef.current([], [], initialSlots);
+      });
     }, 500);
   };
 

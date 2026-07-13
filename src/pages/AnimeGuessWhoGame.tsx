@@ -173,18 +173,24 @@ export default function AnimeGuessWhoGame({ onExit }: AnimeGuessWhoGameProps) {
       }
     });
 
-    channel.bind("client-gw-game-started", ({ roomId: roomIdentifier, p1Name, p2Name, grid: g, p1Secret, p2Secret }: any) => {
+    // Receive game start: resolve Character objects from IDs to avoid Pusher 10KB limit
+    channel.bind("client-gw-game-started", ({ roomId: roomIdentifier, p1Name, p2Name, gridIds, p1SecretId, p2SecretId }: any) => {
       console.log("client-gw-game-started received:", { roomIdentifier, p1Name, p2Name });
       setRoomId(roomIdentifier);
       roomIdRef.current = roomIdentifier;
-      
+
+      const idMap = new Map(CHARACTERS.map(c => [c.id, c]));
+      const resolvedGrid = (gridIds as string[]).map(id => idMap.get(id)).filter(Boolean) as Character[];
+      const resolvedP1Secret = idMap.get(p1SecretId) || null;
+      const resolvedP2Secret = idMap.get(p2SecretId) || null;
+
       const myCurrentSide = mySideRef.current;
       setMyName(myCurrentSide === "p1" ? p1Name : p2Name);
       setOpponentName(myCurrentSide === "p1" ? p2Name : p1Name);
-      setGrid(g);
-      setP1Secret(p1Secret);
-      setP2Secret(p2Secret);
-      setMySecret(myCurrentSide === "p1" ? p1Secret : p2Secret);
+      setGrid(resolvedGrid);
+      setP1Secret(resolvedP1Secret);
+      setP2Secret(resolvedP2Secret);
+      setMySecret(myCurrentSide === "p1" ? resolvedP1Secret : resolvedP2Secret);
       setCurrentTurn("p1");
       setIsWaiting(false);
       setPhase("playing");
@@ -216,7 +222,8 @@ export default function AnimeGuessWhoGame({ onExit }: AnimeGuessWhoGameProps) {
       setCurrentTurn((prev) => prev === "p1" ? "p2" : "p1");
     });
 
-    channel.bind("client-gw-guess-result", ({ correct, guesserSide, p1Secret, p2Secret }: any) => {
+    // Receive guess result: resolve Character objects from IDs
+    channel.bind("client-gw-guess-result", ({ correct, guesserSide, p1SecretId, p2SecretId }: any) => {
       const iAmGuesser = guesserSide === mySideRef.current;
       const won = iAmGuesser ? correct : !correct;
 
@@ -226,13 +233,18 @@ export default function AnimeGuessWhoGame({ onExit }: AnimeGuessWhoGameProps) {
         sfx.playWrong();
       }
 
-      const mySecretChar = mySideRef.current === "p1" ? p1Secret : p2Secret;
-      const opponentSecretChar = mySideRef.current === "p1" ? p2Secret : p1Secret;
+      const idMap = new Map(CHARACTERS.map(c => [c.id, c]));
+      const resolvedP1Secret = idMap.get(p1SecretId);
+      const resolvedP2Secret = idMap.get(p2SecretId);
+
+      // Fall back to state values if lookup fails (shouldn't happen)
+      const mySecretChar = (mySideRef.current === "p1" ? resolvedP1Secret : resolvedP2Secret) || p1Secret || p2Secret;
+      const opponentSecretChar = (mySideRef.current === "p1" ? resolvedP2Secret : resolvedP1Secret) || p2Secret || p1Secret;
 
       setGameResult({
         won,
-        mySecret: mySecretChar,
-        opponentSecret: opponentSecretChar,
+        mySecret: mySecretChar as Character,
+        opponentSecret: opponentSecretChar as Character,
       });
       setPhase("gameover");
     });
@@ -263,14 +275,21 @@ export default function AnimeGuessWhoGame({ onExit }: AnimeGuessWhoGameProps) {
     const p1Secret = grid[secretIndices[0]];
     const p2Secret = grid[secretIndices[1]];
 
-    const gameData = { roomId: rid, p1Name, p2Name, grid, p1Secret, p2Secret };
+    // Send only IDs to stay well under Pusher's 10KB client event payload limit
+    const payload = {
+      roomId: rid,
+      p1Name,
+      p2Name,
+      gridIds: grid.map(c => c.id),
+      p1SecretId: p1Secret.id,
+      p2SecretId: p2Secret.id,
+    };
 
     setTimeout(() => {
-      // Pusher does NOT echo client events back to the sender, so P1 must
-      // apply the game state locally immediately after triggering.
-      channel.trigger("client-gw-game-started", gameData);
+      // Trigger to P2 (Pusher does NOT echo to the sender)
+      channel.trigger("client-gw-game-started", payload);
 
-      // P1 applies state locally (P2 will receive the event above)
+      // P1 applies state locally immediately
       setMyName(p1Name);
       setOpponentName(p2Name);
       setGrid(grid);
@@ -369,11 +388,12 @@ export default function AnimeGuessWhoGame({ onExit }: AnimeGuessWhoGameProps) {
     const opponentSecret = opponentSide === "p1" ? p1Secret : p2Secret;
     const correct = opponentSecret.id === characterId;
 
+    // Send only IDs to stay under Pusher's 10KB limit
     channelRef.current.trigger("client-gw-guess-result", {
       correct,
       guesserSide: mySide,
-      p1Secret,
-      p2Secret
+      p1SecretId: p1Secret.id,
+      p2SecretId: p2Secret.id,
     });
 
     const won = correct;

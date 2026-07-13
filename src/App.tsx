@@ -423,17 +423,31 @@ export default function App() {
   const createOnlineRoom = () => {
     const activeSocket = ensureSocket();
     setGameMode("online-2p");
-    activeSocket.emit("create-room", player1Name.trim() || "Player 1");
+    const name = player1Name.trim() || "Player 1";
+    if (activeSocket.connected) {
+      activeSocket.emit("create-room", name);
+    } else {
+      activeSocket.once("connect", () => {
+        activeSocket.emit("create-room", name);
+      });
+    }
   };
 
   const joinOnlineRoom = () => {
     if (!joinRoomId.trim()) return;
     const activeSocket = ensureSocket();
     setGameMode("online-2p");
-    activeSocket.emit("join-room", {
+    const payload = {
       roomId: joinRoomId.toUpperCase(),
       playerName: player1Name.trim() || "Player 2",
-    });
+    };
+    if (activeSocket.connected) {
+      activeSocket.emit("join-room", payload);
+    } else {
+      activeSocket.once("connect", () => {
+        activeSocket.emit("join-room", payload);
+      });
+    }
   };
 
   const syncGameState = (updates: Record<string, unknown>) => {

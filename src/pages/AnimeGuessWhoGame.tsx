@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { io, Socket } from "socket.io-client";
+import Pusher from "pusher-js";
 import { Character } from "../types";
-import { SOCKET_URL } from "../config";
+import { CHARACTERS } from "../data/characters";
+import { API_BASE } from "../config";
 import { sfx } from "../utils/audio";
 
 import GWLobby from "../components/guesswho/GWLobby";
@@ -38,6 +39,8 @@ export default function AnimeGuessWhoGame({ onExit }: AnimeGuessWhoGameProps) {
   // Game state
   const [grid, setGrid] = useState<Character[]>([]);
   const [mySecret, setMySecret] = useState<Character | null>(null);
+  const [p1Secret, setP1Secret] = useState<Character | null>(null);
+  const [p2Secret, setP2Secret] = useState<Character | null>(null);
   const [eliminatedIds, setEliminatedIds] = useState<Set<string>>(new Set());
   const [currentTurn, setCurrentTurn] = useState<"p1" | "p2">("p1");
   const [questions, setQuestions] = useState<QuestionEntry[]>([]);
@@ -52,8 +55,9 @@ export default function AnimeGuessWhoGame({ onExit }: AnimeGuessWhoGameProps) {
     opponentSecret: Character;
   } | null>(null);
 
-  // Socket ref
-  const socketRef = useRef<Socket | null>(null);
+  // Pusher refs
+  const pusherRef = useRef<Pusher | null>(null);
+  const channelRef = useRef<any>(null);
   const roomIdRef = useRef<string | null>(null);
   const mySideRef = useRef<"p1" | "p2" | null>(null);
 
@@ -61,50 +65,135 @@ export default function AnimeGuessWhoGame({ onExit }: AnimeGuessWhoGameProps) {
   useEffect(() => { roomIdRef.current = roomId; }, [roomId]);
   useEffect(() => { mySideRef.current = mySide; }, [mySide]);
 
-  // Lazy socket initialization
-  const ensureSocket = useCallback(() => {
-    if (socketRef.current?.connected) return socketRef.current;
+  // Lazy Pusher initialization
+  const ensurePusher = useCallback(async (playerName: string) => {
+    if (pusherRef.current) return pusherRef.current;
 
-    const socket = io(SOCKET_URL, {
-      transports: ["websocket", "polling"],
-      reconnection: true,
-      reconnectionAttempts: 8,
-      reconnectionDelay: 1000,
+    console.log("Fetching Pusher config for Guess Who...");
+    let key = "";
+    let cluster = "";
+    try {
+      const res = await fetch(`${API_BASE}/api/pusher/config`);
+      const config = await res.json();
+      key = config.key;
+      cluster = config.cluster;
+    } catch (err) {
+      console.error("Failed to fetch Pusher config:", err);
+      alert("Multiplayer is offline: server configuration missing");
+      return null;
+    }
+
+    if (!key || !cluster) {
+      console.error("Pusher credentials missing in config response:", { key, cluster });
+      alert("Multiplayer is offline: credentials not configured on the server.");
+      return null;
+    }
+
+    const pusher = new Pusher(key, {
+      cluster: cluster,
+      authEndpoint: `${API_BASE}/api/pusher/auth`,
+      auth: {
+        params: {
+          username: playerName,
+        },
+      },
     });
 
-    // --- Lobby events ---
-    socket.on("gw-room-created", ({ roomId: rid, side }) => {
-      setRoomId(rid);
-      roomIdRef.current = rid;
-      setMySide(side);
-      mySideRef.current = side;
-      setIsWaiting(true);
+    pusherRef.current = pusher;
+    return pusher;
+  }, []);
+
+  const handleExit = useCallback(() => {
+    if (channelRef.current) {
+      try {
+        channelRef.current.trigger("client-gw-room-cancelled", {});
+      } catch (err) {
+        console.warn("Could not notify room cancellation:", err);
+      }
+      channelRef.current.unbind_all();
+      pusherRef.current?.unsubscribe(channelRef.current.name);
+      channelRef.current = null;
+    }
+    if (pusherRef.current) {
+      pusherRef.current.disconnect();
+      pusherRef.current = null;
+    }
+    onExit();
+  }, [onExit]);
+
+  const subscribeToChannel = useCallback((pusher: Pusher, rid: string, side: "p1" | "p2", playerName: string) => {
+    if (channelRef.current) {
+      channelRef.current.unbind_all();
+      pusher.unsubscribe(channelRef.current.name);
+    }
+
+    const channelName = `presence-gw-room-${rid.toUpperCase()}`;
+    console.log(`Subscribing to channel ${channelName} as ${side}...`);
+    const channel = pusher.subscribe(channelName);
+    channelRef.current = channel;
+
+    channel.bind("pusher:subscription_succeeded", (members: any) => {
+      console.log("GW Presence subscription succeeded. Members count:", members.count);
+      
+      if (side === "p1") {
+        setRoomId(rid);
+        roomIdRef.current = rid;
+        setMySide("p1");
+        mySideRef.current = "p1";
+        setIsWaiting(true);
+
+        if (members.count >= 2) {
+          let p2Name = "Player 2";
+          members.each((member: any) => {
+            if (member.id !== members.myID) {
+              p2Name = member.info?.name || "Player 2";
+            }
+          });
+          
+          console.log("P2 already in room, starting game directly.");
+          triggerGameStart(channel, rid, playerName, p2Name);
+        }
+      } else {
+        setRoomId(rid);
+        roomIdRef.current = rid;
+        setMySide("p2");
+        mySideRef.current = "p2";
+        setIsWaiting(false);
+      }
     });
 
-    socket.on("gw-game-started", ({ roomId: rid, side, p1Name, p2Name, grid: g, mySecret: secret, currentTurn: turn }) => {
-      setRoomId(rid);
-      roomIdRef.current = rid;
-      setMySide(side);
-      mySideRef.current = side;
-      setMyName(side === "p1" ? p1Name : p2Name);
-      setOpponentName(side === "p1" ? p2Name : p1Name);
+    channel.bind("pusher:member_added", (member: any) => {
+      console.log("Member joined:", member.id, member.info);
+      if (side === "p1") {
+        const p2Name = member.info?.name || "Player 2";
+        triggerGameStart(channel, rid, playerName, p2Name);
+      }
+    });
+
+    channel.bind("client-gw-game-started", ({ roomId: roomIdentifier, p1Name, p2Name, grid: g, p1Secret, p2Secret }: any) => {
+      console.log("client-gw-game-started received:", { roomIdentifier, p1Name, p2Name });
+      setRoomId(roomIdentifier);
+      roomIdRef.current = roomIdentifier;
+      
+      const myCurrentSide = mySideRef.current;
+      setMyName(myCurrentSide === "p1" ? p1Name : p2Name);
+      setOpponentName(myCurrentSide === "p1" ? p2Name : p1Name);
       setGrid(g);
-      setMySecret(secret);
-      setCurrentTurn(turn);
+      setP1Secret(p1Secret);
+      setP2Secret(p2Secret);
+      setMySecret(myCurrentSide === "p1" ? p1Secret : p2Secret);
+      setCurrentTurn("p1");
       setIsWaiting(false);
       setPhase("playing");
       sfx.playCorrect();
     });
 
-    // --- Gameplay events ---
-    socket.on("gw-question-asked", ({ question, fromSide }) => {
-      // I received a question from opponent — I need to answer it
+    channel.bind("client-gw-question-asked", ({ question, fromSide }: any) => {
       setPendingQuestion(question);
       setQuestions((prev) => [...prev, { question, answer: null, askedBy: fromSide }]);
     });
 
-    socket.on("gw-question-answered", ({ answer, fromSide }) => {
-      // Opponent answered my question
+    channel.bind("client-gw-question-answered", ({ answer, fromSide }: any) => {
       setWaitingForAnswer(false);
       if (answer === "yes") {
         sfx.playCorrect();
@@ -113,7 +202,6 @@ export default function AnimeGuessWhoGame({ onExit }: AnimeGuessWhoGameProps) {
       }
       setQuestions((prev) => {
         const updated = [...prev];
-        // Find the last unanswered question
         for (let i = updated.length - 1; i >= 0; i--) {
           if (updated[i].answer === null) {
             updated[i] = { ...updated[i], answer };
@@ -122,11 +210,10 @@ export default function AnimeGuessWhoGame({ onExit }: AnimeGuessWhoGameProps) {
         }
         return updated;
       });
-      // Turn switches after answer — server already switched, but we track locally
       setCurrentTurn((prev) => prev === "p1" ? "p2" : "p1");
     });
 
-    socket.on("gw-guess-result", ({ correct, guesserSide, actualSecret, p1Secret, p2Secret }) => {
+    channel.bind("client-gw-guess-result", ({ correct, guesserSide, p1Secret, p2Secret }: any) => {
       const iAmGuesser = guesserSide === mySideRef.current;
       const won = iAmGuesser ? correct : !correct;
 
@@ -147,92 +234,87 @@ export default function AnimeGuessWhoGame({ onExit }: AnimeGuessWhoGameProps) {
       setPhase("gameover");
     });
 
-    // --- Error/disconnect events ---
-    socket.on("error", (msg: string) => {
-      setLobbyError(msg);
-      setTimeout(() => setLobbyError(null), 4000);
-    });
-
-    socket.on("gw-player-disconnected", () => {
-      alert("Opponent disconnected!");
-      handleExit();
-    });
-
-    socket.on("gw-room-cancelled", () => {
+    channel.bind("client-gw-room-cancelled", () => {
       alert("Room was cancelled.");
       handleExit();
     });
 
-    socketRef.current = socket;
-    return socket;
-  }, []);
+    channel.bind("pusher:member_removed", (member: any) => {
+      console.log("Member left:", member.id, member.info);
+      alert("Opponent disconnected!");
+      handleExit();
+    });
+  }, [handleExit]);
 
-  // Cleanup socket on unmount
+  const triggerGameStart = (channel: any, rid: string, p1Name: string, p2Name: string) => {
+    const shuffled = [...CHARACTERS].sort(() => Math.random() - 0.5);
+    const grid = shuffled.slice(0, 24);
+
+    const secretIndices = [Math.floor(Math.random() * 24)];
+    let secondIdx;
+    do { secondIdx = Math.floor(Math.random() * 24); } while (secondIdx === secretIndices[0]);
+    secretIndices.push(secondIdx);
+    const p1Secret = grid[secretIndices[0]];
+    const p2Secret = grid[secretIndices[1]];
+
+    setTimeout(() => {
+      channel.trigger("client-gw-game-started", {
+        roomId: rid,
+        p1Name,
+        p2Name,
+        grid,
+        p1Secret,
+        p2Secret
+      });
+    }, 500);
+  };
+
+  // Cleanup on unmount
   useEffect(() => {
     return () => {
-      if (socketRef.current) {
-        if (roomIdRef.current) {
-          socketRef.current.emit("gw-cancel-room", { roomId: roomIdRef.current });
-        }
-        socketRef.current.disconnect();
-        socketRef.current = null;
+      if (channelRef.current) {
+        channelRef.current.trigger("client-gw-room-cancelled", {});
+        channelRef.current.unbind_all();
+        pusherRef.current?.unsubscribe(channelRef.current.name);
       }
+      pusherRef.current?.disconnect();
+      pusherRef.current = null;
+      channelRef.current = null;
     };
   }, []);
 
   // --- Lobby actions ---
-  const handleCreateRoom = (playerName: string) => {
+  const handleCreateRoom = async (playerName: string) => {
     setMyName(playerName);
-    const socket = ensureSocket();
     const name = playerName.trim() || "Player 1";
-    
-    const emitCreate = () => {
-      socket.emit("gw-create-room", name);
-    };
+    const pusher = await ensurePusher(name);
+    if (!pusher) return;
 
-    if (socket.connected) {
-      emitCreate();
-    } else {
-      socket.off("connect", emitCreate);
-      socket.once("connect", emitCreate);
-      socket.connect();
-    }
+    const generatedId = "GW-" + Math.random().toString(36).substring(2, 8).toUpperCase();
+    subscribeToChannel(pusher, generatedId, "p1", name);
   };
 
-  const handleJoinRoom = (rid: string, playerName: string) => {
+  const handleJoinRoom = async (rid: string, playerName: string) => {
     setMyName(playerName);
-    const socket = ensureSocket();
-    const payload = {
-      roomId: rid.toUpperCase(),
-      playerName: playerName.trim() || "Player 2",
-    };
+    const name = playerName.trim() || "Player 2";
+    const pusher = await ensurePusher(name);
+    if (!pusher) return;
 
-    const emitJoin = () => {
-      socket.emit("gw-join-room", payload);
-    };
-
-    if (socket.connected) {
-      emitJoin();
-    } else {
-      socket.off("connect", emitJoin);
-      socket.once("connect", emitJoin);
-      socket.connect();
-    }
+    subscribeToChannel(pusher, rid.toUpperCase(), "p2", name);
   };
 
   // --- Gameplay actions ---
   const handleAskQuestion = (question: string) => {
-    if (!socketRef.current || !roomIdRef.current) return;
-    socketRef.current.emit("gw-ask-question", { roomId: roomIdRef.current, question });
+    if (!channelRef.current || !roomIdRef.current) return;
+    channelRef.current.trigger("client-gw-ask-question", { roomId: roomIdRef.current, question, fromSide: mySide! });
     setQuestions((prev) => [...prev, { question, answer: null, askedBy: mySide! }]);
     setWaitingForAnswer(true);
   };
 
   const handleAnswer = (answer: "yes" | "no") => {
-    if (!socketRef.current || !roomIdRef.current) return;
-    socketRef.current.emit("gw-answer-question", { roomId: roomIdRef.current, answer });
+    if (!channelRef.current || !roomIdRef.current) return;
+    channelRef.current.trigger("client-gw-question-answered", { roomId: roomIdRef.current, answer, fromSide: mySide! });
     setPendingQuestion(null);
-    // Update the last unanswered question with the answer
     setQuestions((prev) => {
       const updated = [...prev];
       for (let i = updated.length - 1; i >= 0; i--) {
@@ -243,7 +325,6 @@ export default function AnimeGuessWhoGame({ onExit }: AnimeGuessWhoGameProps) {
       }
       return updated;
     });
-    // Turn switches after answer
     setCurrentTurn((prev) => prev === "p1" ? "p2" : "p1");
   };
 
@@ -266,17 +347,41 @@ export default function AnimeGuessWhoGame({ onExit }: AnimeGuessWhoGameProps) {
   };
 
   const handleGuess = (characterId: string) => {
-    if (!socketRef.current || !roomIdRef.current) return;
+    if (!channelRef.current || !roomIdRef.current || !p1Secret || !p2Secret) return;
     sfx.playShowdown();
-    socketRef.current.emit("gw-guess", { roomId: roomIdRef.current, characterId });
+
+    const opponentSide = mySide === "p1" ? "p2" : "p1";
+    const opponentSecret = opponentSide === "p1" ? p1Secret : p2Secret;
+    const correct = opponentSecret.id === characterId;
+
+    channelRef.current.trigger("client-gw-guess-result", {
+      correct,
+      guesserSide: mySide,
+      p1Secret,
+      p2Secret
+    });
+
+    const won = correct;
+    setGameResult({
+      won,
+      mySecret: mySide === "p1" ? p1Secret : p2Secret,
+      opponentSecret: mySide === "p1" ? p2Secret : p1Secret,
+    });
+    setPhase("gameover");
     setShowGuessModal(false);
   };
 
   const handlePlayAgain = () => {
-    // Reset all game state and go back to lobby
+    if (channelRef.current) {
+      channelRef.current.unbind_all();
+      pusherRef.current?.unsubscribe(channelRef.current.name);
+      channelRef.current = null;
+    }
     setPhase("lobby");
     setGrid([]);
     setMySecret(null);
+    setP1Secret(null);
+    setP2Secret(null);
     setEliminatedIds(new Set());
     setCurrentTurn("p1");
     setQuestions([]);
@@ -289,16 +394,6 @@ export default function AnimeGuessWhoGame({ onExit }: AnimeGuessWhoGameProps) {
     setIsWaiting(false);
   };
 
-  const handleExit = () => {
-    if (socketRef.current) {
-      if (roomIdRef.current) {
-        socketRef.current.emit("gw-cancel-room", { roomId: roomIdRef.current });
-      }
-      socketRef.current.disconnect();
-      socketRef.current = null;
-    }
-    onExit();
-  };
 
   const isMyTurn = currentTurn === mySide;
 

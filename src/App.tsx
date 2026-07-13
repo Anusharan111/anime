@@ -1,7 +1,7 @@
 // Anime Battle Main Application - Mobile Optimized
 import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { io, Socket } from "socket.io-client";
+import Pusher from "pusher-js";
 import {
   Swords,
   Trophy,
@@ -72,7 +72,7 @@ const initialSlots: SlottedTeam = {
 };
 
 import CharacterImage from "./components/CharacterImage";
-import { API_BASE, SOCKET_URL } from "./config";
+import { API_BASE } from "./config";
 
 const MIN_CHARACTERS_FOR_FULL_DRAFT = 14;
 type Rarity = Character["rarity"];
@@ -288,7 +288,8 @@ export default function App() {
   const onlineRoomIdRef = useRef<string | null>(null);
   const onlineSideRef = useRef<"p1" | "p2" | null>(null);
   const gameModeRef = useRef<"vs-ai" | "local-2p" | "online-2p">("vs-ai");
-  const socketRef = useRef<Socket | null>(null);
+  const pusherRef = useRef<Pusher | null>(null);
+  const channelRef = useRef<any>(null);
   const pullNewCharacterRef = useRef<
     (excludes: string[], animes: string[], slots: SlottedTeam) => Promise<void>
   >(async () => {});
@@ -298,6 +299,11 @@ export default function App() {
   useEffect(() => { gameModeRef.current = gameMode; }, [gameMode]);
 
   const resetOnlineLobby = useCallback(() => {
+    if (channelRef.current) {
+      channelRef.current.unbind_all();
+      pusherRef.current?.unsubscribe(channelRef.current.name);
+      channelRef.current = null;
+    }
     setOnlineRoomId(null);
     onlineRoomIdRef.current = null;
     setIsWaitingForOpponent(false);
@@ -307,109 +313,181 @@ export default function App() {
     setIsDeployModalOpen(false);
   }, []);
 
-  const ensureSocket = useCallback(() => {
-    if (socketRef.current?.connected) return socketRef.current;
+  const ensurePusher = useCallback(async (playerName: string) => {
+    if (pusherRef.current) return pusherRef.current;
 
-    if (!socketRef.current) {
-      console.log("Initializing socket client with SOCKET_URL:", SOCKET_URL);
-      const newSocket = io(SOCKET_URL, {
-        transports: ["websocket", "polling"],
-        reconnection: true,
-        reconnectionAttempts: 8,
-        reconnectionDelay: 1000,
-      });
-
-      newSocket.on("connect", () => {
-        console.log("Socket client connected successfully! ID:", newSocket.id);
-      });
-
-      newSocket.on("connect_error", (err) => {
-        console.error("Socket client connection error details:", err);
-      });
-
-      newSocket.on("room-created", ({ roomId, side }) => {
-        console.log("Room created event received! Room ID:", roomId, "Side:", side);
-        setOnlineRoomId(roomId);
-        setOnlineSide(side);
-        onlineSideRef.current = side;
-        setIsWaitingForOpponent(true);
-        setOnlineAction(null);
-      });
-
-      newSocket.on("game-started", ({ roomId, p1Name, p2Name, side }) => {
-        setOnlineRoomId(roomId);
-        onlineRoomIdRef.current = roomId;
-        setOnlineSide(side);
-        onlineSideRef.current = side;
-        setPlayer1Name(p1Name);
-        setPlayer2Name(p2Name);
-        setIsWaitingForOpponent(false);
-        setOnlineAction(null);
-        setRound(1);
-        setActiveTurn("p1");
-        setP1Slots(initialSlots);
-        setP2Slots(initialSlots);
-        setP1SkipUsed(false);
-        setP2SkipUsed(false);
-        setExcludedIds([]);
-        setMustPick(false);
-        setResultData(null);
-        setView("draft");
-        setIsDeployModalOpen(false);
-        importStarterAllAnimeCasts().catch(() => {});
-        // Only P1 pulls the first card; P2 receives it via game-state-updated
-        if (side === "p1") {
-          requestAnimationFrame(() => {
-            pullNewCharacterRef.current([], [], initialSlots);
-          });
-        }
-      });
-
-      newSocket.on("game-state-updated", (state) => {
-        if (state.round) setRound(state.round);
-        if (state.activeTurn) setActiveTurn(state.activeTurn);
-        if (state.p1Slots) setP1Slots(state.p1Slots);
-        if (state.p2Slots) setP2Slots(state.p2Slots);
-        if (state.p1SkipUsed !== undefined) setP1SkipUsed(state.p1SkipUsed);
-        if (state.p2SkipUsed !== undefined) setP2SkipUsed(state.p2SkipUsed);
-        if (state.excludedIds) setExcludedIds(state.excludedIds);
-        if (state.activeCharacter !== undefined) setActiveCharacter(state.activeCharacter);
-        if (state.isCardFlipped !== undefined) setIsCardFlipped(state.isCardFlipped);
-        if (state.mustPick !== undefined) setMustPick(state.mustPick);
-        if (state.view) setView(state.view);
-        if (state.loadingResult !== undefined) setLoadingResult(state.loadingResult);
-        if (statsMatch(state.resultData)) setResultData(state.resultData);
-      });
-
-      newSocket.on("player-disconnected", () => {
-        alert("Opponent disconnected. Returning to lobby.");
-        resetOnlineLobby();
-      });
-
-      newSocket.on("room-cancelled", () => {
-        alert("Host cancelled the room.");
-        resetOnlineLobby();
-      });
-
-      newSocket.on("error", (msg) => {
-        alert(msg);
-      });
-
-      socketRef.current = newSocket;
-    } else {
-      socketRef.current.connect();
+    console.log("Fetching Pusher config...");
+    let key = "";
+    let cluster = "";
+    try {
+      const res = await fetch(`${API_BASE}/api/pusher/config`);
+      const config = await res.json();
+      key = config.key;
+      cluster = config.cluster;
+    } catch (err) {
+      console.error("Failed to fetch Pusher config:", err);
+      alert("Multiplayer is offline: server configuration missing");
+      return null;
     }
 
-    return socketRef.current;
+    if (!key || !cluster) {
+      console.error("Pusher credentials missing in config response:", { key, cluster });
+      alert("Multiplayer is offline: credentials not configured on the server.");
+      return null;
+    }
+
+    console.log("Initializing Pusher client with cluster:", cluster);
+    const pusher = new Pusher(key, {
+      cluster: cluster,
+      authEndpoint: `${API_BASE}/api/pusher/auth`,
+      auth: {
+        params: {
+          username: playerName,
+        },
+      },
+    });
+
+    pusher.connection.bind("connected", () => {
+      console.log("Pusher connected successfully!");
+    });
+
+    pusher.connection.bind("error", (err: any) => {
+      console.error("Pusher connection error:", err);
+    });
+
+    pusherRef.current = pusher;
+    return pusher;
+  }, []);
+
+  const subscribeToChannel = useCallback((pusher: Pusher, roomId: string, side: "p1" | "p2", playerName: string) => {
+    if (channelRef.current) {
+      channelRef.current.unbind_all();
+      pusher.unsubscribe(channelRef.current.name);
+    }
+
+    const channelName = `presence-room-${roomId.toUpperCase()}`;
+    console.log(`Subscribing to channel ${channelName} as ${side}...`);
+    const channel = pusher.subscribe(channelName);
+    channelRef.current = channel;
+
+    channel.bind("pusher:subscription_succeeded", (members: any) => {
+      console.log("Presence subscription succeeded. Members count:", members.count);
+      
+      if (side === "p1") {
+        setOnlineRoomId(roomId);
+        setOnlineSide("p1");
+        onlineSideRef.current = "p1";
+        setIsWaitingForOpponent(true);
+        setOnlineAction(null);
+
+        if (members.count >= 2) {
+          let p2Name = "Player 2";
+          members.each((member: any) => {
+            if (member.id !== members.myID) {
+              p2Name = member.info?.name || "Player 2";
+            }
+          });
+          
+          console.log("P2 already in room, starting game directly.");
+          triggerGameStart(channel, roomId, playerName, p2Name);
+        }
+      } else {
+        setOnlineRoomId(roomId);
+        setOnlineSide("p2");
+        onlineSideRef.current = "p2";
+        setIsWaitingForOpponent(false);
+        setOnlineAction(null);
+      }
+    });
+
+    channel.bind("pusher:member_added", (member: any) => {
+      console.log("Member joined:", member.id, member.info);
+      if (side === "p1") {
+        const p2Name = member.info?.name || "Player 2";
+        triggerGameStart(channel, roomId, playerName, p2Name);
+      }
+    });
+
+    channel.bind("client-game-started", ({ roomId: rid, p1Name, p2Name }: any) => {
+      console.log("client-game-started received:", { rid, p1Name, p2Name });
+      setOnlineRoomId(rid);
+      onlineRoomIdRef.current = rid;
+      setPlayer1Name(p1Name);
+      setPlayer2Name(p2Name);
+      setIsWaitingForOpponent(false);
+      setOnlineAction(null);
+      setRound(1);
+      setActiveTurn("p1");
+      setP1Slots(initialSlots);
+      setP2Slots(initialSlots);
+      setP1SkipUsed(false);
+      setP2SkipUsed(false);
+      setExcludedIds([]);
+      setMustPick(false);
+      setResultData(null);
+      setView("draft");
+      setIsDeployModalOpen(false);
+      importStarterAllAnimeCasts().catch(() => {});
+
+      if (onlineSideRef.current === "p1") {
+        requestAnimationFrame(() => {
+          pullNewCharacterRef.current([], [], initialSlots);
+        });
+      }
+    });
+
+    channel.bind("client-game-state-updated", (state: any) => {
+      console.log("client-game-state-updated received:", state);
+      if (state.round !== undefined) setRound(state.round);
+      if (state.activeTurn !== undefined) setActiveTurn(state.activeTurn);
+      if (state.p1Slots !== undefined) setP1Slots(state.p1Slots);
+      if (state.p2Slots !== undefined) setP2Slots(state.p2Slots);
+      if (state.p1SkipUsed !== undefined) setP1SkipUsed(state.p1SkipUsed);
+      if (state.p2SkipUsed !== undefined) setP2SkipUsed(state.p2SkipUsed);
+      if (state.excludedIds !== undefined) setExcludedIds(state.excludedIds);
+      if (state.activeCharacter !== undefined) setActiveCharacter(state.activeCharacter);
+      if (state.isCardFlipped !== undefined) setIsCardFlipped(state.isCardFlipped);
+      if (state.mustPick !== undefined) setMustPick(state.mustPick);
+      if (state.view !== undefined) setView(state.view);
+      if (state.loadingResult !== undefined) setLoadingResult(state.loadingResult);
+      if (statsMatch(state.resultData)) setResultData(state.resultData);
+    });
+
+    channel.bind("client-room-cancelled", () => {
+      alert("The room was cancelled.");
+      resetOnlineLobby();
+    });
+
+    channel.bind("pusher:member_removed", (member: any) => {
+      console.log("Member left:", member.id, member.info);
+      alert("Opponent disconnected. Returning to lobby.");
+      resetOnlineLobby();
+    });
   }, [resetOnlineLobby]);
 
-  // Load history and characters on startup (socket connects lazily for online mode)
+  const triggerGameStart = (channel: any, roomId: string, p1Name: string, p2Name: string) => {
+    setTimeout(() => {
+      console.log("Triggering client-game-started...");
+      channel.trigger("client-game-started", {
+        roomId,
+        p1Name,
+        p2Name
+      });
+    }, 500);
+  };
+
+  // Load history and characters on startup
   useEffect(() => {
     fetchMatchHistory();
     fetchTotalCharactersCount();
     return () => {
-      socketRef.current?.close();
-      socketRef.current = null;
+      if (channelRef.current) {
+        channelRef.current.unbind_all();
+        pusherRef.current?.unsubscribe(channelRef.current.name);
+      }
+      pusherRef.current?.disconnect();
+      pusherRef.current = null;
+      channelRef.current = null;
     };
   }, []);
 
@@ -430,58 +508,34 @@ export default function App() {
     return data && data.winnerId;
   };
 
-  const createOnlineRoom = () => {
+  const createOnlineRoom = async () => {
     console.log("createOnlineRoom action triggered!");
-    const activeSocket = ensureSocket();
     setGameMode("online-2p");
     const name = player1Name.trim() || "Player 1";
-    
-    const emitCreate = () => {
-      console.log("Emitting create-room with name:", name);
-      activeSocket.emit("create-room", name);
-    };
+    const pusher = await ensurePusher(name);
+    if (!pusher) return;
 
-    if (activeSocket.connected) {
-      console.log("Socket already connected, emitting create-room instantly.");
-      emitCreate();
-    } else {
-      console.log("Socket not connected, attaching once('connect') listener.");
-      activeSocket.off("connect", emitCreate);
-      activeSocket.once("connect", emitCreate);
-      activeSocket.connect();
-    }
+    const generatedId = Math.random().toString(36).substring(2, 8).toUpperCase();
+    console.log("Generated Room ID for Pusher:", generatedId);
+    
+    subscribeToChannel(pusher, generatedId, "p1", name);
   };
 
-  const joinOnlineRoom = () => {
+  const joinOnlineRoom = async () => {
     if (!joinRoomId.trim()) return;
     console.log("joinOnlineRoom action triggered! Room:", joinRoomId);
-    const activeSocket = ensureSocket();
     setGameMode("online-2p");
-    const payload = {
-      roomId: joinRoomId.toUpperCase(),
-      playerName: player1Name.trim() || "Player 2",
-    };
+    const name = player1Name.trim() || "Player 2";
+    const pusher = await ensurePusher(name);
+    if (!pusher) return;
 
-    const emitJoin = () => {
-      console.log("Emitting join-room with payload:", payload);
-      activeSocket.emit("join-room", payload);
-    };
-
-    if (activeSocket.connected) {
-      console.log("Socket already connected, emitting join-room instantly.");
-      emitJoin();
-    } else {
-      console.log("Socket not connected, attaching once('connect') listener.");
-      activeSocket.off("connect", emitJoin);
-      activeSocket.once("connect", emitJoin);
-      activeSocket.connect();
-    }
+    subscribeToChannel(pusher, joinRoomId.toUpperCase(), "p2", name);
   };
 
   const syncGameState = (updates: Record<string, unknown>) => {
-    const activeSocket = socketRef.current;
-    if (!activeSocket?.connected || !onlineRoomIdRef.current) return;
-    activeSocket.emit("sync-game-state", { roomId: onlineRoomIdRef.current, state: updates });
+    if (!channelRef.current || !onlineRoomIdRef.current) return;
+    console.log("Emitting state update via Pusher:", updates);
+    channelRef.current.trigger("client-game-state-updated", updates);
   };
 
   // Spotlight rotation effect
@@ -1597,8 +1651,8 @@ export default function App() {
                             </div>
                             <button 
                               onClick={() => {
-                                if (socketRef.current && onlineRoomId) {
-                                  socketRef.current.emit("cancel-room", { roomId: onlineRoomId });
+                                if (channelRef.current) {
+                                  channelRef.current.trigger("client-room-cancelled", {});
                                 }
                                 resetOnlineLobby();
                                 setGameMode("vs-ai");
@@ -2292,8 +2346,8 @@ export default function App() {
                         id="btn-return-landing"
                         onClick={() => {
                           if (gameMode === "online-2p") {
-                            if (socketRef.current && onlineRoomId) {
-                              socketRef.current.emit("cancel-room", { roomId: onlineRoomId });
+                            if (channelRef.current) {
+                              channelRef.current.trigger("client-room-cancelled", {});
                             }
                             resetOnlineLobby();
                           } else {

@@ -311,6 +311,7 @@ export default function App() {
     if (socketRef.current?.connected) return socketRef.current;
 
     if (!socketRef.current) {
+      console.log("Initializing socket client with SOCKET_URL:", SOCKET_URL);
       const newSocket = io(SOCKET_URL, {
         transports: ["websocket", "polling"],
         reconnection: true,
@@ -318,7 +319,16 @@ export default function App() {
         reconnectionDelay: 1000,
       });
 
+      newSocket.on("connect", () => {
+        console.log("Socket client connected successfully! ID:", newSocket.id);
+      });
+
+      newSocket.on("connect_error", (err) => {
+        console.error("Socket client connection error details:", err);
+      });
+
       newSocket.on("room-created", ({ roomId, side }) => {
+        console.log("Room created event received! Room ID:", roomId, "Side:", side);
         setOnlineRoomId(roomId);
         setOnlineSide(side);
         onlineSideRef.current = side;
@@ -421,17 +431,21 @@ export default function App() {
   };
 
   const createOnlineRoom = () => {
+    console.log("createOnlineRoom action triggered!");
     const activeSocket = ensureSocket();
     setGameMode("online-2p");
     const name = player1Name.trim() || "Player 1";
     
     const emitCreate = () => {
+      console.log("Emitting create-room with name:", name);
       activeSocket.emit("create-room", name);
     };
 
     if (activeSocket.connected) {
+      console.log("Socket already connected, emitting create-room instantly.");
       emitCreate();
     } else {
+      console.log("Socket not connected, attaching once('connect') listener.");
       activeSocket.off("connect", emitCreate);
       activeSocket.once("connect", emitCreate);
       activeSocket.connect();
@@ -440,6 +454,7 @@ export default function App() {
 
   const joinOnlineRoom = () => {
     if (!joinRoomId.trim()) return;
+    console.log("joinOnlineRoom action triggered! Room:", joinRoomId);
     const activeSocket = ensureSocket();
     setGameMode("online-2p");
     const payload = {
@@ -448,12 +463,15 @@ export default function App() {
     };
 
     const emitJoin = () => {
+      console.log("Emitting join-room with payload:", payload);
       activeSocket.emit("join-room", payload);
     };
 
     if (activeSocket.connected) {
+      console.log("Socket already connected, emitting join-room instantly.");
       emitJoin();
     } else {
+      console.log("Socket not connected, attaching once('connect') listener.");
       activeSocket.off("connect", emitJoin);
       activeSocket.once("connect", emitJoin);
       activeSocket.connect();

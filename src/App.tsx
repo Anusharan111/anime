@@ -32,8 +32,12 @@ import CharacterCard from "./components/CharacterCard";
 import TeamSlots from "./components/TeamSlots";
 import MyAnimeListPortal from "./components/MyAnimeListPortal";
 import DeployModal from "./components/DeployModal";
+import AnimeFeudGame from "./pages/AnimeFeudGame";
+import AnimeGuessWhoGame from "./pages/AnimeGuessWhoGame";
+import { sfx } from "./utils/audio";
+import { Search } from "lucide-react";
 
-type ViewState = "landing" | "draft" | "results";
+type ViewState = "landing" | "draft" | "results" | "feud" | "guesswho";
 
 type BattleReport = {
   p1BattleScore: number;
@@ -121,6 +125,7 @@ export default function App() {
   const [player1Name, setPlayer1Name] = useState("Hero Picker");
   const [player2Name, setPlayer2Name] = useState("AI Overlord");
   const [gameMode, setGameMode] = useState<"vs-ai" | "local-2p" | "online-2p">("vs-ai");
+  const [selectedGameHubMode, setSelectedGameHubMode] = useState<"hub" | "battle">("hub");
 
   // Online Multiplayer States
   const [onlineRoomId, setOnlineRoomId] = useState<string | null>(null);
@@ -593,6 +598,7 @@ export default function App() {
     targetSlots: SlottedTeam
   ) => {
     setIsCardFlipped(true); // Flip card back to hide while loading
+    sfx.playCardSpin();
     setActiveCharacter(null); // Clear previous to prevent visual artifacts
     const requiredRarity = getRequiredRarityForTeam(targetSlots);
 
@@ -665,6 +671,8 @@ export default function App() {
 
     const activeSlots = activeTurn === "p1" ? p1Slots : p2Slots;
     if (activeSlots[roleId]) return; // slot already occupied
+
+    sfx.playSelect();
 
     // Clean up character names to prevent duplicates matching different ID strings (e.g. mal-17 vs anilist-17 or different casing)
     const normalizeName = (name: string) => name.toLowerCase().replace(/[^a-z0-9]/g, "");
@@ -768,6 +776,8 @@ export default function App() {
 
   const handleSkip = () => {
     if (gameMode === "online-2p" && activeTurn !== onlineSide) return;
+
+    sfx.playSkip();
 
     if (activeTurn === "p1") {
       if (p1SkipUsed) return;
@@ -949,6 +959,7 @@ export default function App() {
   const calculateWinner = async (team1: Character[], team2: Character[]) => {
     setView("results");
     setLoadingResult(true);
+    sfx.playShowdown();
     if (gameMode === "online-2p") {
       syncGameState({ view: "results", loadingResult: true });
     }
@@ -970,6 +981,7 @@ export default function App() {
       if (res.ok) {
         const stats = await res.json();
         setResultData(stats);
+        sfx.playVictory();
         if (gameMode === "online-2p") {
           syncGameState({ resultData: stats, view: "results", loadingResult: false });
         }
@@ -1034,6 +1046,7 @@ export default function App() {
               onClickBackSide={() => {
                 if (gameMode === "online-2p" && activeTurn !== onlineSide) return;
                 setIsCardFlipped(false);
+                sfx.playReveal(activeCharacter.rarity);
                 if (gameMode === "online-2p") {
                   syncGameState({ isCardFlipped: false });
                 }
@@ -1299,8 +1312,96 @@ export default function App() {
                     </div>
                   </div>
 
-                  {/* GAME SETUP MATRIX */}
-                  <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto items-stretch">
+                  {selectedGameHubMode === "hub" ? (
+                    <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 w-full">
+                      {/* Game Card 1: Anime Battle Draft */}
+                      <button
+                        onClick={() => setSelectedGameHubMode("battle")}
+                        className="p-8 rounded-3xl border border-violet-500/20 bg-neutral-955/70 hover:border-violet-500/60 hover:bg-violet-955/10 text-left transition-all duration-300 shadow-xl relative overflow-hidden group hover:-translate-y-1 cursor-pointer"
+                      >
+                        <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition duration-300">
+                          <Swords className="w-32 h-32 text-violet-450" />
+                        </div>
+                        <div className="space-y-4">
+                          <div className="w-12 h-12 rounded-2xl bg-violet-500/10 border border-violet-500/30 flex items-center justify-center text-violet-400 group-hover:scale-110 transition duration-300">
+                            <Swords className="w-6 h-6" />
+                          </div>
+                          <div>
+                            <h3 className="text-2xl font-black text-white uppercase tracking-wide">
+                              🗡️ Anime Battle
+                            </h3>
+                            <p className="text-xs text-neutral-450 mt-1.5 leading-relaxed">
+                              Tactical drafting and duel simulation. Pick the highest power heroes, build team roles, and match against bots or local players.
+                            </p>
+                          </div>
+                        </div>
+                      </button>
+
+                      {/* Game Card 2: Anime Feud */}
+                      <button
+                        onClick={() => setView("feud")}
+                        className="p-8 rounded-3xl border border-fuchsia-500/20 bg-neutral-955/70 hover:border-fuchsia-500/60 hover:bg-fuchsia-955/10 text-left transition-all duration-300 shadow-xl relative overflow-hidden group hover:-translate-y-1 cursor-pointer"
+                      >
+                        <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition duration-300">
+                          <Trophy className="w-32 h-32 text-fuchsia-450" />
+                        </div>
+                        <div className="space-y-4">
+                          <div className="w-12 h-12 rounded-2xl bg-fuchsia-500/10 border border-fuchsia-500/30 flex items-center justify-center text-fuchsia-400 group-hover:scale-110 transition duration-300">
+                            <Sparkles className="w-6 h-6" />
+                          </div>
+                          <div>
+                            <h3 className="text-2xl font-black text-white uppercase tracking-wide">
+                              🎤 Anime Feud
+                            </h3>
+                            <p className="text-xs text-neutral-450 mt-1.5 leading-relaxed">
+                              Local party quiz game. Guess the most popular answers to offline anime questions. Supports 2 to 8 players, teams, and streak combos!
+                            </p>
+                          </div>
+                        </div>
+                      </button>
+
+                      {/* Game Card 3: Anime Guess Who */}
+                      <button
+                        onClick={() => setView("guesswho")}
+                        className="p-8 rounded-3xl border border-cyan-500/20 bg-neutral-955/70 hover:border-cyan-500/60 hover:bg-cyan-955/10 text-left transition-all duration-300 shadow-xl relative overflow-hidden group hover:-translate-y-1 cursor-pointer md:col-span-2"
+                      >
+                        <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition duration-300">
+                          <Search className="w-32 h-32 text-cyan-450" />
+                        </div>
+                        <div className="space-y-4">
+                          <div className="w-12 h-12 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 group-hover:scale-110 transition duration-300">
+                            <Search className="w-6 h-6" />
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <div>
+                              <h3 className="text-2xl font-black text-white uppercase tracking-wide">
+                                🔍 Anime Guess Who
+                              </h3>
+                              <p className="text-xs text-neutral-450 mt-1.5 leading-relaxed">
+                                Online deduction duel. Ask yes/no questions to figure out your opponent&apos;s secret anime character. Wrong guess = instant loss!
+                              </p>
+                            </div>
+                            <span className="ml-auto px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 whitespace-nowrap">
+                              Online Only
+                            </span>
+                          </div>
+                        </div>
+                      </button>
+                    </div>
+                  ) : (
+                    <>
+                      {/* Back button to Hub */}
+                      <div className="max-w-5xl mx-auto flex justify-start pb-4 w-full">
+                        <button
+                          onClick={() => setSelectedGameHubMode("hub")}
+                          className="px-4 py-2 rounded-xl bg-neutral-900 border border-white/5 text-xs font-bold text-neutral-450 hover:text-white transition duration-200 cursor-pointer"
+                        >
+                          ← Back to Game Hub
+                        </button>
+                      </div>
+
+                      {/* GAME SETUP MATRIX */}
+                      <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto items-stretch">
                     {/* Setup Controls */}
                     <div className="rounded-3xl border border-neutral-800/80 bg-neutral-950/70 p-6 sm:p-8 flex flex-col justify-between space-y-8 relative overflow-hidden backdrop-blur-md shadow-2xl">
                       <div className="space-y-5">
@@ -1763,6 +1864,8 @@ export default function App() {
                       </button>
                     </div>
                   </div>
+                    </>
+                  )}
                 </>
               )}
             </motion.div>
@@ -2226,6 +2329,34 @@ export default function App() {
                   </div>
                 </div>
               )}
+            </motion.div>
+          )}
+
+          {/* 4. ANIME FEUD VIEW */}
+          {view === "feud" && (
+            <motion.div
+              key="feud"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.4 }}
+              className="w-full"
+            >
+              <AnimeFeudGame onExit={() => setView("landing")} />
+            </motion.div>
+          )}
+
+          {/* 5. ANIME GUESS WHO VIEW */}
+          {view === "guesswho" && (
+            <motion.div
+              key="guesswho"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.4 }}
+              className="w-full"
+            >
+              <AnimeGuessWhoGame onExit={() => setView("landing")} />
             </motion.div>
           )}
         </AnimatePresence>

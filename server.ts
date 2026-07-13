@@ -849,6 +849,7 @@ app.get("/api/draft/history", (req, res) => {
 // ---------------- MAIN SERVER KICKOFF ----------------
 
 const rooms = new Map<string, any>();
+const gwRooms = new Map<string, any>();
 
 async function startServer() {
   const httpServer = createServer(app);
@@ -910,6 +911,109 @@ async function startServer() {
       rooms.delete(roomId);
     });
 
+    // ============= GUESS WHO EVENTS =============
+    socket.on("gw-create-room", (playerName) => {
+      const roomId = "GW-" + Math.random().toString(36).substring(2, 8).toUpperCase();
+      gwRooms.set(roomId, {
+        id: roomId,
+        players: [{ id: socket.id, name: playerName, side: "p1" }],
+        status: "waiting",
+        grid: [],
+        secrets: { p1: null, p2: null },
+        currentTurn: "p1",
+        questionLog: [],
+      });
+      socket.join(roomId);
+      socket.emit("gw-room-created", { roomId, side: "p1" });
+    });
+
+    socket.on("gw-join-room", ({ roomId, playerName }) => {
+      const room = gwRooms.get(roomId);
+      if (!room) { socket.emit("error", "Room not found"); return; }
+      if (room.players.length >= 2) { socket.emit("error", "Room is full"); return; }
+
+      room.players.push({ id: socket.id, name: playerName, side: "p2" });
+      room.status = "playing";
+      socket.join(roomId);
+
+      // Pick 24 random characters for the grid
+      const shuffled = [...CHARACTERS].sort(() => Math.random() - 0.5);
+      const grid = shuffled.slice(0, 24);
+      room.grid = grid;
+
+      // Pick 2 different secrets from the grid
+      const secretIndices = [Math.floor(Math.random() * 24)];
+      let secondIdx;
+      do { secondIdx = Math.floor(Math.random() * 24); } while (secondIdx === secretIndices[0]);
+      secretIndices.push(secondIdx);
+      room.secrets = { p1: grid[secretIndices[0]], p2: grid[secretIndices[1]] };
+
+      const p1 = room.players.find((p: any) => p.side === "p1");
+
+      // Send each player the grid + their OWN secret (not opponent's)
+      for (const player of room.players) {
+        const mySecret = player.side === "p1" ? room.secrets.p1 : room.secrets.p2;
+        io.to(player.id).emit("gw-game-started", {
+          roomId,
+          side: player.side,
+          p1Name: p1.name,
+          p2Name: playerName,
+          grid,
+          mySecret,
+          currentTurn: "p1",
+        });
+      }
+    });
+
+    socket.on("gw-ask-question", ({ roomId, question }) => {
+      const room = gwRooms.get(roomId);
+      if (!room) return;
+      const player = room.players.find((p: any) => p.id === socket.id);
+      if (!player || player.side !== room.currentTurn) return;
+      socket.to(roomId).emit("gw-question-asked", { question, fromSide: player.side });
+    });
+
+    socket.on("gw-answer-question", ({ roomId, answer }) => {
+      const room = gwRooms.get(roomId);
+      if (!room) return;
+      const player = room.players.find((p: any) => p.id === socket.id);
+      if (!player) return;
+      // The answerer is NOT the current turn player
+      room.questionLog.push({ answer, answeredBy: player.side });
+      // Switch turn after answer
+      room.currentTurn = room.currentTurn === "p1" ? "p2" : "p1";
+      socket.to(roomId).emit("gw-question-answered", { answer, fromSide: player.side });
+    });
+
+    socket.on("gw-guess", ({ roomId, characterId }) => {
+      const room = gwRooms.get(roomId);
+      if (!room) return;
+      const player = room.players.find((p: any) => p.id === socket.id);
+      if (!player || player.side !== room.currentTurn) return;
+
+      // The guesser is trying to guess the OPPONENT's secret
+      const opponentSide = player.side === "p1" ? "p2" : "p1";
+      const opponentSecret = room.secrets[opponentSide];
+      const correct = opponentSecret.id === characterId;
+
+      room.status = "finished";
+
+      // Broadcast result to both players
+      io.to(roomId).emit("gw-guess-result", {
+        correct,
+        guesserSide: player.side,
+        guessedCharId: characterId,
+        actualSecret: opponentSecret,
+        p1Secret: room.secrets.p1,
+        p2Secret: room.secrets.p2,
+      });
+    });
+
+    socket.on("gw-cancel-room", ({ roomId }) => {
+      socket.to(roomId).emit("gw-room-cancelled");
+      gwRooms.delete(roomId);
+    });
+
     socket.on("disconnect", () => {
       console.log(`User disconnected: ${socket.id}`);
       // Find room the player was in
@@ -921,6 +1025,20 @@ async function startServer() {
             rooms.delete(roomId);
           } else {
             io.to(roomId).emit("player-disconnected");
+          }
+          break;
+        }
+      }
+
+      // Clean up Guess Who rooms
+      for (const [roomId, room] of gwRooms.entries()) {
+        const playerIndex = room.players.findIndex((p: any) => p.id === socket.id);
+        if (playerIndex !== -1) {
+          room.players.splice(playerIndex, 1);
+          if (room.players.length === 0) {
+            gwRooms.delete(roomId);
+          } else {
+            io.to(roomId).emit("gw-player-disconnected");
           }
           break;
         }

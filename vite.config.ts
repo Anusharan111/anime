@@ -28,7 +28,15 @@ export default defineConfig({
   server: {
     port: 5174,
     proxy: {
-      '/api': 'http://localhost:6000',
+      '/api': {
+        target: 'http://localhost:5174',
+        changeOrigin: true,
+      },
+      '/socket.io': {
+        target: 'http://localhost:5174',
+        changeOrigin: true,
+        ws: true,
+      },
     },
     // HMR is disabled by default in middleware mode; set DISABLE_HMR=false to enable it.
     hmr: process.env.DISABLE_HMR === 'false',

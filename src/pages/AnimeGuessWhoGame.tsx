@@ -184,16 +184,30 @@ export default function AnimeGuessWhoGame({ onExit }: AnimeGuessWhoGameProps) {
   const handleCreateRoom = (playerName: string) => {
     setMyName(playerName);
     const socket = ensureSocket();
-    socket.emit("gw-create-room", playerName.trim() || "Player 1");
+    const name = playerName.trim() || "Player 1";
+    if (socket.connected) {
+      socket.emit("gw-create-room", name);
+    } else {
+      socket.once("connect", () => {
+        socket.emit("gw-create-room", name);
+      });
+    }
   };
 
   const handleJoinRoom = (rid: string, playerName: string) => {
     setMyName(playerName);
     const socket = ensureSocket();
-    socket.emit("gw-join-room", {
+    const payload = {
       roomId: rid.toUpperCase(),
       playerName: playerName.trim() || "Player 2",
-    });
+    };
+    if (socket.connected) {
+      socket.emit("gw-join-room", payload);
+    } else {
+      socket.once("connect", () => {
+        socket.emit("gw-join-room", payload);
+      });
+    }
   };
 
   // --- Gameplay actions ---

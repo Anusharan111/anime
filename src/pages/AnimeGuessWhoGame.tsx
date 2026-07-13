@@ -185,12 +185,17 @@ export default function AnimeGuessWhoGame({ onExit }: AnimeGuessWhoGameProps) {
     setMyName(playerName);
     const socket = ensureSocket();
     const name = playerName.trim() || "Player 1";
-    if (socket.connected) {
+    
+    const emitCreate = () => {
       socket.emit("gw-create-room", name);
+    };
+
+    if (socket.connected) {
+      emitCreate();
     } else {
-      socket.once("connect", () => {
-        socket.emit("gw-create-room", name);
-      });
+      socket.off("connect", emitCreate);
+      socket.once("connect", emitCreate);
+      socket.connect();
     }
   };
 
@@ -201,12 +206,17 @@ export default function AnimeGuessWhoGame({ onExit }: AnimeGuessWhoGameProps) {
       roomId: rid.toUpperCase(),
       playerName: playerName.trim() || "Player 2",
     };
-    if (socket.connected) {
+
+    const emitJoin = () => {
       socket.emit("gw-join-room", payload);
+    };
+
+    if (socket.connected) {
+      emitJoin();
     } else {
-      socket.once("connect", () => {
-        socket.emit("gw-join-room", payload);
-      });
+      socket.off("connect", emitJoin);
+      socket.once("connect", emitJoin);
+      socket.connect();
     }
   };
 

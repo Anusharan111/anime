@@ -1,131 +1,189 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Character } from "../../types";
-import { Eye, EyeOff, RotateCcw, AlertTriangle } from "lucide-react";
+import { RotateCcw, AlertTriangle, CheckCircle } from "lucide-react";
 import CharacterCard from "../CharacterCard";
 import { sfx } from "../../utils/audio";
 
+interface PlayerInfo {
+  id: string;
+  name: string;
+}
+
 interface GuessImposterModeProps {
-  players: string[];
-  civiliansChar: Character;
-  imposterChar: Character;
-  imposterIdx: number;
+  myCharacter: Character;
+  players: PlayerInfo[];
+  mySocketId: string;
+  isHost: boolean;
+  votes: Record<string, string>; // socketId -> accusedName
+  revealedImposter: { name: string; character: Character } | null;
+  civiliansCharacter: Character | null;
+  onVote: (accusedName: string) => void;
+  onReveal: (imposterSocketId: string) => void;
   onEndGame: () => void;
 }
 
-export default function GuessImposterMode({ players, civiliansChar, imposterChar, imposterIdx, onEndGame }: GuessImposterModeProps) {
-  const [activePlayerIdx, setActivePlayerIdx] = useState<number | null>(null);
-  const [showReveal, setShowReveal] = useState(false);
+export default function GuessImposterMode({
+  myCharacter,
+  players,
+  mySocketId,
+  isHost,
+  votes,
+  revealedImposter,
+  civiliansCharacter,
+  onVote,
+  onReveal,
+  onEndGame,
+}: GuessImposterModeProps) {
+  const [myVote, setMyVote] = useState<string | null>(null);
+
+  const handleVote = (playerName: string) => {
+    if (myVote) return; // already voted
+    sfx.playSelect();
+    setMyVote(playerName);
+    onVote(playerName);
+  };
+
+  const voteCount = Object.keys(votes).length;
+  const totalPlayers = players.length;
+
+  // Count votes per name
+  const voteTally: Record<string, number> = {};
+  Object.values(votes).forEach(name => {
+    voteTally[name] = (voteTally[name] || 0) + 1;
+  });
+
+  // Find most voted
+  const topVoted = Object.entries(voteTally).sort((a, b) => b[1] - a[1])[0];
+
+  const handleRevealClick = () => {
+    if (!topVoted) return;
+    const topPlayer = players.find(p => p.name === topVoted[0]);
+    if (!topPlayer) return;
+    onReveal(topPlayer.id);
+  };
 
   return (
-    <div className="w-full max-w-5xl mx-auto space-y-6">
+    <div className="w-full max-w-2xl mx-auto space-y-6 p-4">
       {/* Header */}
       <div className="flex justify-between items-center bg-slate-950/50 px-6 py-4 rounded-xl border border-white/5">
         <div>
-          <h2 className="text-2xl font-black italic tracking-wider text-white">GUESS IMPOSTER</h2>
-          <p className="text-slate-400 text-sm">Pass the device. Keep your character a secret!</p>
+          <h2 className="text-2xl font-black italic tracking-wider text-white">🕵️ GUESS IMPOSTER</h2>
+          <p className="text-slate-400 text-sm">Discuss, then vote on who you think is the Imposter!</p>
         </div>
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => { sfx.playShowdown(); setShowReveal(true); }}
-            className="px-4 py-2 rounded-lg bg-rose-600 hover:bg-rose-500 text-white font-bold transition flex items-center gap-2 text-sm shadow-lg shadow-rose-900/30"
-          >
-            <AlertTriangle className="w-4 h-4" /> REVEAL IMPOSTER
-          </button>
-          <button
-            onClick={onEndGame}
-            className="px-4 py-2 rounded-lg bg-slate-900 border border-white/5 text-slate-400 hover:text-white hover:bg-slate-800 transition flex items-center gap-2 text-sm font-bold"
-          >
-            <RotateCcw className="w-4 h-4" /> END GAME
-          </button>
-        </div>
+        <button
+          onClick={onEndGame}
+          className="px-4 py-2 rounded-lg bg-slate-900 border border-white/5 text-slate-400 hover:text-white hover:bg-slate-800 transition flex items-center gap-2 text-sm font-bold"
+        >
+          <RotateCcw className="w-4 h-4" /> Back
+        </button>
       </div>
 
-      <AnimatePresence mode="wait">
-        {showReveal ? (
+      {/* Reveal section */}
+      <AnimatePresence>
+        {revealedImposter && civiliansCharacter ? (
           <motion.div
             key="reveal"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-slate-900/80 border border-rose-500/30 rounded-2xl p-8 flex flex-col items-center text-center space-y-6"
+            className="bg-rose-950/30 border border-rose-500/30 rounded-2xl p-6 text-center space-y-4"
           >
-            <h2 className="text-3xl font-black text-rose-500 uppercase tracking-widest">
-              THE IMPOSTER IS {players[imposterIdx]}!
-            </h2>
+            <h3 className="text-2xl font-black text-rose-400 uppercase tracking-wider">
+              🎉 The Imposter was {revealedImposter.name}!
+            </h3>
             <div className="flex flex-wrap justify-center gap-8">
               <div className="flex flex-col items-center gap-2">
-                <span className="text-slate-400 font-bold uppercase tracking-wider text-sm">Civilians Had</span>
-                <div className="scale-90 opacity-70">
-                  <CharacterCard character={civiliansChar} isFlipped={true} />
+                <span className="text-slate-400 text-xs font-bold uppercase">Everyone had</span>
+                <div className="scale-90 opacity-80">
+                  <CharacterCard character={civiliansCharacter} isFlipped={true} />
                 </div>
               </div>
               <div className="flex flex-col items-center gap-2">
-                <span className="text-rose-400 font-bold uppercase tracking-wider text-sm">Imposter Had</span>
-                <div className="scale-110 shadow-[0_0_40px_rgba(244,63,94,0.3)] rounded-2xl">
-                  <CharacterCard character={imposterChar} isFlipped={true} />
+                <span className="text-rose-400 text-xs font-bold uppercase">Imposter had</span>
+                <div className="shadow-[0_0_40px_rgba(244,63,94,0.4)] rounded-2xl">
+                  <CharacterCard character={revealedImposter.character} isFlipped={true} />
                 </div>
               </div>
             </div>
-            <button
-              onClick={onEndGame}
-              className="mt-4 px-8 py-3 rounded-full bg-slate-800 text-white font-bold hover:bg-slate-700 transition"
-            >
-              FINISH
-            </button>
-          </motion.div>
-        ) : activePlayerIdx === null ? (
-          <motion.div
-            key="selection"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
-          >
-            {players.map((player, idx) => (
-              <button
-                key={idx}
-                onClick={() => { sfx.playSelect(); setActivePlayerIdx(idx); }}
-                className="bg-slate-900/50 hover:bg-rose-900/40 border border-white/5 hover:border-rose-500/50 p-6 rounded-2xl flex flex-col items-center justify-center gap-3 transition-all transform hover:-translate-y-1 group"
-              >
-                <div className="w-16 h-16 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 group-hover:bg-rose-600 group-hover:text-white transition">
-                  <Eye className="w-8 h-8" />
-                </div>
-                <span className="font-bold text-white text-lg">{player}</span>
-                <span className="text-xs text-slate-500 group-hover:text-rose-300">Click to view role</span>
-              </button>
-            ))}
           </motion.div>
         ) : (
-          <motion.div
-            key="revealed"
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            className="flex flex-col items-center space-y-6"
-          >
-            <div className="bg-rose-950/30 border border-rose-500/20 rounded-2xl p-6 text-center max-w-lg w-full">
-              <h3 className="text-xl font-bold text-rose-300 mb-1">
-                Role for {players[activePlayerIdx]}
-              </h3>
-              <p className="text-slate-400 text-sm mb-6">
-                Memorize your character, then hide the board! Do not show this to anyone else.
-              </p>
-              
-              <div className="flex justify-center mb-6">
-                <CharacterCard 
-                  character={activePlayerIdx === imposterIdx ? imposterChar : civiliansChar} 
-                  isFlipped={true} 
-                />
+          <>
+            {/* My character */}
+            <div className="bg-slate-900/50 border border-white/5 rounded-2xl p-5 flex items-center gap-5">
+              <div className="shrink-0 w-36">
+                <CharacterCard character={myCharacter} isFlipped={true} />
+              </div>
+              <div>
+                <p className="text-slate-400 text-xs font-bold uppercase tracking-wider mb-1">Your Character</p>
+                <h3 className="text-xl font-black text-white">{myCharacter.name}</h3>
+                <p className="text-slate-500 text-sm">{myCharacter.anime}</p>
+                <p className="mt-2 text-slate-400 text-xs leading-relaxed">
+                  Discuss with the group. Give subtle hints about your character — but don't say the name! Figure out who has a different character.
+                </p>
+              </div>
+            </div>
+
+            {/* Voting section */}
+            <div className="bg-slate-900/50 border border-white/5 rounded-2xl p-5 space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="text-sm font-bold text-slate-300 uppercase tracking-wider">
+                  Vote for the Imposter
+                </h3>
+                <span className="text-xs text-slate-500 font-bold">{voteCount}/{totalPlayers} voted</span>
               </div>
 
-              <button
-                onClick={() => { sfx.playSelect(); setActivePlayerIdx(null); }}
-                className="px-8 py-3 rounded-full bg-slate-800 text-white font-black tracking-wider hover:bg-slate-700 transition shadow-lg"
-              >
-                HIDE BOARD
-              </button>
+              <div className="grid grid-cols-2 gap-3">
+                {players.map(p => {
+                  const isMe = p.id === mySocketId;
+                  const hasVotedForThis = myVote === p.name;
+                  const tally = voteTally[p.name] || 0;
+
+                  return (
+                    <button
+                      key={p.id}
+                      onClick={() => !isMe && handleVote(p.name)}
+                      disabled={!!myVote || isMe}
+                      className={`relative p-4 rounded-xl border-2 text-left transition-all ${
+                        isMe
+                          ? "border-white/5 bg-slate-900/30 opacity-40 cursor-not-allowed"
+                          : hasVotedForThis
+                          ? "border-rose-500 bg-rose-950/40"
+                          : myVote
+                          ? "border-white/5 bg-slate-900 opacity-60"
+                          : "border-white/10 bg-slate-900 hover:border-rose-500/50 hover:bg-rose-950/20 cursor-pointer"
+                      }`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="font-bold text-white">{p.name}</span>
+                        {tally > 0 && (
+                          <span className="text-xs font-black text-rose-400 bg-rose-950/40 px-2 py-0.5 rounded-full border border-rose-500/30">
+                            {tally} vote{tally > 1 ? "s" : ""}
+                          </span>
+                        )}
+                      </div>
+                      {isMe && <span className="text-xs text-slate-500">(You)</span>}
+                      {hasVotedForThis && (
+                        <div className="flex items-center gap-1 mt-1 text-rose-400 text-xs font-bold">
+                          <CheckCircle className="w-3 h-3" /> Your vote
+                        </div>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Host reveals */}
+              {isHost && voteCount > 0 && !revealedImposter && topVoted && (
+                <button
+                  onClick={handleRevealClick}
+                  className="w-full py-3 rounded-xl bg-gradient-to-r from-rose-600 to-orange-600 hover:from-rose-500 hover:to-orange-500 text-white font-black flex items-center justify-center gap-2 shadow-lg transition"
+                >
+                  <AlertTriangle className="w-4 h-4" />
+                  REVEAL IMPOSTER ({topVoted[0]} — {topVoted[1]} votes)
+                </button>
+              )}
             </div>
-          </motion.div>
+          </>
         )}
       </AnimatePresence>
     </div>

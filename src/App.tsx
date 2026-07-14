@@ -34,10 +34,11 @@ import MyAnimeListPortal from "./components/MyAnimeListPortal";
 import DeployModal from "./components/DeployModal";
 import AnimeFeudGame from "./pages/AnimeFeudGame";
 import AnimeGuessWhoGame from "./pages/AnimeGuessWhoGame";
+import AnimePartyGames from "./pages/AnimePartyGames";
 import { sfx } from "./utils/audio";
 import { Search } from "lucide-react";
 
-type ViewState = "landing" | "draft" | "results" | "feud" | "guesswho";
+type ViewState = "landing" | "draft" | "results" | "feud" | "guesswho" | "party";
 
 type BattleReport = {
   p1BattleScore: number;
@@ -1484,7 +1485,7 @@ export default function App() {
                       {/* Game Card 3: Anime Guess Who */}
                       <button
                         onClick={() => setView("guesswho")}
-                        className="p-8 rounded-3xl border border-cyan-500/20 bg-neutral-955/70 hover:border-cyan-500/60 hover:bg-cyan-955/10 text-left transition-all duration-300 shadow-xl relative overflow-hidden group hover:-translate-y-1 cursor-pointer md:col-span-2"
+                        className="p-8 rounded-3xl border border-cyan-500/20 bg-neutral-955/70 hover:border-cyan-500/60 hover:bg-cyan-955/10 text-left transition-all duration-300 shadow-xl relative overflow-hidden group hover:-translate-y-1 cursor-pointer"
                       >
                         <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition duration-300">
                           <Search className="w-32 h-32 text-cyan-450" />
@@ -1504,6 +1505,34 @@ export default function App() {
                             </div>
                             <span className="ml-auto px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 whitespace-nowrap">
                               Online Only
+                            </span>
+                          </div>
+                        </div>
+                      </button>
+
+                      {/* Game Card 4: Anime Party Games */}
+                      <button
+                        onClick={() => setView("party")}
+                        className="p-8 rounded-3xl border border-rose-500/20 bg-neutral-955/70 hover:border-rose-500/60 hover:bg-rose-955/10 text-left transition-all duration-300 shadow-xl relative overflow-hidden group hover:-translate-y-1 cursor-pointer"
+                      >
+                        <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition duration-300">
+                          <Users className="w-32 h-32 text-rose-450" />
+                        </div>
+                        <div className="space-y-4">
+                          <div className="w-12 h-12 rounded-2xl bg-rose-500/10 border border-rose-500/30 flex items-center justify-center text-rose-400 group-hover:scale-110 transition duration-300">
+                            <Users className="w-6 h-6" />
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <div>
+                              <h3 className="text-2xl font-black text-white uppercase tracking-wide">
+                                🎭 Anime Party Games
+                              </h3>
+                              <p className="text-xs text-neutral-450 mt-1.5 leading-relaxed">
+                                Local multiplayer party games. Play Guess Character or Guess Imposter with up to 10 friends!
+                              </p>
+                            </div>
+                            <span className="ml-auto px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest bg-rose-500/10 border border-rose-500/30 text-rose-400 whitespace-nowrap">
+                              Local
                             </span>
                           </div>
                         </div>
@@ -2478,6 +2507,19 @@ export default function App() {
               className="w-full"
             >
               <AnimeGuessWhoGame onExit={() => setView("landing")} />
+            </motion.div>
+          )}
+
+          {view === "party" && (
+            <motion.div
+              key="party"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className="absolute inset-0 z-50 flex flex-col bg-slate-950"
+            >
+              <AnimePartyGames onExit={() => setView("landing")} />
             </motion.div>
           )}
         </AnimatePresence>

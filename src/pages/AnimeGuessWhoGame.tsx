@@ -511,7 +511,7 @@ export default function AnimeGuessWhoGame({ onExit }: AnimeGuessWhoGameProps) {
                 <GWSecretCard character={mySecret} />
 
                 {/* Guess Button */}
-                {isMyTurn && !waitingForAnswer && !pendingQuestion && (
+                {isMyTurn && (
                   <button
                     onClick={() => setShowGuessModal(true)}
                     className="w-full py-3 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-extrabold text-sm flex items-center justify-center gap-2 shadow-lg shadow-red-950/30 transition duration-300 transform hover:scale-[1.02] border border-red-500/30"

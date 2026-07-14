@@ -2652,7 +2652,13 @@ export default function App() {
       {!(isMobile && view === "draft") && (
         <footer className="border-t border-neutral-900 bg-neutral-950/60 backdrop-blur-md py-4 px-6 text-center text-[10px] font-mono text-neutral-500 flex flex-col sm:flex-row justify-between items-center max-w-7xl w-full mx-auto gap-2 mt-auto">
           <span>(c) 2026 ANIME BATTLE. ALL RIGHTS RESERVED.</span>
-          <span className="text-violet-400">MADE FOR ANIME ENTHUSIASTS WORLDWIDE</span>
+          <span 
+            onClick={() => setShowAbout(true)}
+            className="text-violet-400 hover:text-nexus-cyan transition-colors cursor-pointer select-none font-bold"
+            title="Click to view Creator Card"
+          >
+            MADE FOR ANIME ENTHUSIASTS WORLDWIDE
+          </span>
         </footer>
       )}
     </div>

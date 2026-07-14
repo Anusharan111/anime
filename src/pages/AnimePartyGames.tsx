@@ -43,6 +43,14 @@ export default function AnimePartyGames({ onExit }: AnimePartyGamesProps) {
   const [impCharId, setImpCharId] = useState<string | null>(null);
   const [civCharId, setCivCharId] = useState<string | null>(null);
 
+  // Character filter pool
+  const [characterPool, setCharacterPool] = useState<Character[]>(CHARACTERS);
+  const [category, setCategory] = useState<"all" | "choose">("all");
+  const [selectedAnimes, setSelectedAnimes] = useState<string[]>([]);
+  const [animeSearchQuery, setAnimeSearchQuery] = useState("");
+  const [isAnimeDropdownOpen, setIsAnimeDropdownOpen] = useState(false);
+  const [animeList, setAnimeList] = useState<string[]>([]);
+
   const pusherRef = useRef<Pusher | null>(null);
   const channelRef = useRef<any>(null);
   const isHostRef = useRef(false);
@@ -51,6 +59,25 @@ export default function AnimePartyGames({ onExit }: AnimePartyGamesProps) {
 
   useEffect(() => { isHostRef.current = isHost; }, [isHost]);
   useEffect(() => { playersRef.current = players; }, [players]);
+
+  useEffect(() => {
+    // Fetch characters pool to build unique anime list
+    const fetchPool = async () => {
+      let pool = [...CHARACTERS];
+      try {
+        const res = await fetch(`${API_BASE}/api/characters`);
+        if (res.ok) pool = await res.json();
+      } catch (e) { /* fallback */ }
+      setCharacterPool(pool);
+      
+      const labels = new Set<string>();
+      for (const char of pool) {
+        if (char.anime) labels.add(char.anime);
+      }
+      setAnimeList(Array.from(labels).sort());
+    };
+    fetchPool();
+  }, []);
 
   const ensurePusher = useCallback(async (name: string) => {
     if (pusherRef.current) return pusherRef.current;
@@ -211,13 +238,25 @@ export default function AnimePartyGames({ onExit }: AnimePartyGamesProps) {
     const currentPlayers = playersRef.current;
     if (currentPlayers.length < 2) { setLobbyError("Need at least 2 players to start."); return; }
 
-    // Fetch characters
-    let pool: Character[] = [...CHARACTERS];
-    try {
-      const res = await fetch(`${API_BASE}/api/characters`);
-      if (res.ok) pool = await res.json();
-    } catch (e) { /* use CHARACTERS as fallback */ }
+    let pool = [...characterPool];
+    if (category === "choose" && selectedAnimes.length > 0) {
+      const selectedKeys = selectedAnimes.map((a) => a.trim().toLowerCase());
+      pool = pool.filter((c) => c.anime && selectedKeys.includes(c.anime.trim().toLowerCase()));
+    }
 
+    if (selectedMode === "guess-character") {
+      if (pool.length < currentPlayers.length) {
+        setLobbyError(`Not enough characters in selected anime pool (${pool.length} available) for all players (${currentPlayers.length} players).`);
+        return;
+      }
+    } else {
+      if (pool.length < 2) {
+        setLobbyError("Need at least 2 characters in selected anime pool for Guess Imposter.");
+        return;
+      }
+    }
+
+    setLobbyError(null);
     const shuffled = [...pool].sort(() => Math.random() - 0.5);
 
     if (selectedMode === "guess-character") {
@@ -439,6 +478,110 @@ export default function AnimePartyGames({ onExit }: AnimePartyGamesProps) {
                     </button>
                   ))}
                 </div>
+
+                {/* Character Pool Filter */}
+                <div className="space-y-2 pt-2 border-t border-white/5">
+                  <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Character Pool Filter</p>
+                  <div className="grid grid-cols-2 gap-3">
+                    <button
+                      onClick={() => {
+                        setCategory("all");
+                        setSelectedAnimes([]);
+                      }}
+                      className={`py-2.5 px-3 rounded-xl border text-[10px] font-black uppercase tracking-wide transition-all cursor-pointer ${
+                        category === "all"
+                          ? "border-violet-500 bg-violet-500/10 text-violet-400 shadow-[0_0_15px_rgba(139,92,246,0.25)]"
+                          : "border-neutral-800 bg-neutral-900/30 text-neutral-400 hover:border-neutral-700"
+                      }`}
+                    >
+                      🌐 All Anime
+                    </button>
+                    <button
+                      onClick={() => setCategory("choose")}
+                      className={`py-2.5 px-3 rounded-xl border text-[10px] font-black uppercase tracking-wide transition-all cursor-pointer ${
+                        category === "choose"
+                          ? "border-violet-500 bg-violet-500/10 text-violet-400 shadow-[0_0_15px_rgba(139,92,246,0.25)]"
+                          : "border-neutral-800 bg-neutral-900/30 text-neutral-400 hover:border-neutral-700"
+                      }`}
+                    >
+                      🎯 Choose Anime
+                    </button>
+                  </div>
+
+                  {category === "choose" && (
+                    <div className="space-y-2 pt-1 relative animate-fadeIn">
+                      <input
+                        type="text"
+                        value={animeSearchQuery}
+                        onFocus={() => setIsAnimeDropdownOpen(true)}
+                        onBlur={() => {
+                          setTimeout(() => setIsAnimeDropdownOpen(false), 200);
+                        }}
+                        onChange={(e) => setAnimeSearchQuery(e.target.value)}
+                        placeholder="Select or search anime…"
+                        className="w-full bg-neutral-900/50 border border-neutral-800 rounded-xl py-2.5 px-3.5 text-xs text-white font-mono font-bold focus:border-violet-500 focus:outline-none cursor-pointer"
+                      />
+                      {isAnimeDropdownOpen && (
+                        <div className="absolute z-20 left-0 right-0 top-full mt-1 bg-neutral-900 border border-neutral-700 rounded-xl max-h-40 overflow-y-auto shadow-2xl">
+                          {animeList
+                            .filter((a) => !animeSearchQuery.trim() || a.toLowerCase().includes(animeSearchQuery.toLowerCase()))
+                            .map((anime) => (
+                              <button
+                                key={anime}
+                                onMouseDown={() => {
+                                  if (!selectedAnimes.includes(anime)) {
+                                    setSelectedAnimes((prev) => [...prev, anime]);
+                                  }
+                                  setAnimeSearchQuery("");
+                                  setIsAnimeDropdownOpen(false);
+                                }}
+                                className={`w-full text-left px-3.5 py-2 text-xs font-mono hover:bg-violet-500/15 transition-colors cursor-pointer ${
+                                  selectedAnimes.includes(anime) ? "text-violet-400 bg-violet-500/10" : "text-slate-200"
+                                }`}
+                              >
+                                {anime}
+                              </button>
+                            ))}
+                          {animeList.filter((a) => !animeSearchQuery.trim() || a.toLowerCase().includes(animeSearchQuery.toLowerCase())).length === 0 && (
+                            <p className="px-3.5 py-2 text-[10px] text-neutral-500 font-mono">No anime found matching "{animeSearchQuery}"</p>
+                          )}
+                        </div>
+                      )}
+                      {selectedAnimes.length > 0 && (
+                        <div className="flex flex-wrap gap-1.5 mt-2">
+                          {selectedAnimes.map((anime) => (
+                            <span
+                              key={anime}
+                              className="inline-flex items-center gap-1.5 text-[10px] font-mono font-bold text-violet-400 bg-violet-500/10 border border-violet-500/30 px-2.5 py-1 rounded-lg animate-fadeIn"
+                            >
+                              🎯 {anime}
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setSelectedAnimes((prev) => prev.filter((a) => a !== anime));
+                                }}
+                                className="hover:text-red-400 font-bold font-sans cursor-pointer transition-colors"
+                              >
+                                ✕
+                              </button>
+                            </span>
+                          ))}
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setSelectedAnimes([]);
+                              setAnimeSearchQuery("");
+                            }}
+                            className="text-[9px] font-mono text-slate-400 hover:text-red-400 transition-colors cursor-pointer self-center ml-1"
+                          >
+                            ✕ clear all
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+
                 <button
                   onClick={handleStartGame}
                   disabled={players.length < 2}

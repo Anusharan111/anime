@@ -68,10 +68,24 @@ export default function GuessImposterMode({
     <div className="w-full max-w-4xl mx-auto flex flex-col min-h-[80vh] p-4 gap-6">
 
       {/* Header */}
-      <div className="flex justify-between items-center bg-slate-950/50 px-6 py-4 rounded-xl border border-white/5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-950/50 px-6 py-4 rounded-xl border border-white/5">
         <div>
           <h2 className="text-2xl font-black italic tracking-wider text-white">🕵️ GUESS IMPOSTER</h2>
           <p className="text-slate-400 text-sm">Discuss, then vote on who you think is the Imposter!</p>
+        </div>
+        <div>
+          {isHost ? (
+            <button
+              onClick={onEndGame}
+              className="px-4 py-2 rounded-lg bg-rose-600/20 border border-rose-500/40 text-rose-400 hover:bg-rose-600/40 hover:text-white transition flex items-center gap-2 text-xs font-bold shadow-md cursor-pointer"
+            >
+              <StopCircle className="w-3.5 h-3.5" /> End Game
+            </button>
+          ) : (
+            <span className="px-3 py-1 rounded-full bg-slate-900 border border-white/5 text-slate-500 text-[10px] uppercase font-bold font-mono">
+              Waiting for host...
+            </span>
+          )}
         </div>
       </div>
 
@@ -101,14 +115,6 @@ export default function GuessImposterMode({
                 </div>
               </div>
             </div>
-            {isHost && (
-              <button
-                onClick={onEndGame}
-                className="mt-4 px-6 py-3 rounded-xl bg-indigo-600/30 border border-indigo-500/40 text-indigo-300 hover:bg-indigo-600/60 hover:text-white transition flex items-center justify-center gap-2 text-sm font-bold w-full"
-              >
-                <StopCircle className="w-4 h-4" /> End Game & Return to Lobby
-              </button>
-            )}
           </motion.div>
         ) : (
           <motion.div key="game" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-5 flex-1">
@@ -221,18 +227,6 @@ export default function GuessImposterMode({
         )}
       </AnimatePresence>
 
-      {/* Sticky bottom bar — End Game button always visible to host */}
-      {isHost && (
-        <div className="sticky bottom-4 mt-auto z-50">
-          <button
-            onClick={onEndGame}
-            className="w-full py-3 rounded-xl bg-rose-600/20 border border-rose-500/40 text-rose-400 hover:bg-rose-600 hover:text-white transition-all font-black flex items-center justify-center gap-2 text-sm backdrop-blur-sm shadow-lg"
-          >
-            <StopCircle className="w-4 h-4" />
-            END GAME — Return Everyone to Lobby
-          </button>
-        </div>
-      )}
     </div>
   );
 }

@@ -1,16 +1,17 @@
 import React from "react";
 import { motion } from "motion/react";
 import { Character } from "../../types";
-import { EyeOff, RotateCcw } from "lucide-react";
+import { EyeOff, RotateCcw, StopCircle } from "lucide-react";
 import CharacterCard from "../CharacterCard";
 
 interface GuessCharacterModeProps {
   myCharacter: Character;
   otherPlayers: { name: string; character: Character }[];
+  isHost: boolean;
   onEndGame: () => void;
 }
 
-export default function GuessCharacterMode({ myCharacter, otherPlayers, onEndGame }: GuessCharacterModeProps) {
+export default function GuessCharacterMode({ myCharacter, otherPlayers, isHost, onEndGame }: GuessCharacterModeProps) {
   return (
     <div className="w-full max-w-5xl mx-auto space-y-6 p-4">
       {/* Header */}
@@ -19,12 +20,18 @@ export default function GuessCharacterMode({ myCharacter, otherPlayers, onEndGam
           <h2 className="text-2xl font-black italic tracking-wider text-white">🎭 GUESS CHARACTER</h2>
           <p className="text-slate-400 text-sm">Ask the others yes/no questions — figure out YOUR character!</p>
         </div>
-        <button
-          onClick={onEndGame}
-          className="px-4 py-2 rounded-lg bg-slate-900 border border-white/5 text-slate-400 hover:text-white hover:bg-slate-800 transition flex items-center gap-2 text-sm font-bold"
-        >
-          <RotateCcw className="w-4 h-4" /> Back to Lobby
-        </button>
+        {isHost ? (
+          <button
+            onClick={onEndGame}
+            className="px-4 py-2 rounded-lg bg-rose-600/20 border border-rose-500/40 text-rose-400 hover:bg-rose-600/40 hover:text-white transition flex items-center gap-2 text-sm font-bold"
+          >
+            <StopCircle className="w-4 h-4" /> End Game
+          </button>
+        ) : (
+          <div className="px-4 py-2 rounded-lg bg-slate-900 border border-white/5 text-slate-500 text-sm font-bold">
+            Waiting for host...
+          </div>
+        )}
       </div>
 
       {/* YOUR card — hidden */}

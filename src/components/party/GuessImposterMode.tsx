@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Character } from "../../types";
-import { RotateCcw, AlertTriangle, CheckCircle } from "lucide-react";
+import { AlertTriangle, CheckCircle, StopCircle } from "lucide-react";
 import CharacterCard from "../CharacterCard";
 import { sfx } from "../../utils/audio";
 
@@ -71,12 +71,18 @@ export default function GuessImposterMode({
           <h2 className="text-2xl font-black italic tracking-wider text-white">🕵️ GUESS IMPOSTER</h2>
           <p className="text-slate-400 text-sm">Discuss, then vote on who you think is the Imposter!</p>
         </div>
-        <button
-          onClick={onEndGame}
-          className="px-4 py-2 rounded-lg bg-slate-900 border border-white/5 text-slate-400 hover:text-white hover:bg-slate-800 transition flex items-center gap-2 text-sm font-bold"
-        >
-          <RotateCcw className="w-4 h-4" /> Back
-        </button>
+        {isHost ? (
+          <button
+            onClick={onEndGame}
+            className="px-4 py-2 rounded-lg bg-rose-600/20 border border-rose-500/40 text-rose-400 hover:bg-rose-600/40 hover:text-white transition flex items-center gap-2 text-sm font-bold"
+          >
+            <StopCircle className="w-4 h-4" /> End Game
+          </button>
+        ) : (
+          <div className="px-4 py-2 rounded-lg bg-slate-900 border border-white/5 text-slate-500 text-sm font-bold">
+            Waiting for host...
+          </div>
+        )}
       </div>
 
       {/* Reveal section */}
@@ -105,6 +111,14 @@ export default function GuessImposterMode({
                 </div>
               </div>
             </div>
+            {isHost && (
+              <button
+                onClick={onEndGame}
+                className="mt-2 px-6 py-3 rounded-xl bg-indigo-600/30 border border-indigo-500/40 text-indigo-300 hover:bg-indigo-600/60 hover:text-white transition flex items-center justify-center gap-2 text-sm font-bold w-full"
+              >
+                <StopCircle className="w-4 h-4" /> End Game & Return to Lobby
+              </button>
+            )}
           </motion.div>
         ) : (
           <>

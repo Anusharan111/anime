@@ -123,6 +123,18 @@ export default function AnimePartyGames({ onExit }: AnimePartyGamesProps) {
         setRevealedImposter({ name: imposterPlayer.name, character: impChar });
       }
     });
+
+    // Any player receives this when host ends the game — everyone goes back to lobby
+    channel.bind("client-party-end-game", () => {
+      setPhase("lobby-wait");
+      setMyCharacter(null);
+      setOtherPlayersChars([]);
+      setImposterVotes({});
+      setRevealedImposter(null);
+      setCiviliansCharacter(null);
+      setCivCharId(null);
+      setImpCharId(null);
+    });
   }, []);
 
   const applyGameStart = (data: any, mySocketId: string) => {
@@ -259,6 +271,17 @@ export default function AnimePartyGames({ onExit }: AnimePartyGamesProps) {
     setImposterVotes({});
     setRevealedImposter(null);
     setCiviliansCharacter(null);
+    setCivCharId(null);
+    setImpCharId(null);
+  };
+
+  // Host calls this to end the current round and return everyone to lobby
+  const handleEndGame = () => {
+    if (!channelRef.current) return;
+    // Trigger for all other players
+    channelRef.current.trigger("client-party-end-game", {});
+    // Apply locally for host (Pusher doesn't echo client events to sender)
+    backToLobby();
   };
 
   return (
@@ -431,7 +454,8 @@ export default function AnimePartyGames({ onExit }: AnimePartyGamesProps) {
             <GuessCharacterMode
               myCharacter={myCharacter}
               otherPlayers={otherPlayersChars}
-              onEndGame={backToLobby}
+              isHost={isHost}
+              onEndGame={handleEndGame}
             />
           </motion.div>
         )}
@@ -455,7 +479,7 @@ export default function AnimePartyGames({ onExit }: AnimePartyGamesProps) {
               civiliansCharacter={civiliansCharacter}
               onVote={handleVote}
               onReveal={handleRevealImposter}
-              onEndGame={backToLobby}
+              onEndGame={handleEndGame}
             />
           </motion.div>
         )}

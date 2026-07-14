@@ -33,7 +33,8 @@ export default function AnimePartyGames({ onExit }: AnimePartyGamesProps) {
 
   // Game state for this player
   const [myCharacter, setMyCharacter] = useState<Character | null>(null);
-  const [otherPlayersChars, setOtherPlayersChars] = useState<{ name: string; character: Character }[]>([]);
+  const [otherPlayersChars, setOtherPlayersChars] = useState<{ name: string; character: Character; socketId: string }[]>([]);
+  const [myCardRevealed, setMyCardRevealed] = useState(false);
 
   // Imposter specific
   const [imposterVotes, setImposterVotes] = useState<Record<string, string>>({}); // voterId -> accusedName
@@ -134,12 +135,22 @@ export default function AnimePartyGames({ onExit }: AnimePartyGamesProps) {
       setCiviliansCharacter(null);
       setCivCharId(null);
       setImpCharId(null);
+      setMyCardRevealed(false);
+    });
+
+    // Player receives this when another player reveals their card
+    channel.bind("client-party-reveal-member-card", ({ targetSocketId }: any) => {
+      if (targetSocketId === pusher.connection.socket_id) {
+        setMyCardRevealed(true);
+        sfx.playCorrect();
+      }
     });
   }, []);
 
   const applyGameStart = (data: any, mySocketId: string) => {
     const { mode, assignments, civCharId, impCharId } = data;
     const idMap = new Map(CHARACTERS.map(c => [c.id, c]));
+    setMyCardRevealed(false);
 
     if (mode === "guess-character") {
       // assignments: [{socketId, charId, playerName}]
@@ -147,7 +158,7 @@ export default function AnimePartyGames({ onExit }: AnimePartyGamesProps) {
       const myChar = myAssignment ? idMap.get(myAssignment.charId) || null : null;
       const others = assignments
         .filter((a: any) => a.socketId !== mySocketId)
-        .map((a: any) => ({ name: a.playerName, character: idMap.get(a.charId)! }))
+        .map((a: any) => ({ name: a.playerName, character: idMap.get(a.charId)!, socketId: a.socketId }))
         .filter((o: any) => o.character);
 
       setMyCharacter(myChar);
@@ -166,7 +177,7 @@ export default function AnimePartyGames({ onExit }: AnimePartyGamesProps) {
       setImpCharId(impCharId);
       setOtherPlayersChars(assignments
         .filter((a: any) => a.socketId !== mySocketId)
-        .map((a: any) => ({ name: a.playerName, character: myChar! })));
+        .map((a: any) => ({ name: a.playerName, character: myChar!, socketId: a.socketId })));
       setCiviliansCharacter(civChar);
       setRevealedImposter(null);
       setImposterVotes({});
@@ -273,6 +284,12 @@ export default function AnimePartyGames({ onExit }: AnimePartyGamesProps) {
     setCiviliansCharacter(null);
     setCivCharId(null);
     setImpCharId(null);
+    setMyCardRevealed(false);
+  };
+
+  const handleRevealPlayerCard = (targetSocketId: string) => {
+    if (!channelRef.current) return;
+    channelRef.current.trigger("client-party-reveal-member-card", { targetSocketId });
   };
 
   // Host calls this to end the current round and return everyone to lobby
@@ -455,6 +472,8 @@ export default function AnimePartyGames({ onExit }: AnimePartyGamesProps) {
               myCharacter={myCharacter}
               otherPlayers={otherPlayersChars}
               isHost={isHost}
+              myCardRevealed={myCardRevealed}
+              onRevealPlayer={handleRevealPlayerCard}
               onEndGame={handleEndGame}
             />
           </motion.div>

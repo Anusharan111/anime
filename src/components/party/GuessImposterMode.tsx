@@ -36,7 +36,7 @@ export default function GuessImposterMode({
   onEndGame,
 }: GuessImposterModeProps) {
   const [myVote, setMyVote] = useState<string | null>(null);
-  const [cardRevealed, setCardRevealed] = useState(false);
+  const [cardRevealed, setCardRevealed] = useState(true);
 
   const handleVote = (playerName: string) => {
     if (myVote) return; // already voted

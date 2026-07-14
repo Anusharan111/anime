@@ -2513,11 +2513,11 @@ export default function App() {
           {view === "party" && (
             <motion.div
               key="party"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              className="absolute inset-0 z-50 flex flex-col bg-slate-950"
+              transition={{ duration: 0.4 }}
+              className="w-full"
             >
               <AnimePartyGames onExit={() => setView("landing")} />
             </motion.div>

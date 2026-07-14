@@ -302,7 +302,7 @@ export default function AnimePartyGames({ onExit }: AnimePartyGamesProps) {
   };
 
   return (
-    <div className="min-h-[100dvh] bg-slate-950 flex flex-col items-center justify-center p-4">
+    <div className="w-full min-h-[80vh] flex flex-col items-center justify-start py-6 px-3 bg-[#050816] text-white">
       <AnimatePresence mode="wait">
 
         {/* ---- INITIAL SCREEN: CREATE OR JOIN ---- */}

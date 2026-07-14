@@ -26,43 +26,19 @@ export default function GuessCharacterMode({ myCharacter, otherPlayers, isHost, 
       <div className="bg-violet-950/20 border border-violet-500/20 rounded-2xl p-6 flex flex-col sm:flex-row items-center gap-6">
         <div 
           onClick={() => setCardRevealed(prev => !prev)}
-          className="cursor-pointer select-none relative shrink-0 transition-transform hover:scale-[1.02]"
+          className="cursor-pointer select-none relative shrink-0 transition-transform active:scale-95"
         >
-          <AnimatePresence mode="wait">
-            {cardRevealed ? (
-              <motion.div
-                key="shown"
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.2 }}
-                className="relative"
-              >
-                <CharacterCard character={myCharacter} isFlipped={true} />
-                {/* Overlay badge to prompt hide on hover */}
-                <div className="absolute inset-0 bg-black/0 hover:bg-black/40 transition-all flex items-center justify-center rounded-2xl group">
-                  <span className="opacity-0 group-hover:opacity-100 bg-black/80 px-4 py-2 rounded-xl text-xs text-white font-bold transition-opacity flex items-center gap-1.5 border border-white/10 shadow-xl">
-                    <EyeOff className="w-3.5 h-3.5 text-violet-400" /> Tap to Hide Card
-                  </span>
-                </div>
-              </motion.div>
-            ) : (
-              <motion.div
-                key="hidden"
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.2 }}
-                className="w-[160px] h-[286px] sm:w-[260px] sm:h-[460px] md:w-[340px] md:h-[600px] rounded-2xl border-2 border-dashed border-violet-500/40 flex flex-col items-center justify-center gap-3 bg-violet-950/20 hover:bg-violet-950/30 transition-colors"
-              >
-                <EyeOff className="w-10 h-10 text-violet-500/50 sm:w-16 sm:h-16" />
-                <span className="text-violet-400/60 font-bold text-sm uppercase tracking-wider">Your Character</span>
-                <span className="text-violet-400/40 text-xs bg-violet-950/40 px-3 py-1 rounded-full border border-violet-500/20 font-mono">
-                  Hidden — Tap to Reveal
-                </span>
-              </motion.div>
-            )}
-          </AnimatePresence>
+          {/* Wrap in pointer-events-none so custom click handler does not trigger default back click spin */}
+          <div className="pointer-events-none">
+            <CharacterCard character={myCharacter} isFlipped={!cardRevealed} />
+          </div>
+          {/* Overlay text prompt */}
+          <div className="absolute inset-x-0 bottom-6 flex justify-center z-30 pointer-events-none">
+            <span className="bg-slate-950/90 text-white border border-white/10 px-3.5 py-2 rounded-full text-xs font-black shadow-2xl flex items-center gap-1.5 backdrop-blur-md">
+              {cardRevealed ? <EyeOff className="w-3.5 h-3.5 text-rose-400" /> : <Eye className="w-3.5 h-3.5 text-emerald-400" />}
+              {cardRevealed ? "Tap to Hide" : "Tap to Reveal"}
+            </span>
+          </div>
         </div>
 
         <div className="space-y-3 text-center sm:text-left flex-1">
@@ -102,7 +78,7 @@ export default function GuessCharacterMode({ myCharacter, otherPlayers, isHost, 
               transition={{ delay: idx * 0.08 }}
               className="relative group"
             >
-              <CharacterCard character={op.character} isFlipped={true} />
+              <CharacterCard character={op.character} isFlipped={false} />
               <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-violet-600 text-white text-xs font-black px-3 py-1 rounded-full shadow-lg border-2 border-slate-950 z-10 whitespace-nowrap">
                 {op.name}
               </div>

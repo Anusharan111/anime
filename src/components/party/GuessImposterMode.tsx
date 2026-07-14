@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Character } from "../../types";
-import { AlertTriangle, CheckCircle, StopCircle } from "lucide-react";
+import { AlertTriangle, CheckCircle, StopCircle, Eye, EyeOff } from "lucide-react";
 import CharacterCard from "../CharacterCard";
 import { sfx } from "../../utils/audio";
 
@@ -36,6 +36,8 @@ export default function GuessImposterMode({
   onEndGame,
 }: GuessImposterModeProps) {
   const [myVote, setMyVote] = useState<string | null>(null);
+  // Card starts hidden — player taps to reveal, taps again to hide
+  const [cardRevealed, setCardRevealed] = useState(false);
 
   const handleVote = (playerName: string) => {
     if (myVote) return; // already voted
@@ -64,35 +66,24 @@ export default function GuessImposterMode({
   };
 
   return (
-    <div className="w-full max-w-2xl mx-auto space-y-6 p-4">
+    <div className="w-full max-w-2xl mx-auto flex flex-col min-h-[80vh] p-4 gap-6">
+
       {/* Header */}
       <div className="flex justify-between items-center bg-slate-950/50 px-6 py-4 rounded-xl border border-white/5">
         <div>
           <h2 className="text-2xl font-black italic tracking-wider text-white">🕵️ GUESS IMPOSTER</h2>
           <p className="text-slate-400 text-sm">Discuss, then vote on who you think is the Imposter!</p>
         </div>
-        {isHost ? (
-          <button
-            onClick={onEndGame}
-            className="px-4 py-2 rounded-lg bg-rose-600/20 border border-rose-500/40 text-rose-400 hover:bg-rose-600/40 hover:text-white transition flex items-center gap-2 text-sm font-bold"
-          >
-            <StopCircle className="w-4 h-4" /> End Game
-          </button>
-        ) : (
-          <div className="px-4 py-2 rounded-lg bg-slate-900 border border-white/5 text-slate-500 text-sm font-bold">
-            Waiting for host...
-          </div>
-        )}
       </div>
 
-      {/* Reveal section */}
-      <AnimatePresence>
+      {/* Main content */}
+      <AnimatePresence mode="wait">
         {revealedImposter && civiliansCharacter ? (
           <motion.div
             key="reveal"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-rose-950/30 border border-rose-500/30 rounded-2xl p-6 text-center space-y-4"
+            className="bg-rose-950/30 border border-rose-500/30 rounded-2xl p-6 text-center space-y-4 flex-1"
           >
             <h3 className="text-2xl font-black text-rose-400 uppercase tracking-wider">
               🎉 The Imposter was {revealedImposter.name}!
@@ -111,29 +102,74 @@ export default function GuessImposterMode({
                 </div>
               </div>
             </div>
-            {isHost && (
-              <button
-                onClick={onEndGame}
-                className="mt-2 px-6 py-3 rounded-xl bg-indigo-600/30 border border-indigo-500/40 text-indigo-300 hover:bg-indigo-600/60 hover:text-white transition flex items-center justify-center gap-2 text-sm font-bold w-full"
-              >
-                <StopCircle className="w-4 h-4" /> End Game & Return to Lobby
-              </button>
-            )}
           </motion.div>
         ) : (
-          <>
-            {/* My character */}
-            <div className="bg-slate-900/50 border border-white/5 rounded-2xl p-5 flex items-center gap-5">
-              <div className="shrink-0 w-36">
-                <CharacterCard character={myCharacter} isFlipped={true} />
+          <motion.div key="game" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-5 flex-1">
+
+            {/* My character card — toggleable */}
+            <div className="bg-slate-900/50 border border-white/5 rounded-2xl p-5 space-y-4">
+              <div className="flex items-center justify-between">
+                <p className="text-slate-400 text-xs font-bold uppercase tracking-wider">Your Character</p>
+                <button
+                  onClick={() => setCardRevealed(v => !v)}
+                  className={`flex items-center gap-2 px-4 py-1.5 rounded-lg border text-xs font-bold transition-all ${
+                    cardRevealed
+                      ? "bg-violet-600/20 border-violet-500/40 text-violet-300 hover:bg-violet-600/40"
+                      : "bg-slate-800 border-white/10 text-slate-400 hover:text-white hover:border-white/20"
+                  }`}
+                >
+                  {cardRevealed ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                  {cardRevealed ? "Hide Card" : "Reveal Card"}
+                </button>
               </div>
-              <div>
-                <p className="text-slate-400 text-xs font-bold uppercase tracking-wider mb-1">Your Character</p>
-                <h3 className="text-xl font-black text-white">{myCharacter.name}</h3>
-                <p className="text-slate-500 text-sm">{myCharacter.anime}</p>
-                <p className="mt-2 text-slate-400 text-xs leading-relaxed">
-                  Discuss with the group. Give subtle hints about your character — but don't say the name! Figure out who has a different character.
-                </p>
+
+              <div className="flex items-center gap-5">
+                {/* Card area — shows card or blurred placeholder */}
+                <div className="shrink-0 w-36 relative">
+                  <AnimatePresence mode="wait">
+                    {cardRevealed ? (
+                      <motion.div
+                        key="shown"
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        <CharacterCard character={myCharacter} isFlipped={true} />
+                      </motion.div>
+                    ) : (
+                      <motion.div
+                        key="hidden"
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                        transition={{ duration: 0.2 }}
+                        className="w-36 h-52 rounded-2xl border-2 border-dashed border-violet-500/30 bg-violet-950/20 flex flex-col items-center justify-center gap-2 cursor-pointer"
+                        onClick={() => setCardRevealed(true)}
+                      >
+                        <EyeOff className="w-8 h-8 text-violet-500/40" />
+                        <span className="text-violet-400/50 text-xs font-bold text-center px-2">Tap to reveal</span>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+
+                <div>
+                  {cardRevealed ? (
+                    <>
+                      <h3 className="text-xl font-black text-white">{myCharacter.name}</h3>
+                      <p className="text-slate-500 text-sm">{myCharacter.anime}</p>
+                    </>
+                  ) : (
+                    <>
+                      <h3 className="text-xl font-black text-slate-600">???</h3>
+                      <p className="text-slate-700 text-sm">Hidden</p>
+                    </>
+                  )}
+                  <p className="mt-2 text-slate-400 text-xs leading-relaxed">
+                    Give subtle hints without saying the name. Figure out who has a different character!
+                  </p>
+                </div>
               </div>
             </div>
 
@@ -197,9 +233,22 @@ export default function GuessImposterMode({
                 </button>
               )}
             </div>
-          </>
+          </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Sticky bottom bar — End Game button always visible to host */}
+      {isHost && (
+        <div className="sticky bottom-4 mt-auto">
+          <button
+            onClick={onEndGame}
+            className="w-full py-3 rounded-xl bg-rose-600/20 border border-rose-500/40 text-rose-400 hover:bg-rose-600 hover:text-white transition-all font-black flex items-center justify-center gap-2 text-sm backdrop-blur-sm shadow-lg"
+          >
+            <StopCircle className="w-4 h-4" />
+            END GAME — Return Everyone to Lobby
+          </button>
+        </div>
+      )}
     </div>
   );
 }

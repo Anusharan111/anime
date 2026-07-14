@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "motion/react";
 import { Character } from "../../types";
-import { EyeOff, RotateCcw, StopCircle } from "lucide-react";
+import { EyeOff, StopCircle } from "lucide-react";
 import CharacterCard from "../CharacterCard";
 
 interface GuessCharacterModeProps {
@@ -13,25 +13,11 @@ interface GuessCharacterModeProps {
 
 export default function GuessCharacterMode({ myCharacter, otherPlayers, isHost, onEndGame }: GuessCharacterModeProps) {
   return (
-    <div className="w-full max-w-5xl mx-auto space-y-6 p-4">
+    <div className="w-full max-w-5xl mx-auto flex flex-col min-h-[80vh] space-y-6 p-4">
       {/* Header */}
-      <div className="flex justify-between items-center bg-slate-950/50 px-6 py-4 rounded-xl border border-white/5">
-        <div>
-          <h2 className="text-2xl font-black italic tracking-wider text-white">🎭 GUESS CHARACTER</h2>
-          <p className="text-slate-400 text-sm">Ask the others yes/no questions — figure out YOUR character!</p>
-        </div>
-        {isHost ? (
-          <button
-            onClick={onEndGame}
-            className="px-4 py-2 rounded-lg bg-rose-600/20 border border-rose-500/40 text-rose-400 hover:bg-rose-600/40 hover:text-white transition flex items-center gap-2 text-sm font-bold"
-          >
-            <StopCircle className="w-4 h-4" /> End Game
-          </button>
-        ) : (
-          <div className="px-4 py-2 rounded-lg bg-slate-900 border border-white/5 text-slate-500 text-sm font-bold">
-            Waiting for host...
-          </div>
-        )}
+      <div className="bg-slate-950/50 px-6 py-4 rounded-xl border border-white/5">
+        <h2 className="text-2xl font-black italic tracking-wider text-white">🎭 GUESS CHARACTER</h2>
+        <p className="text-slate-400 text-sm">Ask the others yes/no questions — figure out YOUR character!</p>
       </div>
 
       {/* YOUR card — hidden */}
@@ -51,7 +37,7 @@ export default function GuessCharacterMode({ myCharacter, otherPlayers, isHost, 
       </div>
 
       {/* Other players' cards */}
-      <div>
+      <div className="flex-1">
         <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4">Other Players' Characters</h3>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {otherPlayers.map((op, idx) => (
@@ -70,6 +56,19 @@ export default function GuessCharacterMode({ myCharacter, otherPlayers, isHost, 
           ))}
         </div>
       </div>
+
+      {/* Sticky bottom bar — End Game for host only */}
+      {isHost && (
+        <div className="sticky bottom-4 mt-auto">
+          <button
+            onClick={onEndGame}
+            className="w-full py-3 rounded-xl bg-rose-600/20 border border-rose-500/40 text-rose-400 hover:bg-rose-600 hover:text-white transition-all font-black flex items-center justify-center gap-2 text-sm backdrop-blur-sm shadow-lg"
+          >
+            <StopCircle className="w-4 h-4" />
+            END GAME — Return Everyone to Lobby
+          </button>
+        </div>
+      )}
     </div>
   );
 }

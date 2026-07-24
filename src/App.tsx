@@ -107,12 +107,83 @@ const getRequiredRarityForTeam = (slots: SlottedTeam): Rarity | null => {
   const hasLegendary = team.some((character) => character.rarity === "Legendary");
   const hasEpic = team.some((character) => character.rarity === "Epic");
 
-  // Introduce 40% chance of total randomness to prevent same characters from appearing every game
-  if (Math.random() < 0.4) return null;
+  // Keep rarity variety as a light nudge only. Hard-forcing premium cards too often
+  // makes every draft start from the same famous-character pool.
+  if (Math.random() < 0.85) return null;
 
   if (!hasLegendary) return "Legendary";
   if (!hasEpic) return "Epic";
   return null;
+};
+
+const normalizeCharacterName = (name: string) => name.toLowerCase().replace(/[^a-z0-9]/g, "");
+const normalizeAnimeName = (anime: string) => anime.trim().toLowerCase();
+
+const pickVariedCharacter = (availableCharacters: Character[], alreadySeenCharacters: Character[]) => {
+  const seenAnimeCounts = new Map<string, number>();
+  const seenNames = new Set(alreadySeenCharacters.map((character) => normalizeCharacterName(character.name)));
+
+  for (const character of alreadySeenCharacters) {
+    if (!character.anime) continue;
+    const animeKey = normalizeAnimeName(character.anime);
+    seenAnimeCounts.set(animeKey, (seenAnimeCounts.get(animeKey) || 0) + 1);
+  }
+
+  const uniqueCharacters = availableCharacters.filter(
+    (character) => !seenNames.has(normalizeCharacterName(character.name))
+  );
+  const pool = uniqueCharacters.length > 0 ? uniqueCharacters : availableCharacters;
+
+  const rarityWeight: Record<Rarity, number> = {
+    Common: 1.15,
+    Rare: 1.85,
+    Epic: 1.45,
+    Legendary: 1.05,
+  };
+
+  const weightedPool = pool.map((character) => {
+    const animeKey = character.anime ? normalizeAnimeName(character.anime) : "";
+    const animeRepeatCount = animeKey ? seenAnimeCounts.get(animeKey) || 0 : 0;
+    const animeWeight = 1 / (1 + animeRepeatCount * 1.6);
+    return {
+      character,
+      weight: rarityWeight[character.rarity] * animeWeight,
+    };
+  });
+
+  const totalWeight = weightedPool.reduce((total, item) => total + item.weight, 0);
+  let pickPoint = Math.random() * totalWeight;
+
+  for (const item of weightedPool) {
+    pickPoint -= item.weight;
+    if (pickPoint <= 0) return item.character;
+  }
+
+  return pool[Math.floor(Math.random() * pool.length)];
+};
+
+const getTeamDraftPower = (slots: SlottedTeam) => {
+  return Object.values(slots).reduce((total, character) => total + (character?.overallPower || 0), 0);
+};
+
+const getBalancedCharacterPool = (
+  availableCharacters: Character[],
+  activeSlots: SlottedTeam,
+  opponentSlots: SlottedTeam
+) => {
+  const activePower = getTeamDraftPower(activeSlots);
+  const opponentPower = getTeamDraftPower(opponentSlots);
+  const activePickCount = Object.values(activeSlots).filter(Boolean).length;
+  const opponentPickCount = Object.values(opponentSlots).filter(Boolean).length;
+
+  if (activePickCount === 0 || opponentPickCount === 0) return availableCharacters;
+  if (activePower <= opponentPower + 90) return availableCharacters;
+
+  const opponentAveragePower = opponentPower / opponentPickCount;
+  const maxAllowedPower = Math.max(330, Math.round(opponentAveragePower + 115));
+  const balancedPool = availableCharacters.filter((character) => character.overallPower <= maxAllowedPower);
+
+  return balancedPool.length >= 8 ? balancedPool : availableCharacters;
 };
 
 export default function App() {
@@ -727,9 +798,14 @@ export default function App() {
     sfx.playCardSpin();
     setActiveCharacter(null); // Clear previous to prevent visual artifacts
     const requiredRarity = getRequiredRarityForTeam(targetSlots);
+    const opponentSlots = activeTurn === "p1" ? p2Slots : p1Slots;
+    const activePower = getTeamDraftPower(targetSlots);
+    const opponentPower = getTeamDraftPower(opponentSlots);
+    const activePickCount = Object.values(targetSlots).filter(Boolean).length;
+    const opponentPickCount = Object.values(opponentSlots).filter(Boolean).length;
 
     try {
-      let url = `${API_BASE}/api/characters/random?exclude=${currentExcludes.join(",")}`;
+      let url = `${API_BASE}/api/characters/random?exclude=${currentExcludes.join(",")}&activePower=${activePower}&opponentPower=${opponentPower}&activePickCount=${activePickCount}&opponentPickCount=${opponentPickCount}`;
       if (activeAnimes.length > 0) {
         url += `&animes=${encodeURIComponent(activeAnimes.join(","))}`;
       }
@@ -767,7 +843,13 @@ export default function App() {
           available = rarityFiltered;
         }
       }
-      const backup = available[Math.floor(Math.random() * available.length)];
+      available = getBalancedCharacterPool(available, targetSlots, opponentSlots);
+      const alreadySeenCharacters = [
+        ...Object.values(p1Slots),
+        ...Object.values(p2Slots),
+        ...CHARACTERS.filter((character) => currentExcludes.includes(character.id)),
+      ].filter(Boolean) as Character[];
+      const backup = pickVariedCharacter(available, alreadySeenCharacters);
       if (!backup) {
         setActiveCharacter(null);
         return;
@@ -968,8 +1050,13 @@ export default function App() {
     // Helper: fetch a random character respecting the anime filter
     const fetchCandidate = async (excludes: string[], targetSlots: SlottedTeam): Promise<Character> => {
       const requiredRarity = getRequiredRarityForTeam(targetSlots);
+      const opponentSlots = activeTurn === "p1" ? p2Slots : p1Slots;
+      const activePower = getTeamDraftPower(targetSlots);
+      const opponentPower = getTeamDraftPower(opponentSlots);
+      const activePickCount = Object.values(targetSlots).filter(Boolean).length;
+      const opponentPickCount = Object.values(opponentSlots).filter(Boolean).length;
       try {
-        let url = `${API_BASE}/api/characters/random?exclude=${excludes.join(",")}`;
+        let url = `${API_BASE}/api/characters/random?exclude=${excludes.join(",")}&activePower=${activePower}&opponentPower=${opponentPower}&activePickCount=${activePickCount}&opponentPickCount=${opponentPickCount}`;
         if (activeAnimes.length > 0) {
           url += `&animes=${encodeURIComponent(activeAnimes.join(","))}`;
         }
@@ -994,7 +1081,13 @@ export default function App() {
           available = rarityFiltered;
         }
       }
-      return available[Math.floor(Math.random() * available.length)] || CHARACTERS[0];
+      available = getBalancedCharacterPool(available, targetSlots, opponentSlots);
+      const alreadySeenCharacters = [
+        ...Object.values(p1Slots),
+        ...Object.values(p2Slots),
+        ...CHARACTERS.filter((character) => excludes.includes(character.id)),
+      ].filter(Boolean) as Character[];
+      return pickVariedCharacter(available, alreadySeenCharacters) || CHARACTERS[0];
     };
 
     setTimeout(async () => {

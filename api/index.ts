@@ -216,6 +216,74 @@ function calculateRarityBonus(team: Character[]) {
   return team.reduce((total, character) => total + RARITY_BONUS[character.rarity], 0);
 }
 
+function normalizeCharacterName(name: string) {
+  return name.toLowerCase().replace(/[^a-z0-9]/g, "");
+}
+
+function normalizeAnimeName(anime: string) {
+  return anime.trim().toLowerCase();
+}
+
+function pickVariedCharacter(availableCharacters: Character[], alreadySeenCharacters: Character[]) {
+  const seenAnimeCounts = new Map<string, number>();
+  const seenNames = new Set(alreadySeenCharacters.map((character) => normalizeCharacterName(character.name)));
+
+  for (const character of alreadySeenCharacters) {
+    if (!character.anime) continue;
+    const animeKey = normalizeAnimeName(character.anime);
+    seenAnimeCounts.set(animeKey, (seenAnimeCounts.get(animeKey) || 0) + 1);
+  }
+
+  const uniqueCharacters = availableCharacters.filter(
+    (character) => !seenNames.has(normalizeCharacterName(character.name))
+  );
+  const pool = uniqueCharacters.length > 0 ? uniqueCharacters : availableCharacters;
+
+  const rarityWeight: Record<Character["rarity"], number> = {
+    Common: 1.15,
+    Rare: 1.85,
+    Epic: 1.45,
+    Legendary: 1.05,
+  };
+
+  const weightedPool = pool.map((character) => {
+    const animeKey = character.anime ? normalizeAnimeName(character.anime) : "";
+    const animeRepeatCount = animeKey ? seenAnimeCounts.get(animeKey) || 0 : 0;
+    const animeWeight = 1 / (1 + animeRepeatCount * 1.6);
+    return {
+      character,
+      weight: rarityWeight[character.rarity] * animeWeight,
+    };
+  });
+
+  const totalWeight = weightedPool.reduce((total, item) => total + item.weight, 0);
+  let pickPoint = Math.random() * totalWeight;
+
+  for (const item of weightedPool) {
+    pickPoint -= item.weight;
+    if (pickPoint <= 0) return item.character;
+  }
+
+  return pool[Math.floor(Math.random() * pool.length)];
+}
+
+function getBalancedCharacterPool(
+  availableCharacters: Character[],
+  activePower: number,
+  opponentPower: number,
+  activePickCount: number,
+  opponentPickCount: number
+) {
+  if (activePickCount === 0 || opponentPickCount === 0) return availableCharacters;
+  if (activePower <= opponentPower + 90) return availableCharacters;
+
+  const opponentAveragePower = opponentPower / opponentPickCount;
+  const maxAllowedPower = Math.max(330, Math.round(opponentAveragePower + 115));
+  const balancedPool = availableCharacters.filter((character) => character.overallPower <= maxAllowedPower);
+
+  return balancedPool.length >= 8 ? balancedPool : availableCharacters;
+}
+
 function buildBattleReport(
   player1Team: Character[],
   player2Team: Character[],
@@ -428,6 +496,10 @@ app.get("/api/characters/random", (req, res) => {
     const animeParam = req.query.anime as string || "";
     const animesParam = req.query.animes as string || "";
     const rarityParam = req.query.rarity as Character["rarity"] | undefined;
+    const activePower = Number(req.query.activePower || 0);
+    const opponentPower = Number(req.query.opponentPower || 0);
+    const activePickCount = Number(req.query.activePickCount || 0);
+    const opponentPickCount = Number(req.query.opponentPickCount || 0);
 
     const animeFilters: string[] = [];
     if (animesParam) {
@@ -455,16 +527,23 @@ app.get("/api/characters/random", (req, res) => {
       }
     }
 
+    available = getBalancedCharacterPool(
+      available,
+      Number.isFinite(activePower) ? activePower : 0,
+      Number.isFinite(opponentPower) ? opponentPower : 0,
+      Number.isFinite(activePickCount) ? activePickCount : 0,
+      Number.isFinite(opponentPickCount) ? opponentPickCount : 0
+    );
+
     const excludedCharacters = activeCharactersPool.filter(char => excludeIds.includes(char.id));
-    const normalizeName = (name: string) => name.toLowerCase().replace(/[^a-z0-9]/g, "");
-    const excludedNames = new Set(excludedCharacters.map(char => normalizeName(char.name)));
-    available = available.filter(char => !excludedNames.has(normalizeName(char.name)));
+    const excludedNames = new Set(excludedCharacters.map(char => normalizeCharacterName(char.name)));
+    available = available.filter(char => !excludedNames.has(normalizeCharacterName(char.name)));
 
     if (available.length === 0) {
       return res.status(404).json({ error: "No unpicked characters remain." });
     }
 
-    const picked = available[Math.floor(Math.random() * available.length)];
+    const picked = pickVariedCharacter(available, excludedCharacters);
     res.json(picked);
   } catch (error: any) {
     res.status(500).json({ error: error.message });

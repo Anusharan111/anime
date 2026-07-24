@@ -171,6 +171,10 @@ export default function App() {
   }, []);
 
   useEffect(() => {
+    window.history.replaceState({ animeBattleView: view }, "", window.location.href);
+  }, [view]);
+
+  useEffect(() => {
     const lockDraftScroll = isMobile && view === "draft";
     const previousBodyOverflow = document.body.style.overflow;
     const previousHtmlOverflow = document.documentElement.style.overflow;
@@ -1484,7 +1488,7 @@ export default function App() {
                               🎤 Anime Feud
                             </h3>
                             <p className="text-xs text-neutral-450 mt-1.5 leading-relaxed">
-                              Local party quiz game. Guess the most popular answers to offline anime questions. Supports 2 to 8 players, teams, and streak combos!
+                              Local 2-player quiz game. Guess the most popular anime answers, build the round bank, and steal after three strikes.
                             </p>
                           </div>
                         </div>
@@ -1536,11 +1540,11 @@ export default function App() {
                                 🎭 Anime Party Games
                               </h3>
                               <p className="text-xs text-neutral-450 mt-1.5 leading-relaxed">
-                                Local multiplayer party games. Play Guess Character or Guess Imposter with up to 10 friends!
+                                Online multiplayer party games. Create a room and play Guess Character or Guess Imposter with friends on any device.
                               </p>
                             </div>
                             <span className="ml-auto px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest bg-rose-500/10 border border-rose-500/30 text-rose-400 whitespace-nowrap">
-                              Local
+                              Online
                             </span>
                           </div>
                         </div>

@@ -57,7 +57,7 @@ export default function PartySetup({ onStart, onBack }: PartySetupProps) {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-3xl font-black italic tracking-wider text-white">PARTY MODE</h2>
-          <p className="text-slate-400 text-sm mt-1">Local Pass-and-Play Multiplayer</p>
+          <p className="text-slate-400 text-sm mt-1">Online Multiplayer</p>
         </div>
         <button
           onClick={onBack}

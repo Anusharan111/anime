@@ -525,7 +525,7 @@ export default function App() {
       if (p1Full && p2Full && view === "draft") {
         const team1 = Object.values(p1Slots).filter(Boolean) as Character[];
         const team2 = Object.values(p2Slots).filter(Boolean) as Character[];
-        calculateWinner(team1, team2);
+        calculateWinner(team1, team2, p1Slots, p2Slots);
       }
     }
   }, [p1Slots, p2Slots, gameMode, onlineSide, view]);
@@ -844,7 +844,7 @@ export default function App() {
       } else {
         // AI Turn — pass activeAnimes so AI's async flow uses the same filter
         setActiveTurn("p2");
-        triggerAiTurn(nextTeam, p2Slots, updatedExcludes, activeAnimes, round);
+        triggerAiTurn(nextTeam, nextSlots, p2Slots, updatedExcludes, activeAnimes, round);
       }
     } else {
       // Local or Online P2 Turn
@@ -873,7 +873,7 @@ export default function App() {
         const p1CurrentTeam = Object.values(p1Slots).filter(Boolean) as Character[];
         // In online mode, the useEffect hook triggers the winner calculation on P1's client to synchronize both sides
         if (gameModeRef.current !== "online-2p") {
-          calculateWinner(p1CurrentTeam, nextTeam);
+          calculateWinner(p1CurrentTeam, nextTeam, p1Slots, nextSlots);
         }
         if (gameModeRef.current === "online-2p") {
           syncGameState({
@@ -953,6 +953,7 @@ export default function App() {
    */
   const triggerAiTurn = (
     p1CurrentTeam: Character[],
+    p1CurrentSlots: SlottedTeam,
     currentAiSlots: SlottedTeam,
     currentExcludes: string[],
     activeAnimes: string[],
@@ -1030,7 +1031,7 @@ export default function App() {
                   const finalExcludes = [...nextExcludes, forcedCandidate.id];
                   setExcludedIds(finalExcludes);
 
-                  advanceRoundOrFinish(p1CurrentTeam, finalTeam, finalExcludes, activeAnimes, currentRound);
+                  advanceRoundOrFinish(p1CurrentTeam, finalTeam, p1CurrentSlots, nextSlots, finalExcludes, activeAnimes, currentRound);
                 }, 1200);
               }, 1000);
             }, 800);
@@ -1045,7 +1046,7 @@ export default function App() {
             const finalExcludes = [...currentExcludes, candidate.id];
             setExcludedIds(finalExcludes);
 
-            advanceRoundOrFinish(p1CurrentTeam, finalTeam, finalExcludes, activeAnimes, currentRound);
+            advanceRoundOrFinish(p1CurrentTeam, finalTeam, p1CurrentSlots, nextSlots, finalExcludes, activeAnimes, currentRound);
           }
         }, 1500);
       }, 1000);
@@ -1061,6 +1062,8 @@ export default function App() {
   const advanceRoundOrFinish = (
     team1: Character[],
     team2: Character[],
+    team1Slots: SlottedTeam,
+    team2Slots: SlottedTeam,
     excludes: string[],
     activeAnimes: string[],
     currentRound: number
@@ -1070,15 +1073,20 @@ export default function App() {
       const nextRound = currentRound + 1;
       setRound(nextRound);
       setActiveTurn("p1");
-      pullNewCharacter(excludes, activeAnimes, p1Slots);
+      pullNewCharacter(excludes, activeAnimes, team1Slots);
     } else {
-      calculateWinner(team1, team2);
+      calculateWinner(team1, team2, team1Slots, team2Slots);
     }
   };
 
   // ---------------- WINNER CALCULATIONS ----------------
 
-  const calculateWinner = async (team1: Character[], team2: Character[]) => {
+  const calculateWinner = async (
+    team1: Character[],
+    team2: Character[],
+    team1Slots: SlottedTeam = p1Slots,
+    team2Slots: SlottedTeam = p2Slots
+  ) => {
     setView("results");
     setLoadingResult(true);
     sfx.playShowdown();
@@ -1095,8 +1103,8 @@ export default function App() {
           player2Name,
           player1Team: team1,
           player2Team: team2,
-          player1Slots: p1Slots,
-          player2Slots: p2Slots,
+          player1Slots: team1Slots,
+          player2Slots: team2Slots,
         }),
       });
 

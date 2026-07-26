@@ -183,18 +183,45 @@ const RARITY_BONUS: Record<Character["rarity"], number> = {
   Legendary: 28,
 };
 
-function getRoleCombatScore(character: Character, role: RoleId): number {
+function getRoleFitScore(character: Character, role: RoleId): number {
   const { strength, speed, iq, defense, magic } = character.stats;
-  const roleScore = {
-    captain: strength * 0.25 + speed * 0.1 + iq * 0.35 + defense * 0.1 + magic * 0.2,
-    vice_captain: strength * 0.15 + speed * 0.2 + iq * 0.35 + defense * 0.1 + magic * 0.2,
-    tank: strength * 0.25 + speed * 0.05 + iq * 0.1 + defense * 0.45 + magic * 0.15,
-    healer: strength * 0.05 + speed * 0.1 + iq * 0.25 + defense * 0.2 + magic * 0.4,
-    support_1: strength * 0.15 + speed * 0.4 + iq * 0.25 + defense * 0.1 + magic * 0.1,
-    support_2: strength * 0.2 + speed * 0.1 + iq * 0.2 + defense * 0.1 + magic * 0.4,
+  const fitScore = {
+    captain: (iq + strength + magic) / 3,
+    vice_captain: (iq + speed + magic) / 3,
+    tank: defense,
+    healer: (magic + iq + defense) / 3,
+    support_1: (speed + iq) / 2,
+    support_2: (magic + strength) / 2,
   }[role];
 
-  return Math.round(roleScore + character.overallPower * 0.18 + RARITY_BONUS[character.rarity]);
+  return Math.round(fitScore);
+}
+
+function getRoleCombatBreakdown(character: Character, role: RoleId) {
+  const { strength, speed, iq, defense, magic } = character.stats;
+  const roleScore = {
+    captain: strength * 0.25 + speed * 0.08 + iq * 0.36 + defense * 0.08 + magic * 0.23,
+    vice_captain: strength * 0.14 + speed * 0.22 + iq * 0.36 + defense * 0.08 + magic * 0.2,
+    tank: strength * 0.2 + speed * 0.04 + iq * 0.08 + defense * 0.58 + magic * 0.1,
+    healer: strength * 0.03 + speed * 0.07 + iq * 0.28 + defense * 0.16 + magic * 0.46,
+    support_1: strength * 0.11 + speed * 0.5 + iq * 0.28 + defense * 0.06 + magic * 0.05,
+    support_2: strength * 0.24 + speed * 0.06 + iq * 0.16 + defense * 0.06 + magic * 0.48,
+  }[role];
+  const fitScore = getRoleFitScore(character, role);
+  const fitAdjustment = Math.round((fitScore - 60) * 0.55);
+  const rawPowerBonus = Math.round(character.overallPower * 0.08);
+  const rarityBonus = RARITY_BONUS[character.rarity];
+  const score = Math.max(1, Math.round(roleScore * 1.45 + rawPowerBonus + rarityBonus + fitAdjustment));
+
+  return {
+    score,
+    fitScore,
+    fitAdjustment,
+  };
+}
+
+function getRoleCombatScore(character: Character, role: RoleId): number {
+  return getRoleCombatBreakdown(character, role).score;
 }
 
 function getSlotsFromTeam(slots: BattleSlots | undefined, team: Character[]): Record<RoleId, Character | null> {
@@ -304,8 +331,10 @@ function buildBattleReport(
   const duels = ROLE_ORDER.map((role) => {
     const p1Character = p1Roster[role.id];
     const p2Character = p2Roster[role.id];
-    const p1Score = p1Character ? getRoleCombatScore(p1Character, role.id) : 0;
-    const p2Score = p2Character ? getRoleCombatScore(p2Character, role.id) : 0;
+    const p1Breakdown = p1Character ? getRoleCombatBreakdown(p1Character, role.id) : null;
+    const p2Breakdown = p2Character ? getRoleCombatBreakdown(p2Character, role.id) : null;
+    const p1Score = p1Breakdown?.score || 0;
+    const p2Score = p2Breakdown?.score || 0;
     let winner: BattleSide = "draw";
 
     if (p1Score > p2Score) {
@@ -328,10 +357,12 @@ function buildBattleReport(
       p2Name: p2Character?.name || "Empty Slot",
       p1Score,
       p2Score,
+      p1FitScore: p1Breakdown?.fitScore || 0,
+      p2FitScore: p2Breakdown?.fitScore || 0,
       winner,
       detail: winner === "draw"
-        ? "Even clash"
-        : `${winner === "p1" ? p1Character?.name : p2Character?.name} wins the ${role.label} duel`,
+        ? `Even clash. Role fit: ${p1Breakdown?.fitScore || 0} vs ${p2Breakdown?.fitScore || 0}`
+        : `${winner === "p1" ? p1Character?.name : p2Character?.name} wins the ${role.label} duel with better role fit (${winner === "p1" ? p1Breakdown?.fitScore : p2Breakdown?.fitScore})`,
     };
   });
 
@@ -372,7 +403,7 @@ function buildBattleReport(
     },
     rules: [
       "Each role duels the matching enemy role.",
-      "Role score uses the stats that matter for that role, plus rarity.",
+      "Role score strongly rewards the stats that fit that slot. Raw power and rarity help, but bad role placement is punished.",
       "Teams gain bonuses for duel wins, total power, rarity edge, balance, and filling all 6 roles.",
       "Highest final battle score wins. Exact ties become a draw.",
     ],

@@ -109,6 +109,12 @@ export default function CharacterCard({
   };
 
   const config = rarityConfig[character.rarity] || rarityConfig.Common;
+  const rarityStars: Record<Character["rarity"], number> = {
+    Common: 1,
+    Rare: 2,
+    Epic: 3,
+    Legendary: 4,
+  };
 
 
 
@@ -285,7 +291,7 @@ export default function CharacterCard({
             </div>
             <div className="flex gap-0.5">
               {Array.from({ length: 5 }).map((_, i) => (
-                <div key={i} className={`w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full ${i < (character.overallPower / 100) ? config.text : 'bg-white/10'} shadow-sm`} />
+                <div key={i} className={`w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full ${i < rarityStars[character.rarity] ? config.text : 'bg-white/10'} shadow-sm`} />
               ))}
             </div>
           </div>
@@ -316,7 +322,7 @@ export default function CharacterCard({
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-80" />
             
             <div className={`absolute ${isCompact ? 'top-1 left-1' : 'top-1.5 left-1.5 sm:top-2 sm:left-2'} bg-black/60 backdrop-blur-md ${isCompact ? 'px-1' : 'px-1.5 py-0.5'} rounded border border-white/10 z-20`}>
-              <span className={`${isCompact ? 'text-[6px]' : 'text-[7px] sm:text-[9px]'} font-mono font-bold text-white/70`}>PWR {character.overallPower}</span>
+              <span className={`${isCompact ? 'text-[6px]' : 'text-[7px] sm:text-[9px]'} font-mono font-bold text-white/70`}>{character.signatureEmoji} CLASSIFIED</span>
             </div>
 
             <div className={`absolute ${isCompact ? 'bottom-1 left-1 right-1' : 'bottom-1.5 left-1.5 right-1.5 sm:bottom-2 sm:left-2 sm:right-2'} z-20`}>

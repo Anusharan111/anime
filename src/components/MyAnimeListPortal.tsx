@@ -581,10 +581,10 @@ export default function MyAnimeListPortal({ onPoolUpdated }: MALPortalProps) {
                     </div>
                   </div>
 
-                  {/* Power score */}
+                  {/* Hidden combat profile */}
                   <div className="w-full max-w-[280px] bg-neutral-900/50 border border-white/5 rounded-2xl p-4 text-center">
-                    <p className="text-[9px] font-mono text-neutral-500 uppercase tracking-widest">Overall Combat Score</p>
-                    <p className="text-4xl font-black text-white mt-1 font-mono">{preview.overallPower}</p>
+                    <p className="text-[9px] font-mono text-neutral-500 uppercase tracking-widest">Combat Profile</p>
+                    <p className="text-2xl font-black text-white mt-1 font-mono">Classified</p>
                   </div>
                 </div>
 

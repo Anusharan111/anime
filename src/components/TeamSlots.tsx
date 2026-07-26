@@ -172,10 +172,10 @@ export default function TeamSlots({
                           layoutId={`slotted-${char.id}`}
                           className="w-full h-full object-cover object-top"
                         />
-                        {/* Compact HUD Overlay showing power score */}
+                        {/* Compact HUD Overlay showing rarity class */}
                         <div className="absolute inset-x-0 bottom-0 bg-black/60 p-[1px] flex justify-center items-center">
                           <span className="text-[5.5px] font-mono font-black text-white leading-none">
-                            {char.overallPower}
+                            {char.rarity}
                           </span>
                         </div>
                       </div>
@@ -250,10 +250,10 @@ export default function TeamSlots({
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
                       
-                      {/* Stat Overlays in Mini Card */}
+                      {/* Rarity overlay in mini card */}
                       <div className="absolute top-1 right-1 bg-black/60 backdrop-blur-md px-1.5 py-0.5 rounded border border-white/10 flex items-center gap-1">
                         <Zap className="w-2 h-2 text-nexus-cyan" />
-                        <span className="text-[8px] font-mono font-black text-white">{char.overallPower}</span>
+                        <span className="text-[8px] font-mono font-black text-white">{char.rarity}</span>
                       </div>
                     </div>
 

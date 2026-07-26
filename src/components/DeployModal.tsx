@@ -35,6 +35,20 @@ const TrophyIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
+const getRoleFitScore = (character: Character, role: RoleId) => {
+  const { strength, speed, iq, defense, magic } = character.stats;
+  const fitScore = {
+    captain: (iq + strength + magic) / 3,
+    vice_captain: (iq + speed + magic) / 3,
+    tank: defense,
+    healer: (magic + iq + defense) / 3,
+    support_1: (speed + iq) / 2,
+    support_2: (magic + strength) / 2,
+  }[role];
+
+  return Math.round(fitScore);
+};
+
 export default function DeployModal({ character, slots, onSelect, onClose }: DeployModalProps) {
   // Prevent clicks from reaching background
   const handleContentClick = (e: React.MouseEvent) => {
@@ -101,7 +115,7 @@ export default function DeployModal({ character, slots, onSelect, onClose }: Dep
             </h4>
             <div className="flex gap-2 items-center mt-1">
               <span className="text-[9px] font-mono font-black text-amber-400 border border-amber-500/20 bg-amber-500/10 px-1.5 py-0.5 rounded">
-                PWR {character.overallPower}
+                {character.signatureEmoji} CLASSIFIED
               </span>
               <span className="text-[9px] font-mono font-bold text-slate-400">
                 {character.rarity}
@@ -119,6 +133,8 @@ export default function DeployModal({ character, slots, onSelect, onClose }: Dep
             {ROLE_CATEGORIES.map((role) => {
               const occupant = slots[role.id];
               const isOccupied = !!occupant;
+              const fitScore = getRoleFitScore(character, role.id);
+              const fitLabel = fitScore >= 82 ? "Ideal" : fitScore >= 70 ? "Good" : fitScore >= 58 ? "Okay" : "Weak";
 
               return (
                 <button
@@ -152,8 +168,8 @@ export default function DeployModal({ character, slots, onSelect, onClose }: Dep
                           Filled by {occupant.name}
                         </p>
                       ) : (
-                        <p className="text-[9px] font-mono text-slate-400">
-                          Empty
+                        <p className={`text-[9px] font-mono ${fitScore >= 70 ? "text-emerald-300" : fitScore >= 58 ? "text-amber-300" : "text-red-300"}`}>
+                          Fit {fitScore} · {fitLabel}
                         </p>
                       )}
                     </div>

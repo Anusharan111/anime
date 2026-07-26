@@ -54,6 +54,8 @@ type BattleReport = {
     p2Name: string;
     p1Score: number;
     p2Score: number;
+    p1FitScore?: number;
+    p2FitScore?: number;
     winner: "p1" | "p2" | "draw";
     detail: string;
   }>;
@@ -184,6 +186,20 @@ const getBalancedCharacterPool = (
   const balancedPool = availableCharacters.filter((character) => character.overallPower <= maxAllowedPower);
 
   return balancedPool.length >= 8 ? balancedPool : availableCharacters;
+};
+
+const getRoleFitScore = (character: Character, role: RoleId) => {
+  const { strength, speed, iq, defense, magic } = character.stats;
+  const fitScore = {
+    captain: (iq + strength + magic) / 3,
+    vice_captain: (iq + speed + magic) / 3,
+    tank: defense,
+    healer: (magic + iq + defense) / 3,
+    support_1: (speed + iq) / 2,
+    support_2: (magic + strength) / 2,
+  }[role];
+
+  return Math.round(fitScore);
 };
 
 export default function App() {
@@ -1021,14 +1037,9 @@ export default function App() {
     const emptyKeys = (Object.keys(currentAiSlots) as RoleId[]).filter((k) => !currentAiSlots[k]);
     if (emptyKeys.length === 0) return "captain"; // Safety fallback
 
-    if (emptyKeys.includes("captain") && character.overallPower >= 400) return "captain";
-    if (emptyKeys.includes("tank") && character.stats.defense >= 80) return "tank";
-    if (emptyKeys.includes("healer") && (character.stats.magic >= 80 || character.stats.iq >= 75)) return "healer";
-    if (emptyKeys.includes("vice_captain") && character.overallPower >= 350) return "vice_captain";
-    if (emptyKeys.includes("support_1") && character.stats.speed >= 75) return "support_1";
-    if (emptyKeys.includes("support_2") && character.stats.magic >= 75) return "support_2";
-
-    return emptyKeys[0];
+    return emptyKeys.reduce((bestRole, role) => {
+      return getRoleFitScore(character, role) > getRoleFitScore(character, bestRole) ? role : bestRole;
+    }, emptyKeys[0]);
   };
 
   /**
@@ -1509,7 +1520,7 @@ export default function App() {
                               <p className="text-[9px] text-neutral-500 uppercase tracking-widest">RESULT</p>
                               <p className="text-xs font-bold text-emerald-400">{match.winner} WON</p>
                               <p className="text-[10px] text-neutral-400">
-                                {match.player1Power} - {match.player2Power} PWR
+                                Final battle logged
                               </p>
                             </div>
                           </div>
@@ -1534,7 +1545,7 @@ export default function App() {
                         </span>
                       </h1>
                       <p className="text-neutral-400 text-sm md:text-base max-w-2xl mx-auto pr-1 leading-relaxed">
-                        A tactical drafting dual simulator. Build a faction from your favorite anime series. Outsmart opponents using tactical skips, secure the high Power Overall fighters, and let the AI Commenters analyze the battle!
+                        A tactical drafting duel simulator. Build a faction from your favorite anime series, read their stats, place them in the right roles, and let the AI Commenters analyze the battle!
                       </p>
                     </div>
                   </div>
@@ -2048,8 +2059,8 @@ export default function App() {
 
                         <div className="grid grid-cols-2 gap-3.5 bg-neutral-900/30 border border-white/5 p-3 rounded-xl font-mono text-[10px]">
                           <div>
-                            <span className="text-neutral-500">MAX POWER SCORE</span>
-                            <p className="text-lg font-black text-white">{hottestSpotlight.overallPower}</p>
+                            <span className="text-neutral-500">RARITY CLASS</span>
+                            <p className="text-lg font-black text-white">{hottestSpotlight.rarity}</p>
                           </div>
                           <div>
                             <span className="text-neutral-500">SIGNATURE MANIFESTO</span>
@@ -2435,6 +2446,7 @@ export default function App() {
                                 <div className={`min-w-0 ${duel.winner === "p1" ? "text-emerald-300" : "text-slate-400"}`}>
                                   <p className="truncate text-[10px] font-bold">{duel.p1Name}</p>
                                   <p className="text-sm font-black">{duel.p1Score}</p>
+                                  <p className="text-[8px] font-mono uppercase text-slate-600">Fit {duel.p1FitScore ?? 0}</p>
                                 </div>
                                 <div className="text-center">
                                   <p className="text-[8px] font-mono font-black uppercase tracking-widest text-slate-500">{duel.label}</p>
@@ -2443,6 +2455,7 @@ export default function App() {
                                 <div className={`min-w-0 text-right ${duel.winner === "p2" ? "text-emerald-300" : "text-slate-400"}`}>
                                   <p className="truncate text-[10px] font-bold">{duel.p2Name}</p>
                                   <p className="text-sm font-black">{duel.p2Score}</p>
+                                  <p className="text-[8px] font-mono uppercase text-slate-600">Fit {duel.p2FitScore ?? 0}</p>
                                 </div>
                               </div>
                             ))}
@@ -2545,7 +2558,7 @@ export default function App() {
                               </span>
                             </div>
                             <div className="absolute top-1 right-1 bg-neutral-950/70 rounded px-1 text-[8px] font-mono text-white">
-                              {c.overallPower}
+                              {c.rarity}
                             </div>
                           </div>
                         ))}
@@ -2575,7 +2588,7 @@ export default function App() {
                               </span>
                             </div>
                             <div className="absolute top-1 right-1 bg-neutral-950/70 rounded px-1 text-[8px] font-mono text-white">
-                              {c.overallPower}
+                              {c.rarity}
                             </div>
                           </div>
                         ))}

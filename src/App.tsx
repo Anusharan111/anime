@@ -39,6 +39,27 @@ import { sfx } from "./utils/audio";
 import { Search } from "lucide-react";
 
 type ViewState = "landing" | "draft" | "results" | "feud" | "guesswho" | "party";
+type GameHubMode = "hub" | "battle";
+type AppHistoryState = {
+  animeBattleInternal: true;
+  view: ViewState;
+  selectedGameHubMode?: GameHubMode;
+};
+
+const getRouteHash = (view: ViewState, selectedGameHubMode: GameHubMode = "hub") => {
+  if (view === "landing" && selectedGameHubMode === "battle") return "#/battle";
+  if (view === "landing") return "";
+  return `#/${view}`;
+};
+
+const getPageStateFromHash = (): { view: ViewState; selectedGameHubMode: GameHubMode } => {
+  const route = window.location.hash.replace(/^#\/?/, "").toLowerCase();
+  if (route === "battle") return { view: "landing", selectedGameHubMode: "battle" };
+  if (["draft", "results", "feud", "guesswho", "party"].includes(route)) {
+    return { view: route as ViewState, selectedGameHubMode: "hub" };
+  }
+  return { view: "landing", selectedGameHubMode: "hub" };
+};
 
 type BattleReport = {
   p1BattleScore: number;

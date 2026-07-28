@@ -271,7 +271,7 @@ export default function App() {
 
   useEffect(() => {
     const checkWidth = () => {
-      setIsMobile(window.innerWidth < 1024);
+      setIsMobile(window.innerWidth < 768);
     };
     checkWidth();
     window.addEventListener("resize", checkWidth);
@@ -1553,13 +1553,13 @@ export default function App() {
               ) : (
                 <>
                   {/* Hero Head Banner */}
-                  <div className="text-center space-y-6 max-w-4xl mx-auto">
+                  <div className="text-center space-y-4 sm:space-y-6 max-w-4xl mx-auto">
                     <div className="inline-flex items-center gap-2 bg-neutral-900/50 border border-violet-500/20 px-3.5 py-1.5 rounded-full text-[10px] text-violet-300 tracking-[0.2em] uppercase font-mono font-black drop-shadow-[0_0_12px_rgba(139,92,246,0.25)]">
                       EPIC REAL-TIME ANIME BATTLE SIMULATOR
                     </div>
 
                     <div className="space-y-3">
-                      <h1 className="text-5xl md:text-7xl font-extrabold tracking-tighter uppercase leading-none font-sans">
+                      <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tighter uppercase leading-none font-sans">
                         BUILD THE ULTIMATE <br />
                         <span className="bg-clip-text text-transparent bg-gradient-to-r from-violet-400 via-fuchsia-400 to-amber-400 filter drop-shadow-[0_0_30px_rgba(168,85,247,0.35)]">
                           ANIME TEAM
@@ -1572,7 +1572,7 @@ export default function App() {
                   </div>
 
                   {selectedGameHubMode === "hub" ? (
-                    <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 w-full">
+                    <div className="max-w-4xl mx-auto grid gap-4 sm:gap-6 md:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 w-full pt-2">
                       {/* Game Card 1: Anime Battle Draft */}
                       <button
                         onClick={() => setSelectedGameHubMode("battle")}
@@ -1599,7 +1599,7 @@ export default function App() {
                       {/* Game Card 2: Anime Feud */}
                       <button
                         onClick={() => setView("feud")}
-                        className="p-8 rounded-3xl border border-fuchsia-500/20 bg-neutral-955/70 hover:border-fuchsia-500/60 hover:bg-fuchsia-955/10 text-left transition-all duration-300 shadow-xl relative overflow-hidden group hover:-translate-y-1 cursor-pointer"
+                        className="p-4 sm:p-6 md:p-8 rounded-3xl border border-fuchsia-500/20 bg-neutral-955/70 hover:border-fuchsia-500/60 hover:bg-fuchsia-955/10 text-left transition-all duration-300 shadow-xl relative overflow-hidden group hover:-translate-y-1 cursor-pointer"
                       >
                         <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition duration-300">
                           <Trophy className="w-32 h-32 text-fuchsia-450" />

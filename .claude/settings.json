@@ -1,0 +1,30 @@
+{
+  "enableAllProjectMcpServers": true,
+  "permissions": {
+    "allow": [
+      "Skill(gemini/graphify)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash|Grep",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "C:/Users/Anusharan/Documents/vs/anime/.venv/Scripts/graphify.EXE hook-guard search"
+          }
+        ]
+      },
+      {
+        "matcher": "Read|Glob",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "C:/Users/Anusharan/Documents/vs/anime/.venv/Scripts/graphify.EXE hook-guard read"
+          }
+        ]
+      }
+    ]
+  }
+}

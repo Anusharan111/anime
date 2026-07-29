@@ -278,9 +278,48 @@ export default function App() {
     return () => window.removeEventListener("resize", checkWidth);
   }, []);
 
+  // --- Navigation History: pushState on view change, popstate to go back ---
+  const isInitialRender = useRef(true);
+  const isPopstateNavigation = useRef(false);
+
   useEffect(() => {
-    window.history.replaceState({ animeBattleView: view }, "", window.location.href);
-  }, [view]);
+    const state: AppHistoryState = { animeBattleInternal: true, view, selectedGameHubMode };
+    const hash = getRouteHash(view, selectedGameHubMode);
+    const url = window.location.pathname + (hash || "");
+
+    if (isInitialRender.current) {
+      // First render: replace so the landing page doesn't create a duplicate entry
+      window.history.replaceState(state, "", url);
+      isInitialRender.current = false;
+    } else if (isPopstateNavigation.current) {
+      // Navigating via browser back/forward — don't push another entry
+      isPopstateNavigation.current = false;
+    } else {
+      // Normal in-app navigation — push a new history entry
+      window.history.pushState(state, "", url);
+    }
+  }, [view, selectedGameHubMode]);
+
+  useEffect(() => {
+    const handlePopState = (e: PopStateEvent) => {
+      const state = e.state as AppHistoryState | null;
+      if (state?.animeBattleInternal) {
+        isPopstateNavigation.current = true;
+        setView(state.view);
+        if (state.selectedGameHubMode) {
+          setSelectedGameHubMode(state.selectedGameHubMode);
+        }
+      } else {
+        // If there's no internal state, go to landing (user pressed back past first page)
+        isPopstateNavigation.current = true;
+        setView("landing");
+        setSelectedGameHubMode("hub");
+      }
+    };
+
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
 
   useEffect(() => {
     const lockDraftScroll = isMobile && view === "draft";
@@ -2066,17 +2105,40 @@ export default function App() {
                           )}
 
                           {(gameMode !== "online-2p" || (onlineRoomId && onlineSide === "p1")) && (
-                            <button
-                              id="btn-start-battle"
-                              onClick={() => startNewGame(gameMode)}
-                              disabled={!hasEnoughSelectedCharacters}
-                              className={`w-full py-4 rounded-xl text-xs uppercase tracking-[0.2em] font-black transition-all flex items-center justify-center gap-2 mt-6 cursor-pointer ${!hasEnoughSelectedCharacters
-                                  ? "bg-neutral-800 text-neutral-500 border border-neutral-700/50 cursor-not-allowed opacity-50 shadow-none scale-100"
-                                  : "bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white shadow-[0_0_30px_rgba(139,92,246,0.35)] hover:shadow-[0_0_35px_rgba(139,92,246,0.45)] active:scale-95"
-                                }`}
-                            >
-                              <Play className="w-4 h-4 fill-white" /> ENTER DRAFTING ARENA <ArrowRight className="w-4 h-4" />
-                            </button>
+                            isMobile ? (
+                              <div className="grid grid-cols-2 gap-3 mt-6">
+                                <button
+                                  id="btn-start-battle-mobile"
+                                  onClick={() => startNewGame(gameMode)}
+                                  disabled={!hasEnoughSelectedCharacters}
+                                  className={`py-3.5 rounded-xl text-[10px] uppercase tracking-[0.15em] font-black transition-all flex items-center justify-center gap-1.5 cursor-pointer ${!hasEnoughSelectedCharacters
+                                      ? "bg-neutral-800 text-neutral-500 border border-neutral-700/50 cursor-not-allowed opacity-50"
+                                      : "bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white shadow-[0_0_20px_rgba(139,92,246,0.3)] active:scale-95"
+                                    }`}
+                                >
+                                  <Swords className="w-3.5 h-3.5" /> DRAFT ARENA
+                                </button>
+                                <button
+                                  id="btn-party-games-mobile"
+                                  onClick={() => setView("party")}
+                                  className="py-3.5 rounded-xl text-[10px] uppercase tracking-[0.15em] font-black transition-all flex items-center justify-center gap-1.5 cursor-pointer bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-500 hover:to-pink-500 text-white shadow-[0_0_20px_rgba(244,63,94,0.3)] active:scale-95"
+                                >
+                                  <Users className="w-3.5 h-3.5" /> PARTY GAMES
+                                </button>
+                              </div>
+                            ) : (
+                              <button
+                                id="btn-start-battle"
+                                onClick={() => startNewGame(gameMode)}
+                                disabled={!hasEnoughSelectedCharacters}
+                                className={`w-full py-4 rounded-xl text-xs uppercase tracking-[0.2em] font-black transition-all flex items-center justify-center gap-2 mt-6 cursor-pointer ${!hasEnoughSelectedCharacters
+                                    ? "bg-neutral-800 text-neutral-500 border border-neutral-700/50 cursor-not-allowed opacity-50 shadow-none scale-100"
+                                    : "bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white shadow-[0_0_30px_rgba(139,92,246,0.35)] hover:shadow-[0_0_35px_rgba(139,92,246,0.45)] active:scale-95"
+                                  }`}
+                              >
+                                <Play className="w-4 h-4 fill-white" /> ENTER DRAFTING ARENA <ArrowRight className="w-4 h-4" />
+                              </button>
+                            )
                           )}
                         </div>
 

@@ -1553,45 +1553,66 @@ export default function App() {
               ) : (
                 <>
                   {/* Hero Head Banner */}
-                  <div className="text-center space-y-4 sm:space-y-6 max-w-4xl mx-auto">
-                    <div className="inline-flex items-center gap-2 bg-neutral-900/50 border border-violet-500/20 px-3.5 py-1.5 rounded-full text-[10px] text-violet-300 tracking-[0.2em] uppercase font-mono font-black drop-shadow-[0_0_12px_rgba(139,92,246,0.25)]">
-                      EPIC REAL-TIME ANIME BATTLE SIMULATOR
+                  <div className="text-center space-y-3 sm:space-y-6 max-w-4xl mx-auto px-2">
+                    <div className="inline-flex items-center gap-2 bg-gradient-to-r from-violet-500/10 via-fuchsia-500/10 to-nexus-cyan/10 border border-violet-500/30 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full text-[9px] sm:text-[10px] text-violet-300 tracking-[0.2em] uppercase font-mono font-black shadow-[0_0_15px_rgba(168,85,247,0.2)]">
+                      <Sparkles className="w-3 h-3 text-nexus-cyan animate-pulse" /> EPIC ANIME BATTLE MULTIVERSE
                     </div>
 
-                    <div className="space-y-3">
-                      <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tighter uppercase leading-none font-sans">
+                    <div className="space-y-2 sm:space-y-3">
+                      <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tighter uppercase leading-tight font-sans">
                         BUILD THE ULTIMATE <br />
-                        <span className="bg-clip-text text-transparent bg-gradient-to-r from-violet-400 via-fuchsia-400 to-amber-400 filter drop-shadow-[0_0_30px_rgba(168,85,247,0.35)]">
-                          ANIME TEAM
+                        <span className="bg-clip-text text-transparent bg-gradient-to-r from-violet-400 via-fuchsia-400 to-nexus-cyan filter drop-shadow-[0_0_30px_rgba(168,85,247,0.35)]">
+                          ANIME EMPIRE
                         </span>
                       </h1>
-                      <p className="text-neutral-400 text-sm md:text-base max-w-2xl mx-auto pr-1 leading-relaxed">
-                        A tactical drafting duel simulator. Build a faction from your favorite anime series, read their stats, place them in the right roles, and let the AI Commenters analyze the battle!
+                      <p className="text-neutral-300 text-xs sm:text-sm md:text-base max-w-2xl mx-auto leading-relaxed font-sans px-1">
+                        Choose your tactical game mode below! Draft legendaries, duel in trivia feuds, play secret deduction duels, or host multiplayer party games.
                       </p>
+                    </div>
+
+                    {/* Quick Feature Badges on Mobile */}
+                    <div className="flex flex-wrap items-center justify-center gap-2 pt-1 sm:pt-2">
+                      <span className="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-[9px] sm:text-[10px] font-mono text-slate-300 font-bold flex items-center gap-1.5">
+                        <Zap className="w-3 h-3 text-amber-400" /> 4 Game Modes
+                      </span>
+                      <span className="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-[9px] sm:text-[10px] font-mono text-slate-300 font-bold flex items-center gap-1.5">
+                        <Globe className="w-3 h-3 text-nexus-cyan" /> Online Multiplayer
+                      </span>
+                      <span className="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-[9px] sm:text-[10px] font-mono text-slate-300 font-bold flex items-center gap-1.5">
+                        <Trophy className="w-3 h-3 text-fuchsia-400" /> Real-time Duels
+                      </span>
                     </div>
                   </div>
 
                   {selectedGameHubMode === "hub" ? (
-                    <div className="max-w-4xl mx-auto grid gap-4 sm:gap-6 md:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 w-full pt-2">
+                    <div className="max-w-5xl mx-auto grid gap-3 sm:gap-6 grid-cols-1 sm:grid-cols-2 w-full pt-2 px-1 sm:px-0">
                       {/* Game Card 1: Anime Battle Draft */}
                       <button
                         onClick={() => setSelectedGameHubMode("battle")}
-                        className="p-8 rounded-3xl border border-violet-500/20 bg-neutral-955/70 hover:border-violet-500/60 hover:bg-violet-955/10 text-left transition-all duration-300 shadow-xl relative overflow-hidden group hover:-translate-y-1 cursor-pointer"
+                        className="p-5 sm:p-7 rounded-2xl sm:rounded-3xl border border-violet-500/30 bg-gradient-to-br from-violet-950/40 via-neutral-955/80 to-indigo-955/30 hover:border-violet-400 hover:shadow-[0_0_35px_rgba(139,92,246,0.35)] text-left transition-all duration-300 relative overflow-hidden group active:scale-[0.98] cursor-pointer"
                       >
-                        <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition duration-300">
-                          <Swords className="w-32 h-32 text-violet-450" />
+                        <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-15 transition duration-300 pointer-events-none">
+                          <Swords className="w-28 h-28 sm:w-36 sm:h-36 text-violet-400" />
                         </div>
-                        <div className="space-y-4">
-                          <div className="w-12 h-12 rounded-2xl bg-violet-500/10 border border-violet-500/30 flex items-center justify-center text-violet-400 group-hover:scale-110 transition duration-300">
-                            <Swords className="w-6 h-6" />
+                        <div className="space-y-3 sm:space-y-4 relative z-10">
+                          <div className="flex items-center justify-between">
+                            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-violet-500/15 border border-violet-500/30 flex items-center justify-center text-violet-400 group-hover:scale-110 transition duration-300 shadow-[0_0_15px_rgba(139,92,246,0.2)]">
+                              <Swords className="w-5 h-5 sm:w-6 sm:h-6" />
+                            </div>
+                            <span className="px-2.5 py-0.5 rounded-full text-[9px] font-black font-mono uppercase tracking-widest bg-violet-500/15 border border-violet-500/30 text-violet-300">
+                              Tactical Draft
+                            </span>
                           </div>
                           <div>
-                            <h3 className="text-2xl font-black text-white uppercase tracking-wide">
+                            <h3 className="text-xl sm:text-2xl font-black text-white uppercase tracking-wide flex items-center gap-2">
                               🗡️ Anime Battle
                             </h3>
-                            <p className="text-xs text-neutral-450 mt-1.5 leading-relaxed">
-                              Tactical drafting and duel simulation. Pick the highest power heroes, build team roles, and match against bots or local players.
+                            <p className="text-xs text-neutral-300 mt-1.5 leading-relaxed">
+                              Draft heroes turn-by-turn, assign strategic role bonuses, and duel against smart AI or local opponents in simulated combat.
                             </p>
+                          </div>
+                          <div className="pt-1 flex items-center text-[10px] sm:text-xs font-mono font-black text-violet-400 group-hover:translate-x-1 transition-transform">
+                            SELECT BATTLE DESIGN <ArrowRight className="w-3.5 h-3.5 ml-1" />
                           </div>
                         </div>
                       </button>
@@ -1599,22 +1620,30 @@ export default function App() {
                       {/* Game Card 2: Anime Feud */}
                       <button
                         onClick={() => setView("feud")}
-                        className="p-4 sm:p-6 md:p-8 rounded-3xl border border-fuchsia-500/20 bg-neutral-955/70 hover:border-fuchsia-500/60 hover:bg-fuchsia-955/10 text-left transition-all duration-300 shadow-xl relative overflow-hidden group hover:-translate-y-1 cursor-pointer"
+                        className="p-5 sm:p-7 rounded-2xl sm:rounded-3xl border border-fuchsia-500/30 bg-gradient-to-br from-fuchsia-955/40 via-neutral-955/80 to-pink-955/30 hover:border-fuchsia-400 hover:shadow-[0_0_35px_rgba(217,70,239,0.35)] text-left transition-all duration-300 relative overflow-hidden group active:scale-[0.98] cursor-pointer"
                       >
-                        <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition duration-300">
-                          <Trophy className="w-32 h-32 text-fuchsia-450" />
+                        <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-15 transition duration-300 pointer-events-none">
+                          <Trophy className="w-28 h-28 sm:w-36 sm:h-36 text-fuchsia-400" />
                         </div>
-                        <div className="space-y-4">
-                          <div className="w-12 h-12 rounded-2xl bg-fuchsia-500/10 border border-fuchsia-500/30 flex items-center justify-center text-fuchsia-400 group-hover:scale-110 transition duration-300">
-                            <Sparkles className="w-6 h-6" />
+                        <div className="space-y-3 sm:space-y-4 relative z-10">
+                          <div className="flex items-center justify-between">
+                            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-fuchsia-500/15 border border-fuchsia-500/30 flex items-center justify-center text-fuchsia-400 group-hover:scale-110 transition duration-300 shadow-[0_0_15px_rgba(217,70,239,0.2)]">
+                              <Sparkles className="w-5 h-5 sm:w-6 sm:h-6" />
+                            </div>
+                            <span className="px-2.5 py-0.5 rounded-full text-[9px] font-black font-mono uppercase tracking-widest bg-fuchsia-500/15 border border-fuchsia-500/30 text-fuchsia-300">
+                              Local 2P Quiz
+                            </span>
                           </div>
                           <div>
-                            <h3 className="text-2xl font-black text-white uppercase tracking-wide">
+                            <h3 className="text-xl sm:text-2xl font-black text-white uppercase tracking-wide flex items-center gap-2">
                               🎤 Anime Feud
                             </h3>
-                            <p className="text-xs text-neutral-450 mt-1.5 leading-relaxed">
-                              Local 2-player quiz game. Guess the most popular anime answers, build the round bank, and steal after three strikes.
+                            <p className="text-xs text-neutral-300 mt-1.5 leading-relaxed">
+                              Family Feud style anime trivia! Face off head-to-head, guess top community answers, bank points, and pull off epic steals.
                             </p>
+                          </div>
+                          <div className="pt-1 flex items-center text-[10px] sm:text-xs font-mono font-black text-fuchsia-400 group-hover:translate-x-1 transition-transform">
+                            PLAY ANIME FEUD <ArrowRight className="w-3.5 h-3.5 ml-1" />
                           </div>
                         </div>
                       </button>
@@ -1622,27 +1651,30 @@ export default function App() {
                       {/* Game Card 3: Anime Guess Who */}
                       <button
                         onClick={() => setView("guesswho")}
-                        className="p-8 rounded-3xl border border-cyan-500/20 bg-neutral-955/70 hover:border-cyan-500/60 hover:bg-cyan-955/10 text-left transition-all duration-300 shadow-xl relative overflow-hidden group hover:-translate-y-1 cursor-pointer"
+                        className="p-5 sm:p-7 rounded-2xl sm:rounded-3xl border border-cyan-500/30 bg-gradient-to-br from-cyan-955/40 via-neutral-955/80 to-blue-955/30 hover:border-cyan-400 hover:shadow-[0_0_35px_rgba(0,229,255,0.35)] text-left transition-all duration-300 relative overflow-hidden group active:scale-[0.98] cursor-pointer"
                       >
-                        <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition duration-300">
-                          <Search className="w-32 h-32 text-cyan-450" />
+                        <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-15 transition duration-300 pointer-events-none">
+                          <Search className="w-28 h-28 sm:w-36 sm:h-36 text-cyan-400" />
                         </div>
-                        <div className="space-y-4">
-                          <div className="w-12 h-12 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 group-hover:scale-110 transition duration-300">
-                            <Search className="w-6 h-6" />
-                          </div>
-                          <div className="flex items-center gap-3">
-                            <div>
-                              <h3 className="text-2xl font-black text-white uppercase tracking-wide">
-                                🔍 Anime Guess Who
-                              </h3>
-                              <p className="text-xs text-neutral-450 mt-1.5 leading-relaxed">
-                                Online deduction duel. Ask yes/no questions to figure out your opponent&apos;s secret anime character. Wrong guess = instant loss!
-                              </p>
+                        <div className="space-y-3 sm:space-y-4 relative z-10">
+                          <div className="flex items-center justify-between">
+                            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-cyan-500/15 border border-cyan-500/30 flex items-center justify-center text-cyan-400 group-hover:scale-110 transition duration-300 shadow-[0_0_15px_rgba(0,229,255,0.2)]">
+                              <Search className="w-5 h-5 sm:w-6 sm:h-6" />
                             </div>
-                            <span className="ml-auto px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 whitespace-nowrap">
-                              Online Only
+                            <span className="px-2.5 py-0.5 rounded-full text-[9px] font-black font-mono uppercase tracking-widest bg-cyan-500/15 border border-cyan-500/30 text-cyan-300">
+                              Online 2P
                             </span>
+                          </div>
+                          <div>
+                            <h3 className="text-xl sm:text-2xl font-black text-white uppercase tracking-wide flex items-center gap-2">
+                              🔍 Anime Guess Who
+                            </h3>
+                            <p className="text-xs text-neutral-300 mt-1.5 leading-relaxed">
+                              Real-time deduction duel! Ask yes/no questions to narrow down candidate characters and unmask your rival's secret hero.
+                            </p>
+                          </div>
+                          <div className="pt-1 flex items-center text-[10px] sm:text-xs font-mono font-black text-cyan-400 group-hover:translate-x-1 transition-transform">
+                            START DEDUCTION DUEL <ArrowRight className="w-3.5 h-3.5 ml-1" />
                           </div>
                         </div>
                       </button>
@@ -1650,27 +1682,30 @@ export default function App() {
                       {/* Game Card 4: Anime Party Games */}
                       <button
                         onClick={() => setView("party")}
-                        className="p-8 rounded-3xl border border-rose-500/20 bg-neutral-955/70 hover:border-rose-500/60 hover:bg-rose-955/10 text-left transition-all duration-300 shadow-xl relative overflow-hidden group hover:-translate-y-1 cursor-pointer"
+                        className="p-5 sm:p-7 rounded-2xl sm:rounded-3xl border border-rose-500/30 bg-gradient-to-br from-rose-955/40 via-neutral-955/80 to-red-955/30 hover:border-rose-400 hover:shadow-[0_0_35px_rgba(244,63,94,0.35)] text-left transition-all duration-300 relative overflow-hidden group active:scale-[0.98] cursor-pointer"
                       >
-                        <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition duration-300">
-                          <Users className="w-32 h-32 text-rose-450" />
+                        <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-15 transition duration-300 pointer-events-none">
+                          <Users className="w-28 h-28 sm:w-36 sm:h-36 text-rose-400" />
                         </div>
-                        <div className="space-y-4">
-                          <div className="w-12 h-12 rounded-2xl bg-rose-500/10 border border-rose-500/30 flex items-center justify-center text-rose-400 group-hover:scale-110 transition duration-300">
-                            <Users className="w-6 h-6" />
-                          </div>
-                          <div className="flex items-center gap-3">
-                            <div>
-                              <h3 className="text-2xl font-black text-white uppercase tracking-wide">
-                                🎭 Anime Party Games
-                              </h3>
-                              <p className="text-xs text-neutral-450 mt-1.5 leading-relaxed">
-                                Online multiplayer party games. Create a room and play Guess Character or Guess Imposter with friends on any device.
-                              </p>
+                        <div className="space-y-3 sm:space-y-4 relative z-10">
+                          <div className="flex items-center justify-between">
+                            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-rose-500/15 border border-rose-500/30 flex items-center justify-center text-rose-400 group-hover:scale-110 transition duration-300 shadow-[0_0_15px_rgba(244,63,94,0.2)]">
+                              <Users className="w-5 h-5 sm:w-6 sm:h-6" />
                             </div>
-                            <span className="ml-auto px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest bg-rose-500/10 border border-rose-500/30 text-rose-400 whitespace-nowrap">
-                              Online
+                            <span className="px-2.5 py-0.5 rounded-full text-[9px] font-black font-mono uppercase tracking-widest bg-rose-500/15 border border-rose-500/30 text-rose-300">
+                              Party Lobby
                             </span>
+                          </div>
+                          <div>
+                            <h3 className="text-xl sm:text-2xl font-black text-white uppercase tracking-wide flex items-center gap-2">
+                              🎭 Anime Party Games
+                            </h3>
+                            <p className="text-xs text-neutral-300 mt-1.5 leading-relaxed">
+                              Multiplayer room games with friends! Filter character pools, guess assigned anime figures, or spot the secret Imposter in real-time.
+                            </p>
+                          </div>
+                          <div className="pt-1 flex items-center text-[10px] sm:text-xs font-mono font-black text-rose-400 group-hover:translate-x-1 transition-transform">
+                            ENTER PARTY ROOM <ArrowRight className="w-3.5 h-3.5 ml-1" />
                           </div>
                         </div>
                       </button>
@@ -1681,476 +1716,476 @@ export default function App() {
                       <div className="max-w-5xl mx-auto flex justify-start pb-4 w-full">
                         <button
                           onClick={() => setSelectedGameHubMode("hub")}
-                          className="px-4 py-2 rounded-xl bg-neutral-900 border border-white/5 text-xs font-bold text-neutral-450 hover:text-white transition duration-200 cursor-pointer"
+                          className="px-4 py-2 rounded-xl bg-neutral-900 border border-white/10 text-xs font-bold text-neutral-300 hover:text-white hover:border-violet-500/40 transition duration-200 cursor-pointer flex items-center gap-2"
                         >
                           ← Back to Game Hub
                         </button>
                       </div>
 
                       {/* GAME SETUP MATRIX */}
-                      <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto items-stretch">
-                    {/* Setup Controls */}
-                    <div className="rounded-3xl border border-neutral-800/80 bg-neutral-950/70 p-6 sm:p-8 flex flex-col justify-between space-y-8 relative overflow-hidden backdrop-blur-md shadow-2xl">
-                      <div className="space-y-5">
-                        <div className="flex border-b border-white/5 pb-4 items-center gap-2.5">
-                          <Flame className="w-5 h-5 text-violet-400" />
-                          <h2 className="text-lg font-black uppercase text-white font-mono tracking-wider">
-                            STADIUM MATCH REGISTRATION
-                          </h2>
-                        </div>
+                      <div className="grid md:grid-cols-2 gap-6 sm:gap-8 max-w-5xl mx-auto items-stretch">
+                        {/* Setup Controls */}
+                        <div className="rounded-3xl border border-neutral-800/80 bg-neutral-950/70 p-5 sm:p-8 flex flex-col justify-between space-y-6 sm:space-y-8 relative overflow-hidden backdrop-blur-md shadow-2xl">
+                          <div className="space-y-5">
+                            <div className="flex border-b border-white/5 pb-4 items-center gap-2.5">
+                              <Flame className="w-5 h-5 text-violet-400" />
+                              <h2 className="text-base sm:text-lg font-black uppercase text-white font-mono tracking-wider">
+                                STADIUM MATCH REGISTRATION
+                              </h2>
+                            </div>
 
-                        {/* Mode selectors */}
-                        <div className="space-y-2">
-                          <label className="text-[10px] font-mono text-neutral-400 tracking-widest uppercase">
-                            SELECT BATTLE DESIGN
-                          </label>
-                          <div className="grid grid-cols-3 gap-3.5">
-                            <button
-                              onClick={() => {
-                                setGameMode("vs-ai");
-                                setPlayer2Name("Smart AI");
-                                setOnlineAction(null);
-                              }}
-                              className={`p-4 rounded-xl border flex flex-col items-center gap-2 text-center transition-all cursor-pointer ${gameMode === "vs-ai"
-                                  ? "border-violet-500 bg-violet-950/10 text-white shadow-[0_0_15px_rgba(139,92,246,0.15)]"
-                                  : "border-neutral-900 bg-neutral-900/20 text-neutral-400 hover:border-neutral-800"
-                                }`}
-                            >
-                              <Computer className="w-5 h-5" />
-                              <div>
-                                <p className="text-xs font-black uppercase tracking-wide">P1 VS AI</p>
-                                <p className="text-[9px] font-mono text-neutral-500 mt-0.5">Solo Bot</p>
-                              </div>
-                            </button>
-
-                            <button
-                              onClick={() => {
-                                setGameMode("local-2p");
-                                setPlayer2Name("Hype Guest");
-                                setOnlineAction(null);
-                              }}
-                              className={`p-4 rounded-xl border flex flex-col items-center gap-2 text-center transition-all cursor-pointer ${gameMode === "local-2p"
-                                  ? "border-violet-500 bg-violet-950/10 text-white shadow-[0_0_15px_rgba(139,92,246,0.15)]"
-                                  : "border-neutral-900 bg-neutral-900/20 text-neutral-400 hover:border-neutral-800"
-                                }`}
-                            >
-                              <Users className="w-5 h-5" />
-                              <div>
-                                <p className="text-xs font-black uppercase tracking-wide">LOCAL 2P</p>
-                                <p className="text-[9px] font-mono text-neutral-500 mt-0.5">Pass & Play</p>
-                              </div>
-                            </button>
-
-                            <button
-                              onClick={() => {
-                                setGameMode("online-2p");
-                                setOnlineAction(null);
-                              }}
-                              className={`p-4 rounded-xl border flex flex-col items-center gap-2 text-center transition-all cursor-pointer ${gameMode === "online-2p"
-                                  ? "border-violet-500 bg-violet-950/10 text-white shadow-[0_0_15px_rgba(139,92,246,0.15)]"
-                                  : "border-neutral-900 bg-neutral-900/20 text-neutral-400 hover:border-neutral-800"
-                                }`}
-                            >
-                              <Globe className="w-5 h-5" />
-                              <div>
-                                <p className="text-xs font-black uppercase tracking-wide">ONLINE 2P</p>
-                                <p className="text-[9px] font-mono text-neutral-500 mt-0.5">Play Online</p>
-                              </div>
-                            </button>
-                          </div>
-                        </div>
-
-                        {gameMode === "online-2p" && !onlineRoomId && (
-                          <div className="space-y-4 p-4 rounded-2xl border border-violet-500/20 bg-violet-500/5 animate-fadeIn">
-                            {!onlineAction ? (
-                              <div className="grid grid-cols-2 gap-3">
+                            {/* Mode selectors */}
+                            <div className="space-y-2">
+                              <label className="text-[10px] font-mono text-neutral-400 tracking-widest uppercase">
+                                SELECT BATTLE DESIGN
+                              </label>
+                              <div className="grid grid-cols-3 gap-2 sm:gap-3.5">
                                 <button
-                                  onClick={() => setOnlineAction("create")}
-                                  className="py-3 rounded-xl bg-violet-600 hover:bg-violet-500 text-white text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2 transition-all"
+                                  onClick={() => {
+                                    setGameMode("vs-ai");
+                                    setPlayer2Name("Smart AI");
+                                    setOnlineAction(null);
+                                  }}
+                                  className={`p-3 sm:p-4 rounded-xl border flex flex-col items-center gap-1.5 sm:gap-2 text-center transition-all cursor-pointer ${gameMode === "vs-ai"
+                                      ? "border-violet-500 bg-violet-950/20 text-white shadow-[0_0_15px_rgba(139,92,246,0.2)]"
+                                      : "border-neutral-900 bg-neutral-900/20 text-neutral-400 hover:border-neutral-800"
+                                    }`}
                                 >
-                                  <Plus className="w-4 h-4" /> Create Room
+                                  <Computer className="w-4 h-4 sm:w-5 sm:h-5" />
+                                  <div>
+                                    <p className="text-[10px] sm:text-xs font-black uppercase tracking-wide">P1 VS AI</p>
+                                    <p className="text-[8px] sm:text-[9px] font-mono text-neutral-500 mt-0.5">Solo Bot</p>
+                                  </div>
                                 </button>
+
                                 <button
-                                  onClick={() => setOnlineAction("join")}
-                                  className="py-3 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-white text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2 transition-all"
+                                  onClick={() => {
+                                    setGameMode("local-2p");
+                                    setPlayer2Name("Hype Guest");
+                                    setOnlineAction(null);
+                                  }}
+                                  className={`p-3 sm:p-4 rounded-xl border flex flex-col items-center gap-1.5 sm:gap-2 text-center transition-all cursor-pointer ${gameMode === "local-2p"
+                                      ? "border-violet-500 bg-violet-950/20 text-white shadow-[0_0_15px_rgba(139,92,246,0.2)]"
+                                      : "border-neutral-900 bg-neutral-900/20 text-neutral-400 hover:border-neutral-800"
+                                    }`}
                                 >
-                                  <LogIn className="w-4 h-4" /> Join Room
+                                  <Users className="w-4 h-4 sm:w-5 sm:h-5" />
+                                  <div>
+                                    <p className="text-[10px] sm:text-xs font-black uppercase tracking-wide">LOCAL 2P</p>
+                                    <p className="text-[8px] sm:text-[9px] font-mono text-neutral-500 mt-0.5">Pass & Play</p>
+                                  </div>
+                                </button>
+
+                                <button
+                                  onClick={() => {
+                                    setGameMode("online-2p");
+                                    setOnlineAction(null);
+                                  }}
+                                  className={`p-3 sm:p-4 rounded-xl border flex flex-col items-center gap-1.5 sm:gap-2 text-center transition-all cursor-pointer ${gameMode === "online-2p"
+                                      ? "border-violet-500 bg-violet-950/20 text-white shadow-[0_0_15px_rgba(139,92,246,0.2)]"
+                                      : "border-neutral-900 bg-neutral-900/20 text-neutral-400 hover:border-neutral-800"
+                                    }`}
+                                >
+                                  <Globe className="w-4 h-4 sm:w-5 sm:h-5" />
+                                  <div>
+                                    <p className="text-[10px] sm:text-xs font-black uppercase tracking-wide">ONLINE 2P</p>
+                                    <p className="text-[8px] sm:text-[9px] font-mono text-neutral-500 mt-0.5">Play Online</p>
+                                  </div>
                                 </button>
                               </div>
-                            ) : (
-                              <div className="space-y-4">
-                                <div className="flex justify-between items-center">
-                                  <p className="text-[10px] font-mono text-violet-300 uppercase tracking-widest">
-                                    {onlineAction === "create" ? "Configure your room" : "Enter room details"}
-                                  </p>
-                                  <button
-                                    onClick={() => setOnlineAction(null)}
-                                    className="text-[9px] font-mono text-neutral-500 hover:text-white uppercase transition-colors"
-                                  >
-                                    ← Back
-                                  </button>
-                                </div>
+                            </div>
 
-                                {onlineAction === "join" && (
-                                  <div className="relative">
-                                    <input
-                                      type="text"
-                                      value={joinRoomId}
-                                      onChange={(e) => setJoinRoomId(e.target.value)}
-                                      placeholder="ROOM CODE"
-                                      className="w-full bg-neutral-900 border border-neutral-800 rounded-xl py-3 px-3 text-[10px] text-white font-mono font-bold focus:border-violet-500 focus:outline-none uppercase"
-                                    />
+                            {gameMode === "online-2p" && !onlineRoomId && (
+                              <div className="space-y-4 p-4 rounded-2xl border border-violet-500/20 bg-violet-500/5 animate-fadeIn">
+                                {!onlineAction ? (
+                                  <div className="grid grid-cols-2 gap-3">
                                     <button
-                                      onClick={joinOnlineRoom}
-                                      className="absolute right-1 top-1 bottom-1 px-3 rounded-lg bg-violet-600 hover:bg-violet-500 text-white text-[9px] font-black uppercase"
+                                      onClick={() => setOnlineAction("create")}
+                                      className="py-3 rounded-xl bg-violet-600 hover:bg-violet-500 text-white text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2 transition-all cursor-pointer"
                                     >
-                                      Join
+                                      <Plus className="w-4 h-4" /> Create Room
+                                    </button>
+                                    <button
+                                      onClick={() => setOnlineAction("join")}
+                                      className="py-3 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-white text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2 transition-all cursor-pointer"
+                                    >
+                                      <LogIn className="w-4 h-4" /> Join Room
                                     </button>
                                   </div>
-                                )}
+                                ) : (
+                                  <div className="space-y-4">
+                                    <div className="flex justify-between items-center">
+                                      <p className="text-[10px] font-mono text-violet-300 uppercase tracking-widest">
+                                        {onlineAction === "create" ? "Configure your room" : "Enter room details"}
+                                      </p>
+                                      <button
+                                        onClick={() => setOnlineAction(null)}
+                                        className="text-[9px] font-mono text-neutral-500 hover:text-white uppercase transition-colors cursor-pointer"
+                                      >
+                                        ← Back
+                                      </button>
+                                    </div>
 
-                                {onlineAction === "create" && (
-                                  <button
-                                    onClick={createOnlineRoom}
-                                    className="w-full py-3 rounded-xl bg-violet-600 hover:bg-violet-500 text-white text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2 transition-all shadow-lg shadow-violet-500/20"
-                                  >
-                                    <Plus className="w-4 h-4" /> Initialize & Generate Room
-                                  </button>
-                                )}
-                              </div>
-                            )}
-                          </div>
-                        )}
-
-                        {onlineRoomId && isWaitingForOpponent && (
-                          <div className="p-6 rounded-2xl border border-emerald-500/20 bg-emerald-500/5 text-center space-y-3">
-                            <p className="text-[10px] font-mono text-emerald-400 uppercase tracking-widest">Room Created! Share code with friend</p>
-                            <div className="flex items-center justify-center gap-3">
-                              <h3 className="text-3xl font-black text-white tracking-widest">{onlineRoomId}</h3>
-                              <button
-                                onClick={() => {
-                                  navigator.clipboard.writeText(onlineRoomId).catch(() => {});
-                                }}
-                                className="text-[9px] font-mono text-emerald-400 border border-emerald-500/30 rounded-lg px-2 py-1 hover:bg-emerald-500/10 transition-all"
-                                title="Copy room code"
-                              >
-                                Copy
-                              </button>
-                            </div>
-                            <div className="flex items-center justify-center gap-2 text-[9px] text-neutral-500 uppercase font-mono animate-pulse">
-                              <Loader2 className="w-3 h-3 animate-spin" /> Waiting for opponent...
-                            </div>
-                            <button 
-                              onClick={() => {
-                                if (channelRef.current) {
-                                  channelRef.current.trigger("client-room-cancelled", {});
-                                }
-                                resetOnlineLobby();
-                                setGameMode("vs-ai");
-                              }}
-                              className="text-[9px] text-red-400 hover:underline"
-                            >
-                              Cancel
-                            </button>
-                          </div>
-                        )}
-
-                        {/* Anime Filter */}
-                        {(gameMode !== "online-2p" || onlineAction === "create" || (onlineRoomId && onlineSide === "p1")) && (
-                          <div className="space-y-2 pt-1 animate-fadeIn">
-                            <label className="text-[10px] font-mono text-neutral-400 tracking-widest uppercase">
-                              CHARACTER POOL FILTER
-                            </label>
-                            <div className="grid grid-cols-2 gap-3">
-                              <button
-                                onClick={() => {
-                                  setCategory("all");
-                                  setSelectedAnimes([]);
-                                  setAnimeSearchQuery("");
-                                  importStarterAllAnimeCasts();
-                                }}
-                                className={`py-2.5 px-3 rounded-xl border text-[10px] font-black uppercase tracking-wide transition-all cursor-pointer ${category === "all"
-                                    ? "border-purple-500 bg-purple-500/10 text-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.25)]"
-                                    : "border-neutral-800 bg-neutral-900/30 text-neutral-400 hover:border-neutral-700"
-                                  }`}
-                              >
-                                🌐 All Anime
-                              </button>
-                              <button
-                                onClick={() => setCategory("choose")}
-                                className={`py-2.5 px-3 rounded-xl border text-[10px] font-black uppercase tracking-wide transition-all cursor-pointer ${category === "choose"
-                                    ? "border-purple-500 bg-purple-500/10 text-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.25)]"
-                                    : "border-neutral-800 bg-neutral-900/30 text-neutral-400 hover:border-neutral-700"
-                                  }`}
-                              >
-                                🎯 Choose Anime
-                              </button>
-                            </div>
-
-                            {category === "choose" && (
-                              <div className="space-y-1.5 pt-1 relative">
-                                <input
-                                  id="inp-anime-search"
-                                  type="text"
-                                  value={animeSearchQuery}
-                                  onFocus={() => setIsAnimeDropdownOpen(true)}
-                                  onBlur={() => {
-                                    setTimeout(() => setIsAnimeDropdownOpen(false), 200);
-                                  }}
-                                  onChange={(e) => {
-                                    setAnimeSearchQuery(e.target.value);
-                                  }}
-                                  placeholder="Select or search anime… e.g. Naruto, Bleach"
-                                  className="w-full bg-neutral-900/50 border border-neutral-800 rounded-xl py-2.5 px-3.5 text-xs text-white font-mono font-bold focus:border-purple-500 focus:outline-none cursor-pointer"
-                                />
-                                {isAnimeDropdownOpen && (
-                                  <div className="absolute z-20 left-0 right-0 top-full mt-1 bg-neutral-900 border border-neutral-700 rounded-xl max-h-40 overflow-y-auto shadow-2xl">
-                                    {animeList
-                                      .filter((a) => !animeSearchQuery.trim() || a.toLowerCase().includes(animeSearchQuery.toLowerCase()))
-                                      .map((anime) => (
+                                    {onlineAction === "join" && (
+                                      <div className="relative">
+                                        <input
+                                          type="text"
+                                          value={joinRoomId}
+                                          onChange={(e) => setJoinRoomId(e.target.value)}
+                                          placeholder="ROOM CODE"
+                                          className="w-full bg-neutral-900 border border-neutral-800 rounded-xl py-3 px-3 text-[10px] text-white font-mono font-bold focus:border-violet-500 focus:outline-none uppercase"
+                                        />
                                         <button
-                                          key={anime}
-                                          onMouseDown={() => {
-                                            if (!selectedAnimes.includes(anime)) {
-                                              setSelectedAnimes((prev) => [...prev, anime]);
-                                              importCastForAnime(anime)
-                                                .catch((error) => {
-                                                  console.warn("Auto import failed", error);
-                                                });
-                                            }
-                                            setAnimeSearchQuery("");
-                                            setIsAnimeDropdownOpen(false);
-                                          }}
-                                          className={`w-full text-left px-3.5 py-2 text-xs font-mono hover:bg-purple-500/15 transition-colors cursor-pointer ${selectedAnimes.includes(anime) ? "text-purple-400 bg-purple-500/10" : "text-slate-200"
-                                            }`}
+                                          onClick={joinOnlineRoom}
+                                          className="absolute right-1 top-1 bottom-1 px-3 rounded-lg bg-violet-600 hover:bg-violet-500 text-white text-[9px] font-black uppercase cursor-pointer"
                                         >
-                                          {anime}
+                                          Join
                                         </button>
-                                      ))}
-                                    {animeList.filter((a) => !animeSearchQuery.trim() || a.toLowerCase().includes(animeSearchQuery.toLowerCase())).length === 0 && (
-                                      <p className="px-3.5 py-2 text-[10px] text-neutral-500 font-mono">No anime found matching "{animeSearchQuery}"</p>
+                                      </div>
+                                    )}
+
+                                    {onlineAction === "create" && (
+                                      <button
+                                        onClick={createOnlineRoom}
+                                        className="w-full py-3 rounded-xl bg-violet-600 hover:bg-violet-500 text-white text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2 transition-all shadow-lg shadow-violet-500/20 cursor-pointer"
+                                      >
+                                        <Plus className="w-4 h-4" /> Initialize & Generate Room
+                                      </button>
                                     )}
                                   </div>
                                 )}
-                                {selectedAnimes.length > 0 && (
-                                  <div className="flex flex-wrap gap-1.5 mt-2">
-                                    {selectedAnimes.map((anime) => (
-                                      <span
-                                        key={anime}
-                                        className="inline-flex items-center gap-1.5 text-[10px] font-mono font-bold text-purple-400 bg-purple-500/10 border border-purple-500/30 px-2.5 py-1 rounded-lg"
-                                      >
-                                        🎯 {anime}
+                              </div>
+                            )}
+
+                            {onlineRoomId && isWaitingForOpponent && (
+                              <div className="p-6 rounded-2xl border border-emerald-500/20 bg-emerald-500/5 text-center space-y-3">
+                                <p className="text-[10px] font-mono text-emerald-400 uppercase tracking-widest">Room Created! Share code with friend</p>
+                                <div className="flex items-center justify-center gap-3">
+                                  <h3 className="text-3xl font-black text-white tracking-widest">{onlineRoomId}</h3>
+                                  <button
+                                    onClick={() => {
+                                      navigator.clipboard.writeText(onlineRoomId).catch(() => {});
+                                    }}
+                                    className="text-[9px] font-mono text-emerald-400 border border-emerald-500/30 rounded-lg px-2 py-1 hover:bg-emerald-500/10 transition-all cursor-pointer"
+                                    title="Copy room code"
+                                  >
+                                    Copy
+                                  </button>
+                                </div>
+                                <div className="flex items-center justify-center gap-2 text-[9px] text-neutral-500 uppercase font-mono animate-pulse">
+                                  <Loader2 className="w-3 h-3 animate-spin" /> Waiting for opponent...
+                                </div>
+                                <button 
+                                  onClick={() => {
+                                    if (channelRef.current) {
+                                      channelRef.current.trigger("client-room-cancelled", {});
+                                    }
+                                    resetOnlineLobby();
+                                    setGameMode("vs-ai");
+                                  }}
+                                  className="text-[9px] text-red-400 hover:underline cursor-pointer"
+                                >
+                                  Cancel
+                                </button>
+                              </div>
+                            )}
+
+                            {/* Anime Filter */}
+                            {(gameMode !== "online-2p" || onlineAction === "create" || (onlineRoomId && onlineSide === "p1")) && (
+                              <div className="space-y-2 pt-1 animate-fadeIn">
+                                <label className="text-[10px] font-mono text-neutral-400 tracking-widest uppercase">
+                                  CHARACTER POOL FILTER
+                                </label>
+                                <div className="grid grid-cols-2 gap-3">
+                                  <button
+                                    onClick={() => {
+                                      setCategory("all");
+                                      setSelectedAnimes([]);
+                                      setAnimeSearchQuery("");
+                                      importStarterAllAnimeCasts();
+                                    }}
+                                    className={`py-2.5 px-3 rounded-xl border text-[10px] font-black uppercase tracking-wide transition-all cursor-pointer ${category === "all"
+                                        ? "border-purple-500 bg-purple-500/10 text-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.25)]"
+                                        : "border-neutral-800 bg-neutral-900/30 text-neutral-400 hover:border-neutral-700"
+                                      }`}
+                                  >
+                                    🌐 All Anime
+                                  </button>
+                                  <button
+                                    onClick={() => setCategory("choose")}
+                                    className={`py-2.5 px-3 rounded-xl border text-[10px] font-black uppercase tracking-wide transition-all cursor-pointer ${category === "choose"
+                                        ? "border-purple-500 bg-purple-500/10 text-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.25)]"
+                                        : "border-neutral-800 bg-neutral-900/30 text-neutral-400 hover:border-neutral-700"
+                                      }`}
+                                  >
+                                    🎯 Choose Anime
+                                  </button>
+                                </div>
+
+                                {category === "choose" && (
+                                  <div className="space-y-1.5 pt-1 relative">
+                                    <input
+                                      id="inp-anime-search"
+                                      type="text"
+                                      value={animeSearchQuery}
+                                      onFocus={() => setIsAnimeDropdownOpen(true)}
+                                      onBlur={() => {
+                                        setTimeout(() => setIsAnimeDropdownOpen(false), 200);
+                                      }}
+                                      onChange={(e) => {
+                                        setAnimeSearchQuery(e.target.value);
+                                      }}
+                                      placeholder="Select or search anime… e.g. Naruto, Bleach"
+                                      className="w-full bg-neutral-900/50 border border-neutral-800 rounded-xl py-2.5 px-3.5 text-xs text-white font-mono font-bold focus:border-purple-500 focus:outline-none cursor-pointer"
+                                    />
+                                    {isAnimeDropdownOpen && (
+                                      <div className="absolute z-20 left-0 right-0 top-full mt-1 bg-neutral-900 border border-neutral-700 rounded-xl max-h-40 overflow-y-auto shadow-2xl">
+                                        {animeList
+                                          .filter((a) => !animeSearchQuery.trim() || a.toLowerCase().includes(animeSearchQuery.toLowerCase()))
+                                          .map((anime) => (
+                                            <button
+                                              key={anime}
+                                              onMouseDown={() => {
+                                                if (!selectedAnimes.includes(anime)) {
+                                                  setSelectedAnimes((prev) => [...prev, anime]);
+                                                  importCastForAnime(anime)
+                                                    .catch((error) => {
+                                                      console.warn("Auto import failed", error);
+                                                    });
+                                                }
+                                                setAnimeSearchQuery("");
+                                                setIsAnimeDropdownOpen(false);
+                                              }}
+                                              className={`w-full text-left px-3.5 py-2 text-xs font-mono hover:bg-purple-500/15 transition-colors cursor-pointer ${selectedAnimes.includes(anime) ? "text-purple-400 bg-purple-500/10" : "text-slate-200"
+                                                }`}
+                                            >
+                                              {anime}
+                                            </button>
+                                          ))}
+                                        {animeList.filter((a) => !animeSearchQuery.trim() || a.toLowerCase().includes(animeSearchQuery.toLowerCase())).length === 0 && (
+                                          <p className="px-3.5 py-2 text-[10px] text-neutral-500 font-mono">No anime found matching "{animeSearchQuery}"</p>
+                                        )}
+                                      </div>
+                                    )}
+                                    {selectedAnimes.length > 0 && (
+                                      <div className="flex flex-wrap gap-1.5 mt-2">
+                                        {selectedAnimes.map((anime) => (
+                                          <span
+                                            key={anime}
+                                            className="inline-flex items-center gap-1.5 text-[10px] font-mono font-bold text-purple-400 bg-purple-500/10 border border-purple-500/30 px-2.5 py-1 rounded-lg"
+                                          >
+                                            🎯 {anime}
+                                            <button
+                                              type="button"
+                                              onClick={() => {
+                                                setSelectedAnimes((prev) => prev.filter((a) => a !== anime));
+                                              }}
+                                              className="hover:text-red-400 font-bold font-sans cursor-pointer transition-colors"
+                                            >
+                                              ✕
+                                            </button>
+                                          </span>
+                                        ))}
                                         <button
                                           type="button"
                                           onClick={() => {
-                                            setSelectedAnimes((prev) => prev.filter((a) => a !== anime));
+                                            setSelectedAnimes([]);
+                                            setAnimeSearchQuery("");
                                           }}
-                                          className="hover:text-red-400 font-bold font-sans cursor-pointer transition-colors"
+                                          className="text-[9px] font-mono text-slate-400 hover:text-red-400 transition-colors cursor-pointer self-center ml-1"
                                         >
-                                          ✕
+                                          ✕ clear all
                                         </button>
-                                      </span>
-                                    ))}
-                                    <button
-                                      type="button"
-                                      onClick={() => {
-                                        setSelectedAnimes([]);
-                                        setAnimeSearchQuery("");
-                                      }}
-                                      className="text-[9px] font-mono text-slate-400 hover:text-red-400 transition-colors cursor-pointer self-center ml-1"
-                                    >
-                                      ✕ clear all
-                                    </button>
+                                      </div>
+                                    )}
+                                  </div>
+                                )}
+                              </div>
+                            )}
+
+                            {/* Player Names */}
+                            {(gameMode !== "online-2p" || onlineAction !== null) && (
+                              <div className="space-y-3 pt-2 animate-fadeIn">
+                                <div className="space-y-1.5">
+                                  <label className="text-[10px] font-mono text-neutral-400 tracking-widest uppercase">
+                                    PLAYER 1 SIGNATURE CALL
+                                  </label>
+                                  <input
+                                    id="inp-p1-name"
+                                    type="text"
+                                    value={player1Name}
+                                    onChange={(e) => setPlayer1Name(e.target.value)}
+                                    placeholder="Fighter 1 Name"
+                                    maxLength={16}
+                                    className="w-full bg-neutral-900/50 border border-neutral-800 rounded-xl py-2.5 px-3.5 text-xs text-white font-mono font-bold focus:border-violet-500 focus:outline-none"
+                                  />
+                                </div>
+
+                                {gameMode === "local-2p" && (
+                                  <div className="space-y-1.5">
+                                    <label className="text-[10px] font-mono text-neutral-400 tracking-widest uppercase">
+                                      PLAYER 2 SIGNATURE CALL
+                                    </label>
+                                    <input
+                                      id="inp-p2-name"
+                                      type="text"
+                                      value={player2Name}
+                                      onChange={(e) => setPlayer2Name(e.target.value)}
+                                      placeholder="Fighter 2 Name"
+                                      maxLength={16}
+                                      className="w-full bg-neutral-900/50 border border-neutral-800 rounded-xl py-2.5 px-3.5 text-xs text-white font-mono font-bold focus:border-violet-500 focus:outline-none"
+                                    />
                                   </div>
                                 )}
                               </div>
                             )}
                           </div>
-                        )}
 
-                        {/* Player Names */}
-                        {(gameMode !== "online-2p" || onlineAction !== null) && (
-                          <div className="space-y-3 pt-2 animate-fadeIn">
-                            <div className="space-y-1.5">
-                              <label className="text-[10px] font-mono text-neutral-400 tracking-widest uppercase">
-                                PLAYER 1 SIGNATURE CALL
-                              </label>
-                              <input
-                                id="inp-p1-name"
-                                type="text"
-                                value={player1Name}
-                                onChange={(e) => setPlayer1Name(e.target.value)}
-                                placeholder="Fighter 1 Name"
-                                maxLength={16}
-                                className="w-full bg-neutral-900/50 border border-neutral-800 rounded-xl py-2.5 px-3.5 text-xs text-white font-mono font-bold focus:border-violet-500 focus:outline-none"
-                              />
+                          {category === "choose" && selectedAnimes.length === 0 && (
+                            <div className="flex items-center gap-2 text-rose-400 bg-rose-500/10 border border-rose-500/20 px-4 py-3 rounded-xl font-mono text-[10px] font-bold leading-normal mt-4 shadow-sm animate-pulse">
+                              <AlertCircle className="w-4 h-4 shrink-0" />
+                              <span>Please select at least one anime before starting the game.</span>
+                            </div>
+                          )}
+
+                          {category === "choose" && selectedAnimes.length > 0 && selectedAnimeCharacterCount < MIN_CHARACTERS_FOR_FULL_DRAFT && (
+                            <div className="flex items-center gap-2 text-amber-300 bg-amber-500/10 border border-amber-500/20 px-4 py-3 rounded-xl font-mono text-[10px] font-bold leading-normal mt-4 shadow-sm">
+                              <AlertCircle className="w-4 h-4 shrink-0" />
+                              <span>
+                                Selected pool has {selectedAnimeCharacterCount}/{MIN_CHARACTERS_FOR_FULL_DRAFT} unique fighters. Add more anime or recruit more characters to avoid repeats.
+                              </span>
+                            </div>
+                          )}
+
+                          {(gameMode !== "online-2p" || (onlineRoomId && onlineSide === "p1")) && (
+                            <button
+                              id="btn-start-battle"
+                              onClick={() => startNewGame(gameMode)}
+                              disabled={!hasEnoughSelectedCharacters}
+                              className={`w-full py-4 rounded-xl text-xs uppercase tracking-[0.2em] font-black transition-all flex items-center justify-center gap-2 mt-6 cursor-pointer ${!hasEnoughSelectedCharacters
+                                  ? "bg-neutral-800 text-neutral-500 border border-neutral-700/50 cursor-not-allowed opacity-50 shadow-none scale-100"
+                                  : "bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white shadow-[0_0_30px_rgba(139,92,246,0.35)] hover:shadow-[0_0_35px_rgba(139,92,246,0.45)] active:scale-95"
+                                }`}
+                            >
+                              <Play className="w-4 h-4 fill-white" /> ENTER DRAFTING ARENA <ArrowRight className="w-4 h-4" />
+                            </button>
+                          )}
+                        </div>
+
+                        {/* Spotlight Roster Card */}
+                        <div className="rounded-3xl border border-neutral-800/85 bg-neutral-950/70 p-5 sm:p-6 flex flex-col justify-between relative overflow-hidden backdrop-blur-md">
+                          <div className="absolute inset-0 z-0 pointer-events-none opacity-20 filter blur-xl scale-75" style={{ background: hottestSpotlight.themeColor }} />
+
+                          <div className="relative z-10 space-y-4">
+                            <div className="flex justify-between items-center border-b border-white/5 pb-3">
+                              <p className="text-[10px] font-mono text-violet-400 tracking-widest uppercase font-black">
+                                FEATURED SPOTLIGHT CARDS
+                              </p>
+                              <span className="text-[9px] font-mono bg-neutral-900 border border-white/5 px-2 py-0.5 rounded text-neutral-400 flex items-center gap-1">
+                                <RefreshCw className="w-2.5 h-2.5 animate-spin" style={{ animationDuration: "10s" }} /> Rotating roster
+                              </span>
                             </div>
 
-                            {gameMode === "local-2p" && (
-                              <div className="space-y-1.5">
-                                <label className="text-[10px] font-mono text-neutral-400 tracking-widest uppercase">
-                                  PLAYER 2 SIGNATURE CALL
-                                </label>
-                                <input
-                                  id="inp-p2-name"
-                                  type="text"
-                                  value={player2Name}
-                                  onChange={(e) => setPlayer2Name(e.target.value)}
-                                  placeholder="Fighter 2 Name"
-                                  maxLength={16}
-                                  className="w-full bg-neutral-900/50 border border-neutral-800 rounded-xl py-2.5 px-3.5 text-xs text-white font-mono font-bold focus:border-violet-500 focus:outline-none"
+                            <div className="flex gap-4 items-center">
+                              <div className="relative w-24 sm:w-28 aspect-[3/4] rounded-xl overflow-hidden border shrink-0 shadow-lg" style={{ borderColor: `${hottestSpotlight.themeColor}44` }}>
+                                <CharacterImage
+                                  url={hottestSpotlight.image}
+                                  name={hottestSpotlight.name}
+                                  fallbackUrl={hottestSpotlight.malFallbackUrl}
+                                  themeColor={hottestSpotlight.themeColor}
+                                  className="absolute inset-0 w-full h-full object-cover"
                                 />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
+                                <div className="absolute bottom-1.5 left-2">
+                                  <p className="text-[10px] font-black truncate max-w-[80px] text-white">{hottestSpotlight.name}</p>
+                                </div>
                               </div>
-                            )}
-                          </div>
-                        )}
-                      </div>
 
-                      {category === "choose" && selectedAnimes.length === 0 && (
-                        <div className="flex items-center gap-2 text-rose-400 bg-rose-500/10 border border-rose-500/20 px-4 py-3 rounded-xl font-mono text-[10px] font-bold leading-normal mt-4 shadow-sm animate-pulse">
-                          <AlertCircle className="w-4 h-4 shrink-0" />
-                          <span>Please select at least one anime before starting the game.</span>
-                        </div>
-                      )}
+                              <div className="space-y-1.5 sm:space-y-2 min-w-0">
+                                <span className="text-[8px] font-mono font-bold border border-amber-500/30 text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded uppercase">
+                                  {hottestSpotlight.rarity}
+                                </span>
+                                <h3 className="text-lg sm:text-xl font-extrabold text-white leading-tight truncate">{hottestSpotlight.name}</h3>
+                                <p className="text-[10px] text-neutral-400 font-mono uppercase truncate">{hottestSpotlight.anime}</p>
+                                <p className="text-xs text-neutral-400 leading-relaxed max-w-sm line-clamp-2">
+                                  {hottestSpotlight.description}
+                                </p>
+                              </div>
+                            </div>
 
-                      {category === "choose" && selectedAnimes.length > 0 && selectedAnimeCharacterCount < MIN_CHARACTERS_FOR_FULL_DRAFT && (
-                        <div className="flex items-center gap-2 text-amber-300 bg-amber-500/10 border border-amber-500/20 px-4 py-3 rounded-xl font-mono text-[10px] font-bold leading-normal mt-4 shadow-sm">
-                          <AlertCircle className="w-4 h-4 shrink-0" />
-                          <span>
-                            Selected pool has {selectedAnimeCharacterCount}/{MIN_CHARACTERS_FOR_FULL_DRAFT} unique fighters. Add more anime or recruit more characters to avoid repeats.
-                          </span>
-                        </div>
-                      )}
-
-                      {(gameMode !== "online-2p" || (onlineRoomId && onlineSide === "p1")) && (
-                        <button
-                          id="btn-start-battle"
-                          onClick={() => startNewGame(gameMode)}
-                          disabled={!hasEnoughSelectedCharacters}
-                          className={`w-full py-4 rounded-xl text-xs uppercase tracking-[0.2em] font-black transition-all flex items-center justify-center gap-2 mt-6 cursor-pointer ${!hasEnoughSelectedCharacters
-                              ? "bg-neutral-800 text-neutral-500 border border-neutral-700/50 cursor-not-allowed opacity-50 shadow-none scale-100"
-                              : "bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white shadow-[0_0_30px_rgba(139,92,246,0.35)] hover:shadow-[0_0_35px_rgba(139,92,246,0.45)] active:scale-95"
-                            }`}
-                        >
-                          <Play className="w-4 h-4 fill-white" /> ENTER DRAFTING ARENA <ArrowRight className="w-4 h-4" />
-                        </button>
-                      )}
-                    </div>
-
-                    {/* Spotlight Roster Card */}
-                    <div className="rounded-3xl border border-neutral-800/85 bg-neutral-950/70 p-6 flex flex-col justify-between relative overflow-hidden backdrop-blur-md">
-                      <div className="absolute inset-0 z-0 pointer-events-none opacity-20 filter blur-xl scale-75" style={{ background: hottestSpotlight.themeColor }} />
-
-                      <div className="relative z-10 space-y-4">
-                        <div className="flex justify-between items-center border-b border-white/5 pb-3">
-                          <p className="text-[10px] font-mono text-violet-400 tracking-widest uppercase font-black">
-                            FEATURED SPOTLIGHT CARDS
-                          </p>
-                          <span className="text-[9px] font-mono bg-neutral-900 border border-white/5 px-2 py-0.5 rounded text-neutral-400 flex items-center gap-1">
-                            <RefreshCw className="w-2.5 h-2.5 animate-spin" style={{ animationDuration: "10s" }} /> Rotating roster
-                          </span>
-                        </div>
-
-                        <div className="flex gap-4 items-center">
-                          <div className="relative w-28 aspect-[3/4] rounded-xl overflow-hidden border shrink-0 shadow-lg" style={{ borderColor: `${hottestSpotlight.themeColor}44` }}>
-                            <CharacterImage
-                              url={hottestSpotlight.image}
-                              name={hottestSpotlight.name}
-                              fallbackUrl={hottestSpotlight.malFallbackUrl}
-                              themeColor={hottestSpotlight.themeColor}
-                              className="absolute inset-0 w-full h-full object-cover"
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
-                            <div className="absolute bottom-1.5 left-2">
-                              <p className="text-[10px] font-black truncate max-w-[80px] text-white">{hottestSpotlight.name}</p>
+                            <div className="grid grid-cols-2 gap-3 bg-neutral-900/30 border border-white/5 p-3 rounded-xl font-mono text-[10px]">
+                              <div>
+                                <span className="text-neutral-500">RARITY CLASS</span>
+                                <p className="text-base sm:text-lg font-black text-white">{hottestSpotlight.rarity}</p>
+                              </div>
+                              <div>
+                                <span className="text-neutral-500">SIGNATURE MANIFESTO</span>
+                                <p className="text-xs font-bold text-violet-400 mt-1 truncate">{hottestSpotlight.quote ? `"${hottestSpotlight.quote}"` : "Absolute Dominance"}</p>
+                              </div>
                             </div>
                           </div>
 
-                          <div className="space-y-2">
-                            <span className="text-[8px] font-mono font-bold border border-amber-500/30 text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded uppercase">
-                              {hottestSpotlight.rarity}
-                            </span>
-                            <h3 className="text-xl font-extrabold text-white leading-tight">{hottestSpotlight.name}</h3>
-                            <p className="text-[10px] text-neutral-400 font-mono uppercase">{hottestSpotlight.anime}</p>
-                            <p className="text-xs text-neutral-400 leading-relaxed max-w-sm line-clamp-2">
-                              {hottestSpotlight.description}
+                          <div className="border-t border-white/5 pt-3.5 mt-4 sm:mt-6 text-center">
+                            <p className="text-[9px] font-mono uppercase text-neutral-500 tracking-widest">
+                              DATABASE STATUS: {totalCharacters} HEROES SYNCED SUCCESSFULLY
                             </p>
                           </div>
                         </div>
+                      </div>
 
-                        <div className="grid grid-cols-2 gap-3.5 bg-neutral-900/30 border border-white/5 p-3 rounded-xl font-mono text-[10px]">
-                          <div>
-                            <span className="text-neutral-500">RARITY CLASS</span>
-                            <p className="text-lg font-black text-white">{hottestSpotlight.rarity}</p>
+                      {/* MyAnimeList Live Portal Recruiter */}
+                      <div className="max-w-5xl mx-auto">
+                          <MyAnimeListPortal
+                            onPoolUpdated={fetchTotalCharactersCount}
+                          />
+                      </div>
+
+                      {/* HOW TO PLAY */}
+                      <div className="max-w-5xl mx-auto space-y-4 px-1 sm:px-0">
+                        <h3 className="text-xs font-mono tracking-[0.2em] text-neutral-400 uppercase text-center font-bold">
+                          COVENANT BATTLE RULES
+                        </h3>
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4.5">
+                          <div className="p-4 rounded-2xl border border-neutral-900 bg-neutral-950/40 text-center space-y-2">
+                            <div className="w-8 h-8 rounded-lg bg-neutral-900 border border-neutral-800 flex items-center justify-center text-violet-400 mx-auto font-mono text-xs font-bold shadow-sm">
+                              1
+                            </div>
+                            <h4 className="text-xs font-bold text-white uppercase">DRAFT SELECTION</h4>
+                            <p className="text-[10.5px] text-neutral-400 leading-relaxed font-sans">
+                              Draft random characters one by one. Check overall stats before picking!
+                            </p>
                           </div>
-                          <div>
-                            <span className="text-neutral-500">SIGNATURE MANIFESTO</span>
-                            <p className="text-xs font-bold text-violet-400 mt-1">{hottestSpotlight.quote ? `"${hottestSpotlight.quote}"` : "Absolute Dominance"}</p>
+
+                          <div className="p-4 rounded-2xl border border-neutral-900 bg-neutral-950/40 text-center space-y-2">
+                            <div className="w-8 h-8 rounded-lg bg-neutral-900 border border-neutral-800 flex items-center justify-center text-red-400 mx-auto font-mono text-xs font-bold shadow-sm">
+                              2
+                            </div>
+                            <h4 className="text-xs font-bold text-white uppercase">THE STRATEGIC CANCEL</h4>
+                            <p className="text-[10.5px] text-neutral-400 leading-relaxed font-sans">
+                              Only 1 SKIP is allowed. Skip low power candidates, but beware: your next option is mandatory!
+                            </p>
+                          </div>
+
+                          <div className="p-4 rounded-2xl border border-neutral-900 bg-neutral-950/40 text-center space-y-2">
+                            <div className="w-8 h-8 rounded-lg bg-neutral-900 border border-neutral-800 flex items-center justify-center text-amber-400 mx-auto font-mono text-xs font-bold shadow-sm">
+                              3
+                            </div>
+                            <h4 className="text-xs font-bold text-white uppercase">TACTICAL SHOWDOWN</h4>
+                            <p className="text-[10.5px] text-neutral-400 leading-relaxed font-sans">
+                              After 6 picks, every role duels its opposite. Role fit, stats, rarity, and synergy decide the winner.
+                            </p>
                           </div>
                         </div>
-                      </div>
-
-                      <div className="border-t border-white/5 pt-4 mt-6 text-center">
-                        <p className="text-[9px] font-mono uppercase text-neutral-500 tracking-widest">
-                          DATABASE STATUS: {totalCharacters} HEROES SYNCED SUCCESSFULLY
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* MyAnimeList Live Portal Recruiter */}
-                  <div className="max-w-5xl mx-auto">
-                      <MyAnimeListPortal
-                        onPoolUpdated={fetchTotalCharactersCount}
-                      />
-                  </div>
-
-                  {/* HOW TO PLAY */}
-                  <div className="max-w-5xl mx-auto space-y-4">
-                    <h3 className="text-xs font-mono tracking-[0.2em] text-neutral-500 uppercase text-center font-bold">
-                      COVENANT BATTLE RULES
-                    </h3>
-                    <div className="grid sm:grid-cols-3 gap-4.5">
-                      <div className="p-4 rounded-2xl border border-neutral-900 bg-neutral-950/20 text-center space-y-2">
-                        <div className="w-8 h-8 rounded-lg bg-neutral-900 border border-neutral-800 flex items-center justify-center text-violet-400 mx-auto font-mono text-xs font-bold">
-                          1
+                        <div className="flex justify-center pt-1">
+                          <button
+                            type="button"
+                            onClick={() => setShowAbout(true)}
+                            className="rounded-lg border border-white/10 bg-white/5 px-4 py-1.5 text-[10px] font-mono font-black uppercase tracking-widest text-slate-300 transition-all hover:border-nexus-cyan/40 hover:bg-nexus-cyan/10 hover:text-white cursor-pointer"
+                          >
+                            About
+                          </button>
                         </div>
-                        <h4 className="text-xs font-bold text-white uppercase">DRAFT SELECTION</h4>
-                        <p className="text-[10.5px] text-neutral-400 leading-relaxed font-sans">
-                          Draft random characters one by one. Check overall stats before picking!
-                        </p>
                       </div>
-
-                      <div className="p-4 rounded-2xl border border-neutral-900 bg-neutral-950/20 text-center space-y-2">
-                        <div className="w-8 h-8 rounded-lg bg-neutral-900 border border-neutral-800 flex items-center justify-center text-red-400 mx-auto font-mono text-xs font-bold">
-                          2
-                        </div>
-                        <h4 className="text-xs font-bold text-white uppercase">THE STRATEGIC CANCEL</h4>
-                        <p className="text-[10.5px] text-neutral-400 leading-relaxed font-sans">
-                          Only 1 SKIP is allowed. Skip low power candidates, but beware: your next option is mandatory!
-                        </p>
-                      </div>
-
-                      <div className="p-4 rounded-2xl border border-neutral-900 bg-neutral-950/20 text-center space-y-2">
-                        <div className="w-8 h-8 rounded-lg bg-neutral-900 border border-neutral-800 flex items-center justify-center text-amber-400 mx-auto font-mono text-xs font-bold">
-                          3
-                        </div>
-                        <h4 className="text-xs font-bold text-white uppercase">TACTICAL SHOWDOWN</h4>
-                        <p className="text-[10.5px] text-neutral-400 leading-relaxed font-sans">
-                          After 6 picks, every role duels its opposite. Role fit, stats, rarity, and synergy decide the winner.
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex justify-center pt-1">
-                      <button
-                        type="button"
-                        onClick={() => setShowAbout(true)}
-                        className="rounded-lg border border-white/10 bg-white/5 px-4 py-1.5 text-[10px] font-mono font-black uppercase tracking-widest text-slate-300 transition-all hover:border-nexus-cyan/40 hover:bg-nexus-cyan/10 hover:text-white"
-                      >
-                        About
-                      </button>
-                    </div>
-                  </div>
                     </>
                   )}
                 </>

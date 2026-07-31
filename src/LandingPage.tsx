@@ -1,4 +1,5 @@
 import React from "react";
+import { createPortal } from "react-dom";
 import "./LandingPage.css";
 
 interface LandingPageProps {
@@ -30,37 +31,42 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 }) => {
   return (
     <div className="homepage-v2">
-      <div className="bg-figures" aria-hidden="true">
-        <video src="/zo.mp4" className="bg-fig char-1" autoPlay loop muted playsInline />
-        <video src="/go.mp4" className="bg-fig char-2" autoPlay loop muted playsInline />
-      </div>
+      {createPortal(
+        <div className="homepage-v2">
+          <div className="bg-figures" aria-hidden="true">
+            <video src="/zo.mp4" className="bg-fig char-1" autoPlay loop muted playsInline />
+            <video src="/go.mp4" className="bg-fig char-2" autoPlay loop muted playsInline />
+          </div>
 
-      <div className="sparkle-field" aria-hidden="true">
-        <span className="sparkle" style={{ left: "8%", top: "14%", "--c": "#FFE29A", animationDelay: "0s", animationDuration: "2.6s" } as React.CSSProperties} />
-        <span className="sparkle" style={{ left: "18%", top: "62%", "--c": "#00E5FF", animationDelay: ".4s", animationDuration: "3.1s" } as React.CSSProperties} />
-        <span className="sparkle" style={{ left: "27%", top: "30%", "--c": "#FF2E63", animationDelay: ".8s", animationDuration: "2.8s" } as React.CSSProperties} />
-        <span className="sparkle" style={{ left: "36%", top: "80%", "--c": "#FFC93F", animationDelay: "1.2s", animationDuration: "3.4s" } as React.CSSProperties} />
-        <span className="sparkle" style={{ left: "46%", top: "22%", "--c": "#9D4EFF", animationDelay: ".2s", animationDuration: "2.4s" } as React.CSSProperties} />
-        <span className="sparkle" style={{ left: "57%", top: "66%", "--c": "#00E5FF", animationDelay: "1.6s", animationDuration: "3s" } as React.CSSProperties} />
-        <span className="sparkle" style={{ left: "66%", top: "12%", "--c": "#FFC93F", animationDelay: ".6s", animationDuration: "2.9s" } as React.CSSProperties} />
-        <span className="sparkle" style={{ left: "74%", top: "48%", "--c": "#FF2E63", animationDelay: "2s", animationDuration: "3.3s" } as React.CSSProperties} />
-        <span className="sparkle" style={{ left: "83%", top: "74%", "--c": "#9D4EFF", animationDelay: "1s", animationDuration: "2.7s" } as React.CSSProperties} />
-        <span className="sparkle" style={{ left: "91%", top: "26%", "--c": "#FFE29A", animationDelay: "1.4s", animationDuration: "3.2s" } as React.CSSProperties} />
-      </div>
+          <div className="sparkle-field" aria-hidden="true">
+            <span className="sparkle" style={{ left: "8%", top: "14%", "--c": "#FFE29A", animationDelay: "0s", animationDuration: "2.6s" } as React.CSSProperties} />
+            <span className="sparkle" style={{ left: "18%", top: "62%", "--c": "#00E5FF", animationDelay: ".4s", animationDuration: "3.1s" } as React.CSSProperties} />
+            <span className="sparkle" style={{ left: "27%", top: "30%", "--c": "#FF2E63", animationDelay: ".8s", animationDuration: "2.8s" } as React.CSSProperties} />
+            <span className="sparkle" style={{ left: "36%", top: "80%", "--c": "#FFC93F", animationDelay: "1.2s", animationDuration: "3.4s" } as React.CSSProperties} />
+            <span className="sparkle" style={{ left: "46%", top: "22%", "--c": "#9D4EFF", animationDelay: ".2s", animationDuration: "2.4s" } as React.CSSProperties} />
+            <span className="sparkle" style={{ left: "57%", top: "66%", "--c": "#00E5FF", animationDelay: "1.6s", animationDuration: "3s" } as React.CSSProperties} />
+            <span className="sparkle" style={{ left: "66%", top: "12%", "--c": "#FFC93F", animationDelay: ".6s", animationDuration: "2.9s" } as React.CSSProperties} />
+            <span className="sparkle" style={{ left: "74%", top: "48%", "--c": "#FF2E63", animationDelay: "2s", animationDuration: "3.3s" } as React.CSSProperties} />
+            <span className="sparkle" style={{ left: "83%", top: "74%", "--c": "#9D4EFF", animationDelay: "1s", animationDuration: "2.7s" } as React.CSSProperties} />
+            <span className="sparkle" style={{ left: "91%", top: "26%", "--c": "#FFE29A", animationDelay: "1.4s", animationDuration: "3.2s" } as React.CSSProperties} />
+          </div>
 
-      <div className="ember-field" aria-hidden="true">
-        <span className="ember" style={{ left: "6%", "--c": "#FFC93F", width: "5px", animationDuration: "8s", animationDelay: "0s" } as React.CSSProperties} />
-        <span className="ember" style={{ left: "16%", "--c": "#FF2E63", width: "3px", animationDuration: "11s", animationDelay: "1.2s" } as React.CSSProperties} />
-        <span className="ember" style={{ left: "28%", "--c": "#9D4EFF", width: "4px", animationDuration: "9s", animationDelay: "2.4s" } as React.CSSProperties} />
-        <span className="ember" style={{ left: "41%", "--c": "#00E5FF", width: "3px", animationDuration: "12s", animationDelay: ".6s" } as React.CSSProperties} />
-        <span className="ember" style={{ left: "54%", "--c": "#FFC93F", width: "6px", animationDuration: "10s", animationDelay: "3s" } as React.CSSProperties} />
-        <span className="ember" style={{ left: "63%", "--c": "#FF2E63", width: "4px", animationDuration: "13s", animationDelay: "1.8s" } as React.CSSProperties} />
-        <span className="ember" style={{ left: "74%", "--c": "#9D4EFF", width: "3px", animationDuration: "9.5s", animationDelay: "4s" } as React.CSSProperties} />
-        <span className="ember" style={{ left: "83%", "--c": "#00E5FF", width: "5px", animationDuration: "11.5s", animationDelay: "2s" } as React.CSSProperties} />
-        <span className="ember" style={{ left: "92%", "--c": "#FFC93F", width: "3px", animationDuration: "14s", animationDelay: ".3s" } as React.CSSProperties} />
-      </div>
+          <div className="ember-field" aria-hidden="true">
+            <span className="ember" style={{ left: "6%", "--c": "#FFC93F", width: "5px", animationDuration: "8s", animationDelay: "0s" } as React.CSSProperties} />
+            <span className="ember" style={{ left: "16%", "--c": "#FF2E63", width: "3px", animationDuration: "11s", animationDelay: "1.2s" } as React.CSSProperties} />
+            <span className="ember" style={{ left: "28%", "--c": "#9D4EFF", width: "4px", animationDuration: "9s", animationDelay: "2.4s" } as React.CSSProperties} />
+            <span className="ember" style={{ left: "41%", "--c": "#00E5FF", width: "3px", animationDuration: "12s", animationDelay: ".6s" } as React.CSSProperties} />
+            <span className="ember" style={{ left: "54%", "--c": "#FFC93F", width: "6px", animationDuration: "10s", animationDelay: "3s" } as React.CSSProperties} />
+            <span className="ember" style={{ left: "63%", "--c": "#FF2E63", width: "4px", animationDuration: "13s", animationDelay: "1.8s" } as React.CSSProperties} />
+            <span className="ember" style={{ left: "74%", "--c": "#9D4EFF", width: "3px", animationDuration: "9.5s", animationDelay: "4s" } as React.CSSProperties} />
+            <span className="ember" style={{ left: "83%", "--c": "#00E5FF", width: "5px", animationDuration: "11.5s", animationDelay: "2s" } as React.CSSProperties} />
+            <span className="ember" style={{ left: "92%", "--c": "#FFC93F", width: "3px", animationDuration: "14s", animationDelay: ".3s" } as React.CSSProperties} />
+          </div>
 
-      <div className="scanline" aria-hidden="true" />
+          <div className="scanline" aria-hidden="true" />
+        </div>,
+        document.body
+      )}
 
       <section className="hero">
         <div className="aura-ring" aria-hidden="true">

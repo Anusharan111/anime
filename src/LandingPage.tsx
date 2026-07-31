@@ -196,6 +196,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           </div>
         </CardButton>
       </section>
+
+      <footer className="fixed-footer">
+        <p>Anime Battle Multiverse</p>
+        <p>Choose a mode and start the clash.</p>
+      </footer>
     </div>
   );
 };

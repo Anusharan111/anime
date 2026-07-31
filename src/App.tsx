@@ -35,6 +35,7 @@ import DeployModal from "./components/DeployModal";
 import AnimeFeudGame from "./pages/AnimeFeudGame";
 import AnimeGuessWhoGame from "./pages/AnimeGuessWhoGame";
 import AnimePartyGames from "./pages/AnimePartyGames";
+import LandingPage from "./LandingPage";
 import { sfx } from "./utils/audio";
 import { Search } from "lucide-react";
 
@@ -1591,174 +1592,15 @@ export default function App() {
                 </div>
               ) : (
                 <>
-                  {/* Hero Head Banner */}
-                  <div className="text-center space-y-3 sm:space-y-6 max-w-4xl mx-auto px-2">
-                    <div className="inline-flex items-center gap-2 bg-gradient-to-r from-violet-500/10 via-fuchsia-500/10 to-nexus-cyan/10 border border-violet-500/30 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full text-[9px] sm:text-[10px] text-violet-300 tracking-[0.2em] uppercase font-mono font-black shadow-[0_0_15px_rgba(168,85,247,0.2)]">
-                      <Sparkles className="w-3 h-3 text-nexus-cyan animate-pulse" /> EPIC ANIME BATTLE MULTIVERSE
-                    </div>
-
-                    <div className="space-y-2 sm:space-y-3">
-                      <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tighter uppercase leading-tight font-sans">
-                        BUILD THE ULTIMATE <br />
-                        <span className="bg-clip-text text-transparent bg-gradient-to-r from-violet-400 via-fuchsia-400 to-nexus-cyan filter drop-shadow-[0_0_30px_rgba(168,85,247,0.35)]">
-                          ANIME EMPIRE
-                        </span>
-                      </h1>
-                      <p className="text-neutral-300 text-xs sm:text-sm md:text-base max-w-2xl mx-auto leading-relaxed font-sans px-1">
-                        Choose your tactical game mode below! Draft legendaries, duel in trivia feuds, play secret deduction duels, or host multiplayer party games.
-                      </p>
-                    </div>
-
-                    {/* Quick Feature Badges on Mobile */}
-                    <div className="flex flex-wrap items-center justify-center gap-2 pt-1 sm:pt-2">
-                      <span className="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-[9px] sm:text-[10px] font-mono text-slate-300 font-bold flex items-center gap-1.5">
-                        <Zap className="w-3 h-3 text-amber-400" /> 4 Game Modes
-                      </span>
-                      <span className="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-[9px] sm:text-[10px] font-mono text-slate-300 font-bold flex items-center gap-1.5">
-                        <Globe className="w-3 h-3 text-nexus-cyan" /> Online Multiplayer
-                      </span>
-                      <span className="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-[9px] sm:text-[10px] font-mono text-slate-300 font-bold flex items-center gap-1.5">
-                        <Trophy className="w-3 h-3 text-fuchsia-400" /> Real-time Duels
-                      </span>
-                    </div>
-                  </div>
-
                   {selectedGameHubMode === "hub" ? (
-                    <div className="max-w-5xl mx-auto grid gap-2.5 sm:gap-6 grid-cols-2 w-full pt-2 px-1 sm:px-0">
-                      {/* Game Card 1: Anime Battle Draft */}
-                      <button
-                        onClick={() => setSelectedGameHubMode("battle")}
-                        className="p-3.5 sm:p-7 rounded-2xl sm:rounded-3xl border border-violet-500/30 bg-gradient-to-br from-violet-955/50 via-neutral-955/80 to-indigo-955/40 hover:border-violet-400 hover:shadow-[0_0_35px_rgba(139,92,246,0.35)] text-left transition-all duration-300 relative overflow-hidden group active:scale-[0.97] cursor-pointer flex flex-col justify-between"
-                      >
-                        <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-15 transition duration-300 pointer-events-none hidden sm:block">
-                          <Swords className="w-36 h-36 text-violet-400" />
-                        </div>
-                        <div className="space-y-2 sm:space-y-4 relative z-10">
-                          <div className="flex items-center justify-between gap-1">
-                            <div className="w-8 h-8 sm:w-12 sm:h-12 rounded-lg sm:rounded-2xl bg-violet-500/15 border border-violet-500/30 flex items-center justify-center text-violet-400 group-hover:scale-110 transition duration-300 shadow-[0_0_15px_rgba(139,92,246,0.2)] shrink-0">
-                              <Swords className="w-4 h-4 sm:w-6 sm:h-6" />
-                            </div>
-                            <span className="px-1.5 sm:px-2.5 py-0.5 rounded-full text-[8px] sm:text-[9px] font-black font-mono uppercase tracking-widest bg-violet-500/15 border border-violet-500/30 text-violet-300 truncate">
-                              Draft
-                            </span>
-                          </div>
-                          <div>
-                            <h3 className="text-sm sm:text-2xl font-black text-white uppercase tracking-wide leading-tight">
-                              🗡️ Anime Battle
-                            </h3>
-                            <p className="text-[10px] sm:text-xs text-neutral-300 mt-1 leading-tight sm:leading-relaxed line-clamp-2">
-                              Draft heroes turn-by-turn, assign strategic role bonuses, and duel against smart AI.
-                            </p>
-                          </div>
-                        </div>
-                        <div className="pt-2 flex items-center text-[9px] sm:text-xs font-mono font-black text-violet-400 group-hover:translate-x-1 transition-transform relative z-10">
-                          <span className="hidden sm:inline">SELECT BATTLE DESIGN</span>
-                          <span className="sm:hidden">PLAY NOW</span>
-                          <ArrowRight className="w-3 h-3 sm:w-3.5 sm:h-3.5 ml-1" />
-                        </div>
-                      </button>
-
-                      {/* Game Card 2: Anime Feud */}
-                      <button
-                        onClick={() => setView("feud")}
-                        className="p-3.5 sm:p-7 rounded-2xl sm:rounded-3xl border border-fuchsia-500/30 bg-gradient-to-br from-fuchsia-955/50 via-neutral-955/80 to-pink-955/40 hover:border-fuchsia-400 hover:shadow-[0_0_35px_rgba(217,70,239,0.35)] text-left transition-all duration-300 relative overflow-hidden group active:scale-[0.97] cursor-pointer flex flex-col justify-between"
-                      >
-                        <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-15 transition duration-300 pointer-events-none hidden sm:block">
-                          <Trophy className="w-36 h-36 text-fuchsia-400" />
-                        </div>
-                        <div className="space-y-2 sm:space-y-4 relative z-10">
-                          <div className="flex items-center justify-between gap-1">
-                            <div className="w-8 h-8 sm:w-12 sm:h-12 rounded-lg sm:rounded-2xl bg-fuchsia-500/15 border border-fuchsia-500/30 flex items-center justify-center text-fuchsia-400 group-hover:scale-110 transition duration-300 shadow-[0_0_15px_rgba(217,70,239,0.2)] shrink-0">
-                              <Sparkles className="w-4 h-4 sm:w-6 sm:h-6" />
-                            </div>
-                            <span className="px-1.5 sm:px-2.5 py-0.5 rounded-full text-[8px] sm:text-[9px] font-black font-mono uppercase tracking-widest bg-fuchsia-500/15 border border-fuchsia-500/30 text-fuchsia-300 truncate">
-                              Quiz
-                            </span>
-                          </div>
-                          <div>
-                            <h3 className="text-sm sm:text-2xl font-black text-white uppercase tracking-wide leading-tight">
-                              🎤 Anime Feud
-                            </h3>
-                            <p className="text-[10px] sm:text-xs text-neutral-300 mt-1 leading-tight sm:leading-relaxed line-clamp-2">
-                              Family Feud style trivia! Guess top anime community answers & steal points.
-                            </p>
-                          </div>
-                        </div>
-                        <div className="pt-2 flex items-center text-[9px] sm:text-xs font-mono font-black text-fuchsia-400 group-hover:translate-x-1 transition-transform relative z-10">
-                          <span className="hidden sm:inline">PLAY ANIME FEUD</span>
-                          <span className="sm:hidden">PLAY FEUD</span>
-                          <ArrowRight className="w-3 h-3 sm:w-3.5 sm:h-3.5 ml-1" />
-                        </div>
-                      </button>
-
-                      {/* Game Card 3: Anime Guess Who */}
-                      <button
-                        onClick={() => setView("guesswho")}
-                        className="p-3.5 sm:p-7 rounded-2xl sm:rounded-3xl border border-cyan-500/30 bg-gradient-to-br from-cyan-955/50 via-neutral-955/80 to-blue-955/40 hover:border-cyan-400 hover:shadow-[0_0_35px_rgba(0,229,255,0.35)] text-left transition-all duration-300 relative overflow-hidden group active:scale-[0.97] cursor-pointer flex flex-col justify-between"
-                      >
-                        <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-15 transition duration-300 pointer-events-none hidden sm:block">
-                          <Search className="w-36 h-36 text-cyan-400" />
-                        </div>
-                        <div className="space-y-2 sm:space-y-4 relative z-10">
-                          <div className="flex items-center justify-between gap-1">
-                            <div className="w-8 h-8 sm:w-12 sm:h-12 rounded-lg sm:rounded-2xl bg-cyan-500/15 border border-cyan-500/30 flex items-center justify-center text-cyan-400 group-hover:scale-110 transition duration-300 shadow-[0_0_15px_rgba(0,229,255,0.2)] shrink-0">
-                              <Search className="w-4 h-4 sm:w-6 sm:h-6" />
-                            </div>
-                            <span className="px-1.5 sm:px-2.5 py-0.5 rounded-full text-[8px] sm:text-[9px] font-black font-mono uppercase tracking-widest bg-cyan-500/15 border border-cyan-500/30 text-cyan-300 truncate">
-                              Online
-                            </span>
-                          </div>
-                          <div>
-                            <h3 className="text-sm sm:text-2xl font-black text-white uppercase tracking-wide leading-tight">
-                              🔍 Guess Who
-                            </h3>
-                            <p className="text-[10px] sm:text-xs text-neutral-300 mt-1 leading-tight sm:leading-relaxed line-clamp-2">
-                              Ask yes/no questions in real-time to uncover rival's secret anime character.
-                            </p>
-                          </div>
-                        </div>
-                        <div className="pt-2 flex items-center text-[9px] sm:text-xs font-mono font-black text-cyan-400 group-hover:translate-x-1 transition-transform relative z-10">
-                          <span className="hidden sm:inline">START DEDUCTION DUEL</span>
-                          <span className="sm:hidden">PLAY DUEL</span>
-                          <ArrowRight className="w-3 h-3 sm:w-3.5 sm:h-3.5 ml-1" />
-                        </div>
-                      </button>
-
-                      {/* Game Card 4: Anime Party Games */}
-                      <button
-                        onClick={() => setView("party")}
-                        className="p-3.5 sm:p-7 rounded-2xl sm:rounded-3xl border border-rose-500/30 bg-gradient-to-br from-rose-955/50 via-neutral-955/80 to-red-955/40 hover:border-rose-400 hover:shadow-[0_0_35px_rgba(244,63,94,0.35)] text-left transition-all duration-300 relative overflow-hidden group active:scale-[0.97] cursor-pointer flex flex-col justify-between"
-                      >
-                        <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-15 transition duration-300 pointer-events-none hidden sm:block">
-                          <Users className="w-36 h-36 text-rose-400" />
-                        </div>
-                        <div className="space-y-2 sm:space-y-4 relative z-10">
-                          <div className="flex items-center justify-between gap-1">
-                            <div className="w-8 h-8 sm:w-12 sm:h-12 rounded-lg sm:rounded-2xl bg-rose-500/15 border border-rose-500/30 flex items-center justify-center text-rose-400 group-hover:scale-110 transition duration-300 shadow-[0_0_15px_rgba(244,63,94,0.2)] shrink-0">
-                              <Users className="w-4 h-4 sm:w-6 sm:h-6" />
-                            </div>
-                            <span className="px-1.5 sm:px-2.5 py-0.5 rounded-full text-[8px] sm:text-[9px] font-black font-mono uppercase tracking-widest bg-rose-500/15 border border-rose-500/30 text-rose-300 truncate">
-                              Party
-                            </span>
-                          </div>
-                          <div>
-                            <h3 className="text-sm sm:text-2xl font-black text-white uppercase tracking-wide leading-tight">
-                              🎭 Party Games
-                            </h3>
-                            <p className="text-[10px] sm:text-xs text-neutral-300 mt-1 leading-tight sm:leading-relaxed line-clamp-2">
-                              Multiplayer party room! Play Guess Character or spot the Imposter with friends.
-                            </p>
-                          </div>
-                        </div>
-                        <div className="pt-2 flex items-center text-[9px] sm:text-xs font-mono font-black text-rose-400 group-hover:translate-x-1 transition-transform relative z-10">
-                          <span className="hidden sm:inline">ENTER PARTY ROOM</span>
-                          <span className="sm:hidden">ENTER PARTY</span>
-                          <ArrowRight className="w-3 h-3 sm:w-3.5 sm:h-3.5 ml-1" />
-                        </div>
-                      </button>
-                    </div>
+                    <LandingPage
+                      onSelectBattle={() => setSelectedGameHubMode("battle")}
+                      onSelectFeud={() => setView("feud")}
+                      onSelectGuessWho={() => setView("guesswho")}
+                      onSelectParty={() => setView("party")}
+                    />
                   ) : (
-                    <>
+                    <div className="pt-4">
                       {/* Back button to Hub */}
                       <div className="max-w-5xl mx-auto flex justify-start pb-4 w-full">
                         <button
@@ -2256,7 +2098,7 @@ export default function App() {
                           </button>
                         </div>
                       </div>
-                    </>
+                    </div>
                   )}
                 </>
               )}

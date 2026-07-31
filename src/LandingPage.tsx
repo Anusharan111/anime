@@ -63,6 +63,12 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       <div className="scanline" aria-hidden="true" />
 
       <section className="hero">
+        <div className="aura-ring" aria-hidden="true">
+          <svg viewBox="0 0 200 200">
+            <circle className="c1" cx="100" cy="100" r="92" stroke="#9D4EFF" strokeDasharray="2 10" />
+            <circle className="c2" cx="100" cy="100" r="74" stroke="#00E5FF" strokeDasharray="1 7" />
+          </svg>
+        </div>
         <div className="wrap">
           <div className="eyebrow">✦ EPIC ANIME BATTLE MULTIVERSE</div>
           <h1>
@@ -73,12 +79,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           <p className="sub">
             Four modes, one deck. Draft legendaries, duel in trivia feuds, run secret deduction rounds, or host the whole party.
           </p>
-          <div className="hero-panel" aria-hidden="true">
-            <div className="hero-panel__core">
-              <span className="hero-panel__label">NEW UI / CLEAN MODE</span>
-              <span className="hero-panel__copy">Fast, bright, and focused on the games.</span>
-            </div>
-          </div>
           <div className="stat-bar">
             <div className="stat">⚡ <b>4</b> game modes</div>
             <div className="stat">🌐 online <b>multiplayer</b></div>
@@ -88,7 +88,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       </section>
 
       <section className="deck" aria-label="Game mode selection">
-        <CardButton className="card card-1" onClick={onSelectBattle}>
+        <CardButton className="card glass card-1" onClick={onSelectBattle}>
           <svg className="card-bg-icon" viewBox="0 0 24 24" fill="none" stroke="#FFC93F" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
             <path d="M14.5 17.5L3 6V3h3l11.5 11.5" />
             <path d="M13 19l6-6" />
@@ -116,7 +116,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           </div>
         </CardButton>
 
-        <CardButton className="card card-2" onClick={onSelectFeud}>
+        <CardButton className="card glass card-2" onClick={onSelectFeud}>
           <svg className="card-bg-icon" viewBox="0 0 24 24" fill="none" stroke="#D9A6FF" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
             <path d="M11 2a2 2 0 0 1 4 0v9a2 2 0 0 1-4 0z" />
             <path d="M6 11v1a6 6 0 0 0 12 0v-1" />
@@ -142,7 +142,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           </div>
         </CardButton>
 
-        <CardButton className="card card-3" onClick={onSelectGuessWho}>
+        <CardButton className="card glass card-3" onClick={onSelectGuessWho}>
           <svg className="card-bg-icon" viewBox="0 0 24 24" fill="none" stroke="#F5F1FF" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
             <circle cx="10" cy="10" r="6" />
             <path d="M20 20l-5.5-5.5" />
@@ -164,7 +164,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           </div>
         </CardButton>
 
-        <CardButton className="card card-4" onClick={onSelectParty}>
+        <CardButton className="card glass card-4" onClick={onSelectParty}>
           <svg className="card-bg-icon" viewBox="0 0 24 24" fill="none" stroke="#00E5FF" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
             <circle cx="9" cy="8" r="3" />
             <circle cx="17" cy="9" r="2.6" />

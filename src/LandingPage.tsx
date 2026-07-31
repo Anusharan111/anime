@@ -33,39 +33,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       <div className="bg-figures" aria-hidden="true">
         <video src="/zo.mp4" className="bg-fig char-1" autoPlay loop muted playsInline />
         <video src="/go.mp4" className="bg-fig char-2" autoPlay loop muted playsInline />
-
-        <div className="portal-wrap">
-          <div className="frame-glow" />
-          <div className="frame-inner">
-            <video src="/1.mp4" className="bg-fig char-3" autoPlay loop muted playsInline />
-          </div>
-          <div className="frame-flames" aria-hidden="true">
-            <span className="flame flame-1" />
-            <span className="flame flame-2" />
-            <span className="flame flame-3" />
-            <span className="flame flame-4" />
-            <span className="flame flame-5" />
-            <span className="flame flame-6" />
-          </div>
-          <span className="frame-corner fc-tl" />
-          <span className="frame-corner fc-tr" />
-          <span className="frame-corner fc-bl" />
-          <span className="frame-corner fc-br" />
-          <span className="frame-spark" />
-
-          <div className="frame-embers" aria-hidden="true">
-            <span className="fspark" style={{ left: "4%", width: "5px", height: "5px", "--fc": "#FFD23F", "--drift": "10px", animationDuration: "2.2s, .5s", animationDelay: "0s, 0s" } as React.CSSProperties} />
-            <span className="fspark" style={{ left: "14%", width: "3px", height: "3px", "--fc": "#FF7A00", "--drift": "-8px", animationDuration: "1.8s, .4s", animationDelay: ".3s, .1s" } as React.CSSProperties} />
-            <span className="fspark" style={{ left: "24%", width: "4px", height: "4px", "--fc": "#FF3B00", "--drift": "14px", animationDuration: "2.6s, .6s", animationDelay: ".6s, .2s" } as React.CSSProperties} />
-            <span className="fspark" style={{ left: "34%", width: "3px", height: "3px", "--fc": "#FFD23F", "--drift": "-10px", animationDuration: "2s, .5s", animationDelay: ".9s, .3s" } as React.CSSProperties} />
-            <span className="fspark" style={{ left: "50%", width: "5px", height: "5px", "--fc": "#FF7A00", "--drift": "6px", animationDuration: "2.4s, .4s", animationDelay: ".2s, 0s" } as React.CSSProperties} />
-            <span className="fspark" style={{ left: "60%", width: "3px", height: "3px", "--fc": "#FFD23F", "--drift": "-12px", animationDuration: "1.9s, .5s", animationDelay: ".5s, .2s" } as React.CSSProperties} />
-            <span className="fspark" style={{ left: "70%", width: "4px", height: "4px", "--fc": "#FF3B00", "--drift": "9px", animationDuration: "2.3s, .6s", animationDelay: ".8s, .1s" } as React.CSSProperties} />
-            <span className="fspark" style={{ left: "80%", width: "3px", height: "3px", "--fc": "#FF7A00", "--drift": "-7px", animationDuration: "2.1s, .4s", animationDelay: "1.1s, .3s" } as React.CSSProperties} />
-            <span className="fspark" style={{ left: "90%", width: "5px", height: "5px", "--fc": "#FFD23F", "--drift": "12px", animationDuration: "2.5s, .5s", animationDelay: ".4s, 0s" } as React.CSSProperties} />
-            <span className="fspark" style={{ left: "96%", width: "3px", height: "3px", "--fc": "#FF3B00", "--drift": "-9px", animationDuration: "1.7s, .4s", animationDelay: "1.3s, .2s" } as React.CSSProperties} />
-          </div>
-        </div>
       </div>
 
       <div className="sparkle-field" aria-hidden="true">
@@ -79,10 +46,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         <span className="sparkle" style={{ left: "74%", top: "48%", "--c": "#FF2E63", animationDelay: "2s", animationDuration: "3.3s" } as React.CSSProperties} />
         <span className="sparkle" style={{ left: "83%", top: "74%", "--c": "#9D4EFF", animationDelay: "1s", animationDuration: "2.7s" } as React.CSSProperties} />
         <span className="sparkle" style={{ left: "91%", top: "26%", "--c": "#FFE29A", animationDelay: "1.4s", animationDuration: "3.2s" } as React.CSSProperties} />
-        <span className="sparkle" style={{ left: "12%", top: "88%", "--c": "#00E5FF", animationDelay: "1.8s", animationDuration: "2.5s" } as React.CSSProperties} />
-        <span className="sparkle" style={{ left: "52%", top: "8%", "--c": "#FF2E63", animationDelay: ".3s", animationDuration: "3s" } as React.CSSProperties} />
-        <span className="sparkle" style={{ left: "63%", top: "90%", "--c": "#FFC93F", animationDelay: "2.2s", animationDuration: "2.6s" } as React.CSSProperties} />
-        <span className="sparkle" style={{ left: "96%", top: "60%", "--c": "#9D4EFF", animationDelay: ".9s", animationDuration: "3.1s" } as React.CSSProperties} />
       </div>
 
       <div className="ember-field" aria-hidden="true">
@@ -99,54 +62,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
       <div className="scanline" aria-hidden="true" />
 
-      <div className="leaf-field" aria-hidden="true">
-        <svg width="0" height="0" style={{ position: "absolute" }}>
-          <symbol id="leaf-shape" viewBox="0 0 40 60">
-            <path d="M20 0 C34 10 40 30 20 60 C0 30 6 10 20 0 Z" />
-            <path d="M20 4 L20 56" stroke="rgba(0,0,0,0.25)" strokeWidth="1.4" fill="none" />
-            <path d="M20 18 L12 26 M20 30 L28 38 M20 42 L13 49" stroke="rgba(0,0,0,0.18)" strokeWidth="1" fill="none" />
-          </symbol>
-        </svg>
-
-        <div className="leaf" style={{ left: "2%", width: "46px", height: "69px", animationDuration: "15s, 4.2s, 7s", animationDelay: "0s, 0s, 0s" }}>
-          <svg viewBox="0 0 40 60"><use href="#leaf-shape" fill="#FF2E63" opacity="0.6" /></svg>
-        </div>
-        <div className="leaf" style={{ left: "12%", width: "30px", height: "45px", animationDuration: "12s, 5s, 5.5s", animationDelay: "1s, .5s, .2s" }}>
-          <svg viewBox="0 0 40 60"><use href="#leaf-shape" fill="#FFC93F" opacity="0.65" /></svg>
-        </div>
-        <div className="leaf" style={{ left: "24%", width: "54px", height: "81px", animationDuration: "19s, 6s, 9s", animationDelay: "3s, 1s, 0s" }}>
-          <svg viewBox="0 0 40 60"><use href="#leaf-shape" fill="#9D4EFF" opacity="0.55" /></svg>
-        </div>
-        <div className="leaf" style={{ left: "36%", width: "34px", height: "51px", animationDuration: "13s, 4.5s, 6s", animationDelay: "2s, 2s, .4s" }}>
-          <svg viewBox="0 0 40 60"><use href="#leaf-shape" fill="#00E5FF" opacity="0.6" /></svg>
-        </div>
-        <div className="leaf" style={{ left: "48%", width: "50px", height: "75px", animationDuration: "17s, 5.5s, 8s", animationDelay: "5s, 0s, 1s" }}>
-          <svg viewBox="0 0 40 60"><use href="#leaf-shape" fill="#FF2E63" opacity="0.55" /></svg>
-        </div>
-        <div className="leaf" style={{ left: "58%", width: "28px", height: "42px", animationDuration: "14s, 6.5s, 5s", animationDelay: "4s, 1.5s, 0s" }}>
-          <svg viewBox="0 0 40 60"><use href="#leaf-shape" fill="#FFC93F" opacity="0.6" /></svg>
-        </div>
-        <div className="leaf" style={{ left: "68%", width: "58px", height: "87px", animationDuration: "20s, 4s, 9.5s", animationDelay: "6s, 3s, .6s" }}>
-          <svg viewBox="0 0 40 60"><use href="#leaf-shape" fill="#9D4EFF" opacity="0.55" /></svg>
-        </div>
-        <div className="leaf" style={{ left: "78%", width: "32px", height: "48px", animationDuration: "16s, 5s, 6.5s", animationDelay: "2.5s, .5s, 0s" }}>
-          <svg viewBox="0 0 40 60"><use href="#leaf-shape" fill="#00E5FF" opacity="0.6" /></svg>
-        </div>
-        <div className="leaf" style={{ left: "88%", width: "44px", height: "66px", animationDuration: "18s, 6s, 7.5s", animationDelay: "7s, 2s, 1s" }}>
-          <svg viewBox="0 0 40 60"><use href="#leaf-shape" fill="#FF2E63" opacity="0.55" /></svg>
-        </div>
-        <div className="leaf" style={{ left: "94%", width: "26px", height: "39px", animationDuration: "11s, 5.2s, 5s", animationDelay: "9s, 1s, .3s" }}>
-          <svg viewBox="0 0 40 60"><use href="#leaf-shape" fill="#FFC93F" opacity="0.5" /></svg>
-        </div>
-      </div>
-
       <section className="hero">
-        <div className="aura-ring" aria-hidden="true">
-          <svg viewBox="0 0 200 200">
-            <circle className="c1" cx="100" cy="100" r="92" stroke="#9D4EFF" strokeDasharray="2 10" />
-            <circle className="c2" cx="100" cy="100" r="74" stroke="#00E5FF" strokeDasharray="1 7" />
-          </svg>
-        </div>
         <div className="wrap">
           <div className="eyebrow">✦ EPIC ANIME BATTLE MULTIVERSE</div>
           <h1>
@@ -155,8 +71,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             <span className="line2">anime empire</span>
           </h1>
           <p className="sub">
-            Four modes, one deck. Draft legendaries, duel in trivia feuds, run secret deduction rounds, or host the whole party. Pick your card below to begin.
+            Four modes, one deck. Draft legendaries, duel in trivia feuds, run secret deduction rounds, or host the whole party.
           </p>
+          <div className="hero-panel" aria-hidden="true">
+            <div className="hero-panel__core">
+              <span className="hero-panel__label">NEW UI / CLEAN MODE</span>
+              <span className="hero-panel__copy">Fast, bright, and focused on the games.</span>
+            </div>
+          </div>
           <div className="stat-bar">
             <div className="stat">⚡ <b>4</b> game modes</div>
             <div className="stat">🌐 online <b>multiplayer</b></div>

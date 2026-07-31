@@ -133,6 +133,8 @@
 }
 .homepage-v2 .card {
   position:relative;
+  appearance:none;
+  -webkit-appearance:none;
   background:linear-gradient(165deg, var(--ink-3) 0%, var(--ink-2) 100%);
   border-radius:18px;
   padding:26px 26px 24px;
@@ -143,6 +145,13 @@
   isolation:isolate;
   overflow:hidden;
   text-align: left;
+  color:inherit;
+  font:inherit;
+}
+.homepage-v2 .card:focus-visible,
+.homepage-v2 .btn-top:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 3px;
 }
 .homepage-v2 .card::before {
   content:"";
@@ -366,6 +375,28 @@
   .homepage-v2 .hero { padding:56px 20px 20px; }
   .homepage-v2 .deck { padding:48px 20px 40px; }
   .homepage-v2 .char-1, .homepage-v2 .char-2 { opacity:0.10; }
-  .homepage-v2 .portal-wrap { width:80vw; }
+  .homepage-v2 .portal-wrap { width:min(82vw, 320px); }
   .homepage-v2 .leaf { transform:scale(0.6); }
+  .homepage-v2 .stat-bar { display:flex; }
+  .homepage-v2 .stat-bar .stat { flex:1 1 100%; justify-content:center; }
+  .homepage-v2 .card-foot { gap:12px; align-items:flex-start; }
+  .homepage-v2 .cta { line-height:1.2; }
+  .homepage-v2 .bg-figures,
+  .homepage-v2 .sparkle-field,
+  .homepage-v2 .ember-field,
+  .homepage-v2 .leaf-field,
+  .homepage-v2 .scanline {
+    opacity:0.55;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .homepage-v2 *,
+  .homepage-v2 *::before,
+  .homepage-v2 *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

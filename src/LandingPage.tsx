@@ -36,8 +36,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
         <div className="portal-wrap">
           <div className="frame-glow" />
-          <div className="frame-orbit frame-orbit-1" aria-hidden="true" />
-          <div className="frame-orbit frame-orbit-2" aria-hidden="true" />
           <div className="frame-inner">
             <video src="/1.mp4" className="bg-fig char-3" autoPlay loop muted playsInline />
           </div>

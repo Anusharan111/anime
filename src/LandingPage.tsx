@@ -1,5 +1,13 @@
 import React from "react";
-import { createPortal } from "react-dom";
+import {
+  ArrowRight,
+  Mic2,
+  Search,
+  Sparkles,
+  Swords,
+  Trophy,
+  Users,
+} from "lucide-react";
 import "./LandingPage.css";
 
 interface LandingPageProps {
@@ -9,19 +17,44 @@ interface LandingPageProps {
   onSelectParty: () => void;
 }
 
-const CardButton = ({
-  className,
-  onClick,
-  children,
-}: {
-  className: string;
-  onClick: () => void;
-  children: React.ReactNode;
-}) => (
-  <button type="button" className={className} onClick={onClick}>
-    {children}
-  </button>
-);
+const MODES = [
+  {
+    title: "Anime Battle",
+    tag: "Draft Duel",
+    text: "Build a six-role team, counter your rival, and settle the matchup with power scoring.",
+    cta: "Enter Battle",
+    badge: "No. 01",
+    className: "mode-battle",
+    icon: Swords,
+  },
+  {
+    title: "Anime Feud",
+    tag: "Trivia Clash",
+    text: "Guess the top anime answers, steal rounds, and turn fandom knowledge into points.",
+    cta: "Play Feud",
+    badge: "No. 02",
+    className: "mode-feud",
+    icon: Mic2,
+  },
+  {
+    title: "Guess Who",
+    tag: "Secret Pick",
+    text: "Ask clever yes-or-no questions and expose the hidden character before your rival does.",
+    cta: "Start Search",
+    badge: "No. 03",
+    className: "mode-guess",
+    icon: Search,
+  },
+  {
+    title: "Party Games",
+    tag: "Group Room",
+    text: "Bring friends into quick rounds of character guessing and imposter-style anime chaos.",
+    cta: "Open Party",
+    badge: "No. 04",
+    className: "mode-party",
+    icon: Users,
+  },
+];
 
 export const LandingPage: React.FC<LandingPageProps> = ({
   onSelectBattle,
@@ -29,177 +62,73 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   onSelectGuessWho,
   onSelectParty,
 }) => {
+  const handlers = [onSelectBattle, onSelectFeud, onSelectGuessWho, onSelectParty];
+
   return (
     <div className="homepage-v2">
-      {createPortal(
-        <div className="homepage-v2">
-          <div className="bg-figures" aria-hidden="true">
-            <video src="/zo.mp4" className="bg-fig char-1" autoPlay loop muted playsInline />
-            <video src="/go.mp4" className="bg-fig char-2" autoPlay loop muted playsInline />
+      <div className="home-bg" aria-hidden="true">
+        <video src="/zo.mp4" className="home-bg-video home-bg-video-left" autoPlay loop muted playsInline />
+        <video src="/go.mp4" className="home-bg-video home-bg-video-right" autoPlay loop muted playsInline />
+        <div className="home-bg-vignette" />
+      </div>
+
+      <main className="home-shell">
+        <section className="home-hero">
+          <div className="home-kicker">
+            <Sparkles className="home-kicker-icon" />
+            Epic Anime Battle Multiverse
           </div>
 
-          <div className="sparkle-field" aria-hidden="true">
-            <span className="sparkle" style={{ left: "8%", top: "14%", "--c": "#FFE29A", animationDelay: "0s", animationDuration: "2.6s" } as React.CSSProperties} />
-            <span className="sparkle" style={{ left: "18%", top: "62%", "--c": "#00E5FF", animationDelay: ".4s", animationDuration: "3.1s" } as React.CSSProperties} />
-            <span className="sparkle" style={{ left: "27%", top: "30%", "--c": "#FF2E63", animationDelay: ".8s", animationDuration: "2.8s" } as React.CSSProperties} />
-            <span className="sparkle" style={{ left: "36%", top: "80%", "--c": "#FFC93F", animationDelay: "1.2s", animationDuration: "3.4s" } as React.CSSProperties} />
-            <span className="sparkle" style={{ left: "46%", top: "22%", "--c": "#9D4EFF", animationDelay: ".2s", animationDuration: "2.4s" } as React.CSSProperties} />
-            <span className="sparkle" style={{ left: "57%", top: "66%", "--c": "#00E5FF", animationDelay: "1.6s", animationDuration: "3s" } as React.CSSProperties} />
-            <span className="sparkle" style={{ left: "66%", top: "12%", "--c": "#FFC93F", animationDelay: ".6s", animationDuration: "2.9s" } as React.CSSProperties} />
-            <span className="sparkle" style={{ left: "74%", top: "48%", "--c": "#FF2E63", animationDelay: "2s", animationDuration: "3.3s" } as React.CSSProperties} />
-            <span className="sparkle" style={{ left: "83%", top: "74%", "--c": "#9D4EFF", animationDelay: "1s", animationDuration: "2.7s" } as React.CSSProperties} />
-            <span className="sparkle" style={{ left: "91%", top: "26%", "--c": "#FFE29A", animationDelay: "1.4s", animationDuration: "3.2s" } as React.CSSProperties} />
-          </div>
-
-          <div className="ember-field" aria-hidden="true">
-            <span className="ember" style={{ left: "6%", "--c": "#FFC93F", width: "5px", animationDuration: "8s", animationDelay: "0s" } as React.CSSProperties} />
-            <span className="ember" style={{ left: "16%", "--c": "#FF2E63", width: "3px", animationDuration: "11s", animationDelay: "1.2s" } as React.CSSProperties} />
-            <span className="ember" style={{ left: "28%", "--c": "#9D4EFF", width: "4px", animationDuration: "9s", animationDelay: "2.4s" } as React.CSSProperties} />
-            <span className="ember" style={{ left: "41%", "--c": "#00E5FF", width: "3px", animationDuration: "12s", animationDelay: ".6s" } as React.CSSProperties} />
-            <span className="ember" style={{ left: "54%", "--c": "#FFC93F", width: "6px", animationDuration: "10s", animationDelay: "3s" } as React.CSSProperties} />
-            <span className="ember" style={{ left: "63%", "--c": "#FF2E63", width: "4px", animationDuration: "13s", animationDelay: "1.8s" } as React.CSSProperties} />
-            <span className="ember" style={{ left: "74%", "--c": "#9D4EFF", width: "3px", animationDuration: "9.5s", animationDelay: "4s" } as React.CSSProperties} />
-            <span className="ember" style={{ left: "83%", "--c": "#00E5FF", width: "5px", animationDuration: "11.5s", animationDelay: "2s" } as React.CSSProperties} />
-            <span className="ember" style={{ left: "92%", "--c": "#FFC93F", width: "3px", animationDuration: "14s", animationDelay: ".3s" } as React.CSSProperties} />
-          </div>
-
-          <div className="scanline" aria-hidden="true" />
-        </div>,
-        document.body
-      )}
-
-      <section className="hero">
-        <div className="aura-ring" aria-hidden="true">
-          <svg viewBox="0 0 200 200">
-            <circle className="c1" cx="100" cy="100" r="92" stroke="#9D4EFF" strokeDasharray="2 10" />
-            <circle className="c2" cx="100" cy="100" r="74" stroke="#00E5FF" strokeDasharray="1 7" />
-          </svg>
-        </div>
-        <div className="wrap">
-          <div className="eyebrow">✦ EPIC ANIME BATTLE MULTIVERSE</div>
-          <h1>
-            Build the ultimate
-            <br />
-            <span className="line2">anime empire</span>
-          </h1>
-          <p className="sub">
-            Four modes, one deck. Draft legendaries, duel in trivia feuds, run secret deduction rounds, or host the whole party.
+          <h1>Anime Battle</h1>
+          <p className="home-subtitle">
+            Pick a mode, build your roster, and jump straight into anime party combat.
           </p>
-          <div className="stat-bar">
-            <div className="stat">⚡ <b>4</b> game modes</div>
-            <div className="stat">🌐 online <b>multiplayer</b></div>
-            <div className="stat">🏆 <b>real-time</b> duels</div>
-          </div>
-        </div>
-      </section>
 
-      <section className="deck" aria-label="Game mode selection">
-        <CardButton className="card glass card-1" onClick={onSelectBattle}>
-          <svg className="card-bg-icon" viewBox="0 0 24 24" fill="none" stroke="#FFC93F" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M14.5 17.5L3 6V3h3l11.5 11.5" />
-            <path d="M13 19l6-6" />
-            <path d="M16 16l4 4" />
-            <path d="M19 21l2-2" />
-            <path d="M21 3l-6 6" />
-          </svg>
-          <div className="card-top">
-            <div className="icon-medal">
-              <svg viewBox="0 0 24 24" fill="none" stroke="#FFC93F" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M14.5 17.5L3 6V3h3l11.5 11.5" />
-                <path d="M13 19l6-6" />
-                <path d="M16 16l4 4" />
-                <path d="M19 21l2-2" />
-                <path d="M21 3l-6 6" />
-              </svg>
-            </div>
-            <div className="rarity-badge r-legendary">★ LEGENDARY</div>
+          <div className="home-actions" aria-label="Primary actions">
+            <button type="button" className="home-primary" onClick={onSelectBattle}>
+              <Swords aria-hidden="true" />
+              Start Battle
+            </button>
+            <button type="button" className="home-secondary" onClick={onSelectParty}>
+              <Users aria-hidden="true" />
+              Party Room
+            </button>
           </div>
-          <h3>Anime Battle</h3>
-          <p>Draft heroes turn-by-turn, assign strategic role bonuses, and duel against smart AI.</p>
-          <div className="card-foot">
-            <span className="cta cta-1">SELECT BATTLE DECK →</span>
-            <span className="card-no">No.01/04</span>
-          </div>
-        </CardButton>
 
-        <CardButton className="card glass card-2" onClick={onSelectFeud}>
-          <svg className="card-bg-icon" viewBox="0 0 24 24" fill="none" stroke="#D9A6FF" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M11 2a2 2 0 0 1 4 0v9a2 2 0 0 1-4 0z" />
-            <path d="M6 11v1a6 6 0 0 0 12 0v-1" />
-            <path d="M12 18v3" />
-            <path d="M9 21h6" />
-          </svg>
-          <div className="card-top">
-            <div className="icon-medal">
-              <svg viewBox="0 0 24 24" fill="none" stroke="#D9A6FF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M11 2a2 2 0 0 1 4 0v9a2 2 0 0 1-4 0z" />
-                <path d="M6 11v1a6 6 0 0 0 12 0v-1" />
-                <path d="M12 18v3" />
-                <path d="M9 21h6" />
-              </svg>
-            </div>
-            <div className="rarity-badge r-epic">◆ EPIC</div>
+          <div className="home-stats" aria-label="Game highlights">
+            <span><Trophy aria-hidden="true" /> 4 Modes</span>
+            <span><Users aria-hidden="true" /> Online Multiplayer</span>
+            <span><Sparkles aria-hidden="true" /> Real-Time Duels</span>
           </div>
-          <h3>Anime Feud</h3>
-          <p>Family Feud style trivia. Guess top anime community answers and steal points.</p>
-          <div className="card-foot">
-            <span className="cta cta-2">PLAY ANIME FEUD →</span>
-            <span className="card-no">No.02/04</span>
-          </div>
-        </CardButton>
+        </section>
 
-        <CardButton className="card glass card-3" onClick={onSelectGuessWho}>
-          <svg className="card-bg-icon" viewBox="0 0 24 24" fill="none" stroke="#F5F1FF" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="10" cy="10" r="6" />
-            <path d="M20 20l-5.5-5.5" />
-          </svg>
-          <div className="card-top">
-            <div className="icon-medal">
-              <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="10" cy="10" r="6" />
-                <path d="M20 20l-5.5-5.5" />
-              </svg>
-            </div>
-            <div className="rarity-badge r-mythic">✦ <span>MYTHIC</span></div>
-          </div>
-          <h3>Guess Who</h3>
-          <p>Ask yes/no questions in real time to uncover your rival's secret anime character.</p>
-          <div className="card-foot">
-            <span className="cta cta-3">START DEDUCTION DUEL →</span>
-            <span className="card-no">No.03/04</span>
-          </div>
-        </CardButton>
+        <section className="mode-grid" aria-label="Choose a game mode">
+          {MODES.map((mode, index) => {
+            const Icon = mode.icon;
+            return (
+              <button
+                key={mode.title}
+                type="button"
+                className={`mode-card glass ${mode.className}`}
+                onClick={handlers[index]}
+              >
+                <span className="mode-card-badge">{mode.badge}</span>
+                <span className="mode-card-icon"><Icon aria-hidden="true" /></span>
+                <span className="mode-card-tag">{mode.tag}</span>
+                <h2>{mode.title}</h2>
+                <p>{mode.text}</p>
+                <span className="mode-card-cta">
+                  {mode.cta}
+                  <ArrowRight aria-hidden="true" />
+                </span>
+              </button>
+            );
+          })}
+        </section>
+      </main>
 
-        <CardButton className="card glass card-4" onClick={onSelectParty}>
-          <svg className="card-bg-icon" viewBox="0 0 24 24" fill="none" stroke="#00E5FF" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="9" cy="8" r="3" />
-            <circle cx="17" cy="9" r="2.6" />
-            <path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6" />
-            <path d="M15 14.2c2.6.4 4.5 2.6 4.5 5.3" />
-          </svg>
-          <div className="card-top">
-            <div className="icon-medal">
-              <svg viewBox="0 0 24 24" fill="none" stroke="#00E5FF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="9" cy="8" r="3" />
-                <circle cx="17" cy="9" r="2.6" />
-                <path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6" />
-                <path d="M15 14.2c2.6.4 4.5 2.6 4.5 5.3" />
-              </svg>
-            </div>
-            <div className="rarity-badge r-rare">● RARE</div>
-          </div>
-          <h3>Party Games</h3>
-          <p>Multiplayer party room. Play Guess Character or spot the imposter with friends.</p>
-          <div className="card-foot">
-            <span className="cta cta-4">ENTER PARTY ROOM →</span>
-            <span className="card-no">No.04/04</span>
-          </div>
-        </CardButton>
-      </section>
-
-      <footer className="fixed-footer">
-        <p>Anime Battle Multiverse</p>
-        <p>Choose a mode and start the clash.</p>
+      <footer className="home-footer">
+        <span>(C) 2026 ANIME BATTLE. ALL RIGHTS RESERVED</span>
       </footer>
     </div>
   );

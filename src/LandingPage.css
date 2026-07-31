@@ -490,6 +490,118 @@
   }
 }
 
+/* ──────────────────────────────
+   🍃 Leaf Field Animation
+   ────────────────────────────── */
+.leaf-field {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 1; /* above bg videos, below content */
+}
+
+.leaf {
+  position: absolute;
+  top: -100px;
+  animation:
+    leafFall linear infinite,
+    leafSwing ease-in-out infinite,
+    leafRotate linear infinite;
+  transform-origin: center;
+  opacity: 0.9;
+  filter: drop-shadow(0 0 8px rgba(255, 120, 150, 0.4));
+}
+
+@keyframes leafFall {
+  from {
+    transform: translateY(-100px);
+  }
+  to {
+    transform: translateY(110vh);
+  }
+}
+
+@keyframes leafSwing {
+  0% {
+    margin-left: -40px;
+  }
+  50% {
+    margin-left: 40px;
+  }
+  100% {
+    margin-left: -40px;
+  }
+}
+
+@keyframes leafRotate {
+  from {
+    rotate: 0deg;
+  }
+  to {
+    rotate: 720deg;
+  }
+}
+
+/* ──────────────────────────────
+   🌀 Magic Circle Rotation
+   ────────────────────────────── */
+.magic-circle {
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle,
+      transparent 60%,
+      rgba(157, 78, 255, 0.15) 62%,
+      transparent 64%),
+    conic-gradient(
+      from 0deg,
+      #9D4EFF,
+      #00E5FF,
+      #FF2E63,
+      #FFC93F,
+      #9D4EFF
+    );
+  mask:
+    radial-gradient(circle,
+      transparent 58%,
+      black 60%);
+  animation:
+    rotateCircle 25s linear infinite;
+  opacity: 0.5;
+}
+
+@keyframes rotateCircle {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ✨ Second Inner Ring */
+.magic-circle::after {
+  content: "";
+  position: absolute;
+  inset: 40px;
+  border-radius: 50%;
+  border: 2px dashed rgba(0, 229, 255, 0.5);
+  animation:
+    reverseSpin 14s linear infinite;
+}
+
+@keyframes reverseSpin {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .homepage-v2 *,
   .homepage-v2 *::before,

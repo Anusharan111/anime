@@ -70,11 +70,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
   return (
     <div className="homepage-v2">
+      {/* ── fixed background: vignette only (no stacking context trap) ── */}
       <div className="home-bg" aria-hidden="true">
-        <video src="/zo.mp4" className="home-bg-video home-bg-video-left" autoPlay loop muted playsInline />
-        <video src="/go.mp4" className="home-bg-video home-bg-video-right" autoPlay loop muted playsInline />
         <div className="home-bg-vignette" />
       </div>
+
+      {/* ── videos at root level so z-index is globally respected ── */}
+      <video src="/zo.mp4" className="home-bg-video home-bg-video-left"  autoPlay loop muted playsInline aria-hidden="true" />
+      <video src="/go.mp4" className="home-bg-video home-bg-video-right" autoPlay loop muted playsInline aria-hidden="true" />
 
       <main className="home-shell">
         <section className="home-hero">
@@ -122,7 +125,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       </main>
 
       <footer className="home-footer">
-        <span>(C) 2026 ANIME BATTLE. ALL RIGHTS RESERVED</span>
+        <div>© 2026 ANIME BATTLE. ALL RIGHTS RESERVED.</div>
+        <div>MADE FOR ANIME ENTHUSIASTS WORLDWIDE</div>
       </footer>
     </div>
   );

@@ -125,8 +125,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       </main>
 
       <footer className="home-footer">
-        <div>© 2026 ANIME BATTLE. ALL RIGHTS RESERVED.</div>
-        <div>MADE FOR ANIME ENTHUSIASTS WORLDWIDE</div>
+        <span>(C) 2026 ANIME BATTLE. ALL RIGHTS RESERVED</span>
+        <span>MADE FOR ANIME ENTHUSIASTS WORLDWIDE</span>
       </footer>
     </div>
   );

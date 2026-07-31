@@ -25,6 +25,7 @@ const MODES = [
     cta: "Enter Battle",
     badge: "No. 01",
     className: "mode-battle",
+    tilt: "-5deg",
     icon: Swords,
   },
   {
@@ -34,6 +35,7 @@ const MODES = [
     cta: "Play Feud",
     badge: "No. 02",
     className: "mode-feud",
+    tilt: "5deg",
     icon: Mic2,
   },
   {
@@ -43,6 +45,7 @@ const MODES = [
     cta: "Start Search",
     badge: "No. 03",
     className: "mode-guess",
+    tilt: "5deg",
     icon: Search,
   },
   {
@@ -52,6 +55,7 @@ const MODES = [
     cta: "Open Party",
     badge: "No. 04",
     className: "mode-party",
+    tilt: "-5deg",
     icon: Users,
   },
 ];
@@ -84,17 +88,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             Pick a mode, build your roster, and jump straight into anime party combat.
           </p>
 
-          <div className="home-actions" aria-label="Primary actions">
-            <button type="button" className="home-primary" onClick={onSelectBattle}>
-              <Swords aria-hidden="true" />
-              Start Battle
-            </button>
-            <button type="button" className="home-secondary" onClick={onSelectParty}>
-              <Users aria-hidden="true" />
-              Party Room
-            </button>
-          </div>
-
           <div className="home-stats" aria-label="Game highlights">
             <span><Trophy aria-hidden="true" /> 4 Modes</span>
             <span><Users aria-hidden="true" /> Online Multiplayer</span>
@@ -110,6 +103,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 key={mode.title}
                 type="button"
                 className={`mode-card glass ${mode.className}`}
+                style={{ "--tilt": mode.tilt } as React.CSSProperties}
                 onClick={handlers[index]}
               >
                 <span className="mode-card-badge">{mode.badge}</span>

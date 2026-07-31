@@ -43,6 +43,7 @@
   overflow: hidden;
 }
 
+/* ── video layer above the vignette overlay ── */
 .home-bg-video {
   position: fixed;
   top: 52%;
@@ -52,6 +53,8 @@
   opacity: 0.46;
   filter: saturate(0.98) contrast(1.04);
   transform: translateY(-50%);
+  z-index: 1;          /* sit above vignette (z:0) */
+  pointer-events: none;
 }
 
 .home-bg-video-left {
@@ -67,6 +70,7 @@
 .home-bg-vignette {
   position: fixed;
   inset: 0;
+  z-index: 0;          /* below videos */
   background:
     linear-gradient(90deg, rgba(3,3,7,0.12), rgba(3,3,7,0.78) 26%, rgba(3,3,7,0.78) 74%, rgba(3,3,7,0.12)),
     linear-gradient(180deg, rgba(3,3,7,0.05), rgba(3,3,7,0.84));
@@ -208,8 +212,8 @@
 
 .mode-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
   margin-top: 34px;
 }
 
@@ -217,7 +221,7 @@
   position: relative;
   min-height: 284px;
   padding: 28px 22px;
-  border-radius: 8px;
+  border-radius: 12px;
   background: rgba(255,255,255,0.06);
   border: 1px solid rgba(255,255,255,0.14);
   backdrop-filter: blur(14px);
@@ -227,6 +231,8 @@
   overflow: hidden;
   isolation: isolate;
   cursor: pointer;
+  /* subtle tilt from --tilt prop, smooth out on hover */
+  transform: rotate(var(--tilt, 0deg));
   transition: transform .4s cubic-bezier(.2,.8,.2,1), border-color .4s, box-shadow .4s;
 }
 
@@ -261,9 +267,10 @@
 }
 
 .glass:hover {
-  transform: translateY(-6px);
+  /* flatten tilt on hover and lift card */
+  transform: rotate(0deg) translateY(-6px);
   border-color: rgba(255,255,255,0.32);
-  box-shadow: 0 18px 40px rgba(0,0,0,0.45);
+  box-shadow: 0 22px 48px rgba(0,0,0,0.5), 0 0 0 1.5px rgba(255,255,255,0.1);
 }
 
 .glass:hover::before {

@@ -123,23 +123,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         </div>
       </div>
 
-      <header>
-        <div className="nav">
-          <div className="brand">
-            <div className="brand-mark">
-              <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round">
-                <path d="M3 21l7-7M14 10l7-7M6 3l4 1 1 4-4 4-4-1-1-4z" fill="none" />
-                <path d="M14 10l4 4 1 4-4-1-4-4z" />
-              </svg>
-            </div>
-            <div className="brand-text">
-              <div className="name">ANIME BATTLE</div>
-              <div className="tag"><span className="dot-live" />BATTLE SYSTEM V2.0</div>
-            </div>
-          </div>
-        </div>
-      </header>
-
       <section className="hero">
         <div className="aura-ring" aria-hidden="true">
           <svg viewBox="0 0 200 200">
@@ -262,11 +245,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           </div>
         </div>
       </section>
-
-      <footer>
-        <p>© 2026 ANIME BATTLE. ALL RIGHTS RESERVED.</p>
-        <p>MADE FOR ANIME ENTHUSIASTS WORLDWIDE</p>
-      </footer>
     </div>
   );
 };

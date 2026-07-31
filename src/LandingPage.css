@@ -11,7 +11,7 @@
   --violet:#9D4EFF;
   --gold:#FFC93F;
   
-  font-family:'Space Grotesk', sans-serif;
+  font-family: inherit;
   color: var(--paper);
   position: relative;
   min-height: 100vh;
@@ -49,18 +49,18 @@
 }
 .homepage-v2 .brand-mark svg { width:20px; height:20px; }
 .homepage-v2 .brand-text .name {
-  font-family:'Anton', sans-serif; font-size:19px; letter-spacing:0.5px; line-height:1;
+  font-family: inherit; font-size:19px; font-weight: 800; letter-spacing:0.5px; line-height:1;
   color:var(--paper);
 }
 .homepage-v2 .brand-text .tag {
-  font-family:'JetBrains Mono', monospace; font-size:10px; letter-spacing:1.5px;
+  font-family: inherit; font-size:10px; letter-spacing:1.5px;
   color:var(--muted); margin-top:3px; display:flex; align-items:center; gap:6px;
 }
 .homepage-v2 .dot-live { width:6px; height:6px; border-radius:50%; background:#3CF08B; box-shadow:0 0 8px #3CF08B; animation:pulse 1.8s infinite; }
 @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.35;} }
 .homepage-v2 .nav-right { display:flex; align-items:center; gap:10px; }
 .homepage-v2 .btn-top {
-  font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:1px;
+  font-family: inherit; font-size:11px; letter-spacing:1px;
   color:var(--paper); background:var(--ink-3); border:1px solid var(--line);
   padding:9px 16px; border-radius:8px; text-decoration:none;
   display:flex; align-items:center; gap:6px;
@@ -71,14 +71,15 @@
 .homepage-v2 .hero { padding:88px 32px 40px; text-align:center; position:relative; }
 .homepage-v2 .eyebrow {
   display:inline-flex; align-items:center; gap:8px;
-  font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:2px;
+  font-family: inherit; font-size:11px; letter-spacing:2px;
   color:var(--gold); background:rgba(255,201,63,0.08);
   border:1px solid rgba(255,201,63,0.35);
   padding:7px 16px; border-radius:100px; margin-bottom:28px;
   position:relative; z-index:1;
 }
 .homepage-v2 h1 {
-  font-family:'Anton', sans-serif;
+  font-family: inherit;
+  font-weight: 900;
   font-size:clamp(40px, 7vw, 76px);
   line-height:0.98; letter-spacing:0.5px;
   text-transform:uppercase;
@@ -103,7 +104,7 @@
   overflow:hidden; position:relative; z-index:1;
 }
 .homepage-v2 .stat-bar .stat {
-  padding:12px 22px; font-family:'JetBrains Mono', monospace; font-size:11.5px;
+  padding:12px 22px; font-family: inherit; font-size:11.5px;
   letter-spacing:0.5px; color:var(--paper);
   border-right:1px solid var(--line);
   display:flex; align-items:center; gap:8px;
@@ -180,7 +181,7 @@
 }
 .homepage-v2 .icon-medal svg { width:26px; height:26px; }
 .homepage-v2 .rarity-badge {
-  font-family:'JetBrains Mono', monospace; font-size:10px; letter-spacing:1.3px;
+  font-family: inherit; font-size:10px; font-weight: bold; letter-spacing:1.3px;
   padding:5px 10px; border-radius:100px; white-space:nowrap;
   display:flex; align-items:center; gap:5px;
 }
@@ -194,7 +195,7 @@
 .homepage-v2 .r-rare { color:var(--cyan); background:rgba(0,229,255,0.08); border:1px solid rgba(0,229,255,0.35); }
 
 .homepage-v2 .card h3 {
-  font-family:'Anton', sans-serif; font-size:23px; letter-spacing:0.4px;
+  font-family: inherit; font-size:23px; font-weight: 800; letter-spacing:0.4px;
   margin-top:20px; text-transform:uppercase; position:relative; z-index:1;
 }
 .homepage-v2 .card p {
@@ -207,13 +208,13 @@
   position:relative; z-index:1;
 }
 .homepage-v2 .cta {
-  font-family:'JetBrains Mono', monospace; font-size:11.5px; font-weight:700;
+  font-family: inherit; font-size:11.5px; font-weight:700;
   letter-spacing:0.5px; text-decoration:none; display:flex; align-items:center; gap:6px;
   transition:gap .2s; background: transparent; border: none; padding: 0; cursor: pointer;
 }
 .homepage-v2 .card:hover .cta { gap:10px; }
 .homepage-v2 .cta-1 { color:var(--gold); } .homepage-v2 .cta-2 { color:#D9A6FF; } .homepage-v2 .cta-3 { color:var(--paper); } .homepage-v2 .cta-4 { color:var(--cyan); }
-.homepage-v2 .card-no { font-family:'JetBrains Mono', monospace; font-size:10px; color:var(--muted); letter-spacing:1px; }
+.homepage-v2 .card-no { font-family: inherit; font-size:10px; color:var(--muted); letter-spacing:1px; }
 
 .homepage-v2 .card-bg-icon {
   position:absolute; z-index:0; pointer-events:none;
@@ -228,10 +229,10 @@
   display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;
   position:relative; z-index:1; background:rgba(8,7,14,0.4);
 }
-.homepage-v2 footer p { font-family:'JetBrains Mono', monospace; font-size:10.5px; color:var(--muted); letter-spacing:0.5px; margin:0; }
+.homepage-v2 footer p { font-family: inherit; font-size:10.5px; color:var(--muted); letter-spacing:0.5px; margin:0; }
 
-.homepage-v2 .bg-figures { position:absolute; inset:0; z-index:0; pointer-events:none; overflow:hidden; }
-.homepage-v2 .bg-fig { position:absolute; object-fit:contain; animation:fig-float 9s ease-in-out infinite alternate; }
+.homepage-v2 .bg-figures { position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden; }
+.homepage-v2 .bg-fig { position:absolute; object-fit:contain; animation:none; }
 .homepage-v2 .char-1 { left:0%; top:5%; height:95vh; max-width:45vw; object-position:left center; opacity:0.85; }
 .homepage-v2 .char-2 { right:0%; top:5%; height:95vh; max-width:45vw; object-position:right center; opacity:0.85; animation-delay:1s; }
 .homepage-v2 .char-3 { position:static; width:100%; height:100%; object-fit:cover; opacity:0.92; border-radius:10px; display:block; animation:none; }
@@ -246,7 +247,7 @@
   position:absolute; inset:-5px; border-radius:19px; z-index:0;
   background:conic-gradient(from 0deg, #FF3B00, #FF7A00, #FFC93F, #FF7A00, #FF3B00, #B00000, #FF3B00);
   filter:blur(4px) saturate(1.3);
-  animation:frame-spin 3s linear infinite, flame-flicker 0.35s ease-in-out infinite alternate;
+  animation: none;
 }
 .homepage-v2 .frame-glow::after { content:""; position:absolute; inset:5px; border-radius:13px; background:var(--ink); }
 @keyframes frame-spin { from{transform:rotate(0deg);} to{transform:rotate(360deg);} }
@@ -264,7 +265,7 @@
 .homepage-v2 .frame-corner {
   position:absolute; width:24px; height:24px; z-index:2; pointer-events:none;
   border:2px solid #FFC93F; filter:drop-shadow(0 0 6px #FF5A00);
-  animation:corner-pulse 1s ease-in-out infinite alternate;
+  animation: none;
 }
 .homepage-v2 .fc-tl { top:-6px; left:-6px; border-right:none; border-bottom:none; border-radius:8px 0 0 0; }
 .homepage-v2 .fc-tr { top:-6px; right:-6px; border-left:none; border-bottom:none; border-radius:0 8px 0 0; }
@@ -297,7 +298,7 @@
 }
 @keyframes fspark-flicker { 0%,100%{ opacity:0.5; } 50%{ opacity:1; } }
 
-.homepage-v2 .sparkle-field { position:absolute; inset:0; z-index:1; pointer-events:none; overflow:hidden; }
+.homepage-v2 .sparkle-field { position:fixed; inset:0; z-index:1; pointer-events:none; overflow:hidden; }
 .homepage-v2 .sparkle {
   position:absolute; width:6px; height:6px; background:var(--c);
   clip-path:polygon(50% 0%, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0% 50%, 38% 38%);
@@ -308,7 +309,7 @@
   50%{ opacity:1; transform:scale(1) rotate(90deg); }
 }
 
-.homepage-v2 .ember-field { position:absolute; inset:0; z-index:0; pointer-events:none; overflow:hidden; }
+.homepage-v2 .ember-field { position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden; }
 .homepage-v2 .ember {
   position:absolute; bottom:-5%; height:5px; border-radius:50%;
   background:var(--c); box-shadow:0 0 6px var(--c), 0 0 14px var(--c);
@@ -321,7 +322,7 @@
 @keyframes ember-flicker { 0%,100%{ opacity:0.4; } 50%{ opacity:1; } }
 
 .homepage-v2 .scanline {
-  position:absolute; left:0; right:0; height:140px; top:-140px; z-index:2;
+  position:fixed; left:0; right:0; height:140px; top:-140px; z-index:2;
   background:linear-gradient(180deg, transparent, rgba(0,229,255,0.05) 40%, rgba(157,78,255,0.08) 60%, transparent);
   pointer-events:none; mix-blend-mode:screen; animation:scan-sweep 9s linear infinite;
 }
@@ -346,7 +347,7 @@
   50%{ transform:scale(1.06); box-shadow:0 0 14px rgba(255,255,255,0.08); }
 }
 
-.homepage-v2 .leaf-field { position:absolute; inset:0; pointer-events:none; z-index:0; overflow:hidden; }
+.homepage-v2 .leaf-field { position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden; }
 .homepage-v2 .leaf {
   position:absolute; top:-80px; opacity:0.8; will-change:transform;
   animation-name:leaf-fall, leaf-sway, leaf-spin; animation-timing-function:linear, ease-in-out, linear;

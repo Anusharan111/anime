@@ -461,17 +461,54 @@
   }
 
   .mode-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 12px;
   }
 
   .glass {
-    min-height: 236px;
-    padding: 22px 18px;
+    min-height: 200px;
+    padding: 16px 14px;
+  }
+
+  .mode-card-badge {
+    top: 14px;
+    right: 14px;
+    font-size: 9px;
+  }
+
+  .mode-card-icon {
+    width: 30px;
+    height: 30px;
+  }
+
+  .mode-card-icon svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .mode-card-tag {
+    margin-top: 12px;
+    font-size: 9px;
+  }
+
+  .mode-card h2 {
+    font-size: 14px;
   }
 
   .mode-card p {
     min-height: auto;
+    font-size: 11px;
+    margin-top: 6px;
+  }
+
+  .mode-card-cta {
+    margin-top: 10px;
+    font-size: 9px;
+  }
+
+  .mode-card-cta svg {
+    width: 12px;
+    height: 12px;
   }
 
   .home-bg-video {

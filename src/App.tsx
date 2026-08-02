@@ -2484,6 +2484,8 @@ export default function App() {
                         transition={{ duration: cinematicStage === "impact" ? 0.28 : 0.35 }}
                         className="absolute inset-0 z-50 overflow-hidden rounded-3xl border border-white/10 bg-transparent"
                       >
+                        {/* Soft blur behind the clash so text stays readable where the dark overlay was removed */}
+                        <div className="absolute inset-0 bg-black/25 backdrop-blur-[3px]" />
                         <div className="absolute top-3 left-3 right-3 z-20 grid grid-cols-[1fr_auto_1fr] items-center gap-2 rounded-2xl border border-white/10 bg-black/60 p-2 font-mono shadow-2xl sm:top-5 sm:left-8 sm:right-8 sm:p-3">
                           <div className={`rounded-xl border px-3 py-2 ${cinematicStage === "score" && p1Wins ? "border-amber-300/50 bg-amber-400/15 text-amber-200" : "border-white/10 text-white"}`}>
                             <p className="truncate text-[9px] uppercase tracking-widest text-slate-400">{player1Name}</p>
@@ -2520,9 +2522,28 @@ export default function App() {
                             </div>
 
                             <div className="relative flex w-full max-w-3xl items-center justify-center">
+                              {/* Left edge slot rail the card slides out of */}
+                              <motion.div
+                                initial={{ opacity: 0, x: -70 }}
+                                animate={{ opacity: cinematicStage === "launch" || cinematicStage === "impact" ? 1 : 0, x: 0 }}
+                                transition={{ duration: 0.5 }}
+                                className="pointer-events-none absolute left-0 z-0 h-40 w-10 rounded-r-xl border border-white/10 bg-neutral-950/70 shadow-[inset_0_0_18px_rgba(34,211,238,0.25)]"
+                              >
+                                <div className="h-full w-full bg-gradient-to-b from-transparent via-nexus-cyan/10 to-transparent" />
+                              </motion.div>
+                              {/* Right edge slot rail */}
+                              <motion.div
+                                initial={{ opacity: 0, x: 70 }}
+                                animate={{ opacity: cinematicStage === "launch" || cinematicStage === "impact" ? 1 : 0, x: 0 }}
+                                transition={{ duration: 0.5 }}
+                                className="pointer-events-none absolute right-0 z-0 h-40 w-10 rounded-l-xl border border-white/10 bg-neutral-950/70 shadow-[inset_0_0_18px_rgba(251,113,133,0.25)]"
+                              >
+                                <div className="h-full w-full bg-gradient-to-b from-transparent via-rose-300/10 to-transparent" />
+                              </motion.div>
+
                               <motion.div
                                 key={`p1-${duel.role}-${clashIndex}`}
-                                initial={{ x: -360, y: 20, rotate: -10, scale: 0.82 }}
+                                initial={{ x: -560, y: 80, rotate: -14, scale: 0.85 }}
                                 animate={{
                                   x: cinematicStage === "launch" ? -110 : cinematicStage === "impact" ? -18 : p1Wins ? -210 : isDraw ? -72 : -295,
                                   y: cinematicStage === "score" && p1Wins ? -250 : cinematicStage === "score" && !p1Wins ? 90 : 0,
@@ -2563,7 +2584,7 @@ export default function App() {
 
                               <motion.div
                                 key={`p2-${duel.role}-${clashIndex}`}
-                                initial={{ x: 360, y: -20, rotate: 10, scale: 0.82 }}
+                                initial={{ x: 560, y: -80, rotate: 14, scale: 0.85 }}
                                 animate={{
                                   x: cinematicStage === "launch" ? 110 : cinematicStage === "impact" ? 18 : p2Wins ? 210 : isDraw ? 72 : 295,
                                   y: cinematicStage === "score" && p2Wins ? -250 : cinematicStage === "score" && !p2Wins ? -90 : 0,

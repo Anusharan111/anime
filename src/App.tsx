@@ -2466,8 +2466,6 @@ export default function App() {
                         transition={{ duration: cinematicStage === "impact" ? 0.28 : 0.35 }}
                         className="absolute inset-0 z-50 overflow-hidden rounded-3xl border border-white/10 bg-black/85 backdrop-blur-sm"
                       >
-                        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(250,204,21,0.18),transparent_34%),linear-gradient(90deg,rgba(0,229,255,0.11),transparent,rgba(16,185,129,0.12))]" />
-
                         <div className="absolute top-3 left-3 right-3 z-20 grid grid-cols-[1fr_auto_1fr] items-center gap-2 rounded-2xl border border-white/10 bg-black/60 p-2 font-mono shadow-2xl sm:top-5 sm:left-8 sm:right-8 sm:p-3">
                           <div className={`rounded-xl border px-3 py-2 ${cinematicStage === "score" && p1Wins ? "border-emerald-300/50 bg-emerald-400/15 text-emerald-200" : "border-white/10 text-white"}`}>
                             <p className="truncate text-[9px] uppercase tracking-widest text-slate-400">{player1Name}</p>
@@ -2556,7 +2554,7 @@ export default function App() {
                                   opacity: cinematicStage === "score" && p1Wins ? 0.25 : 1,
                                 }}
                                 transition={{ duration: cinematicStage === "launch" ? 0.9 : 0.48, ease: [0.2, 0.8, 0.2, 1] }}
-                                className={`relative h-56 w-36 overflow-hidden rounded-2xl border bg-neutral-950 shadow-2xl sm:h-64 sm:w-44 ${cinematicStage === "score" && p2Wins ? "border-emerald-300 shadow-[0_0_42px_rgba(52,211,153,0.34)]" : "border-emerald-400/50"}`}
+                                className={`relative h-56 w-36 overflow-hidden rounded-2xl border bg-neutral-950 shadow-2xl sm:h-64 sm:w-44 ${cinematicStage === "score" && p2Wins ? "border-emerald-300 shadow-[0_0_42px_rgba(52,211,153,0.34)]" : "border-white/10"}`}
                               >
                                 {p2Character && (
                                   <CharacterImage url={p2Character.image} fallbackUrl={p2Character.malFallbackUrl} name={p2Character.name} themeColor={p2Character.themeColor} className="h-full w-full object-cover object-top" />

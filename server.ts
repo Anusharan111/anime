@@ -8,7 +8,7 @@ import app from "./api/index.js";
 // Load environment variables
 dotenv.config();
 
-const PORT = parseInt(process.env.PORT || "5174", 10);
+const PORT = parseInt(process.env.PORT || "5175", 10);
 
 async function startServer() {
   const httpServer = createServer(app);

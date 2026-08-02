@@ -17,6 +17,7 @@ interface TeamSlotsProps {
   isMobile?: boolean;
   selectedCardId?: string | null;
   isLarge?: boolean;
+  fitPreviews?: Record<RoleId, string>;
 }
 
 const RoleIcon = ({ id, className }: { id: string; className?: string }) => {
@@ -54,6 +55,7 @@ export default function TeamSlots({
   isMobile = false,
   selectedCardId = null,
   isLarge = false,
+  fitPreviews,
 }: TeamSlotsProps) {
   const handleDragOver = (e: React.DragEvent) => {
     if (!activeTurn || isAI || layout === "compact-horizontal" || layout === "compact-horizontal-top") return;
@@ -203,6 +205,11 @@ export default function TeamSlots({
                       {canTapPlace && (
                         <span className="text-[5px] font-mono font-black text-nexus-cyan uppercase tracking-wider mt-0.5 animate-pulse">TAP</span>
                       )}
+                      {(canDrop || canTapPlace) && fitPreviews?.[role.id] && (
+                        <span className="mt-0.5 text-[5px] font-mono font-bold uppercase tracking-wider text-amber-300">
+                          {fitPreviews[role.id]}
+                        </span>
+                      )}
                     </div>
                   )}
                 </AnimatePresence>
@@ -278,9 +285,16 @@ export default function TeamSlots({
                       <motion.div 
                         initial={{ opacity: 0 }} 
                         animate={{ opacity: 1 }} 
-                        className="mt-1 text-[7px] text-nexus-cyan/70 font-mono animate-bounce"
+                        className="mt-1 flex flex-col items-center gap-0.5"
                       >
-                        DEPLOY UNIT
+                        <span className="text-[7px] text-nexus-cyan/70 font-mono animate-bounce">
+                          DEPLOY UNIT
+                        </span>
+                        {fitPreviews?.[role.id] && (
+                          <span className="text-[8px] font-mono font-black text-amber-300 uppercase bg-black/40 px-1.5 py-0.5 rounded border border-amber-500/30">
+                            {fitPreviews[role.id]}
+                          </span>
+                        )}
                       </motion.div>
                     )}
                   </div>

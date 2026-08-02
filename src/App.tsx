@@ -1,5 +1,5 @@
 // Anime Battle Main Application - Mobile Optimized
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import Pusher from "pusher-js";
 import {
@@ -27,6 +27,7 @@ import {
 } from "lucide-react";
 
 import { Character, MatchHistory, RoleId, SlottedTeam } from "./types";
+import { ROLE_CATEGORIES } from "./data/roles";
 import { CHARACTERS } from "./data/characters";
 import CharacterCard from "./components/CharacterCard";
 import TeamSlots from "./components/TeamSlots";
@@ -78,6 +79,14 @@ type BattleReport = {
     p2Score: number;
     p1FitScore?: number;
     p2FitScore?: number;
+    p1BaseScore?: number;
+    p2BaseScore?: number;
+    p1FitMultiplier?: number;
+    p2FitMultiplier?: number;
+    p1Suitability?: string;
+    p2Suitability?: string;
+    p1FitAdjustment?: number;
+    p2FitAdjustment?: number;
     winner: "p1" | "p2" | "draw";
     detail: string;
   }>;
@@ -224,6 +233,43 @@ const getRoleFitScore = (character: Character, role: RoleId) => {
   return Math.round(fitScore);
 };
 
+const getRoleSuitabilityLabel = (fitScore: number) => {
+  if (fitScore >= 92) return "Perfect Fit";
+  if (fitScore >= 82) return "Strong Fit";
+  if (fitScore >= 70) return "Stable Fit";
+  if (fitScore >= 58) return "Weak Fit";
+  return "Bad Fit";
+};
+
+const getRoleFitMultiplier = (fitScore: number) => {
+  if (fitScore >= 94) return 1.24;
+  if (fitScore >= 86) return 1.14;
+  if (fitScore >= 76) return 1.04;
+  if (fitScore >= 66) return 0.94;
+  if (fitScore >= 56) return 0.82;
+  if (fitScore >= 46) return 0.68;
+  return 0.52;
+};
+
+type BattleDuel = BattleReport["duels"][number];
+
+const CINEMATIC_ROLE_ORDER: RoleId[] = ["support_2", "support_1", "healer", "tank", "vice_captain", "captain"];
+
+const getCinematicDuels = (duels: BattleDuel[]) => {
+  const order = new Map(CINEMATIC_ROLE_ORDER.map((role, index) => [role, index]));
+  return [...duels].sort((a, b) => {
+    const aIndex = order.get(a.role as RoleId) ?? Number.MAX_SAFE_INTEGER;
+    const bIndex = order.get(b.role as RoleId) ?? Number.MAX_SAFE_INTEGER;
+    return aIndex - bIndex;
+  });
+};
+
+const findCharacterForDuel = (slots: SlottedTeam, duelRole: string, fallbackName: string) => {
+  const slottedCharacter = slots[duelRole as RoleId];
+  if (slottedCharacter) return slottedCharacter;
+  return Object.values(slots).find((character) => character?.name === fallbackName) ?? null;
+};
+
 export default function App() {
   // Game Setup States
   const [view, setView] = useState<ViewState>("landing");
@@ -252,6 +298,13 @@ export default function App() {
   const [p1SkipUsed, setP1SkipUsed] = useState(false);
   const [p2SkipUsed, setP2SkipUsed] = useState(false);
 
+  // Cinematic Clash States
+  const [cinematicStage, setCinematicStage] = useState<"hidden" | "intro" | "launch" | "impact" | "score" | "final">("hidden");
+  const [clashIndex, setClashIndex] = useState(0);
+  const [p1CinematicScore, setP1CinematicScore] = useState(0);
+  const [p2CinematicScore, setP2CinematicScore] = useState(0);
+  const [scoredClashIndex, setScoredClashIndex] = useState(-1);
+
   // Computes flat teams for compatibility with other game engines
   const p1Team = Object.values(p1Slots).filter(Boolean) as Character[];
   const p2Team = Object.values(p2Slots).filter(Boolean) as Character[];
@@ -269,6 +322,18 @@ export default function App() {
   const [isMobile, setIsMobile] = useState(false);
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
   const [isStartingGame, setIsStartingGame] = useState(false);
+
+  const fitPreviews = useMemo(() => {
+    if (!activeCharacter || (!isDraggingActive && !selectedCardId)) return undefined;
+    const previews: Record<string, string> = {};
+    ROLE_CATEGORIES.forEach(role => {
+      const score = getRoleFitScore(activeCharacter, role.id);
+      const mult = getRoleFitMultiplier(score);
+      const label = getRoleSuitabilityLabel(score);
+      previews[role.id] = `${label} x${mult.toFixed(2)}`;
+    });
+    return previews;
+  }, [activeCharacter, isDraggingActive, selectedCardId]);
 
   useEffect(() => {
     const checkWidth = () => {
@@ -354,9 +419,76 @@ export default function App() {
     winner: string;
     winnerId: "p1" | "p2" | "draw";
     mvp: Character;
+    mvpReason?: string;
+    mvpAnalysis?: {
+      roleLabel: string;
+      score: number;
+      baseScore: number;
+      fitScore: number;
+      fitMultiplier: number;
+      suitability: string;
+      reason: string;
+    };
     commentary: string;
     battleReport?: BattleReport;
   } | null>(null);
+
+  useEffect(() => {
+    const duels = resultData?.battleReport ? getCinematicDuels(resultData.battleReport.duels) : [];
+    const activeDuel = duels[clashIndex];
+
+    if (cinematicStage === "hidden") return;
+
+    if (cinematicStage === "intro") {
+      const timer = window.setTimeout(() => setCinematicStage("launch"), 1100);
+      return () => window.clearTimeout(timer);
+    }
+
+    if (!activeDuel) {
+      if (cinematicStage !== "final") {
+        setCinematicStage("final");
+        sfx.playVictory();
+      }
+      const timer = window.setTimeout(() => {
+        setCinematicStage("hidden");
+        setView("results");
+        if (gameMode === "online-2p") {
+          syncGameState({ view: "results" });
+        }
+      }, 1700);
+      return () => window.clearTimeout(timer);
+    }
+
+    if (cinematicStage === "launch") {
+      const timer = window.setTimeout(() => {
+        setCinematicStage("impact");
+        sfx.playShowdown();
+      }, 900);
+      return () => window.clearTimeout(timer);
+    }
+
+    if (cinematicStage === "impact") {
+      const timer = window.setTimeout(() => setCinematicStage("score"), 520);
+      return () => window.clearTimeout(timer);
+    }
+
+    if (cinematicStage === "score") {
+      if (scoredClashIndex !== clashIndex) {
+        setScoredClashIndex(clashIndex);
+        if (activeDuel.winner === "p1") {
+          setP1CinematicScore((score) => score + 1);
+        } else if (activeDuel.winner === "p2") {
+          setP2CinematicScore((score) => score + 1);
+        }
+      }
+
+      const timer = window.setTimeout(() => {
+        setClashIndex((index) => index + 1);
+        setCinematicStage("launch");
+      }, 1300);
+      return () => window.clearTimeout(timer);
+    }
+  }, [cinematicStage, clashIndex, gameMode, resultData?.battleReport, scoredClashIndex]);
 
   // Global States
   const [matchHistory, setMatchHistory] = useState<MatchHistory[]>([]);
@@ -447,6 +579,14 @@ export default function App() {
     (excludes: string[], animes: string[], slots: SlottedTeam) => Promise<void>
   >(async () => {});
 
+  const resetCinematicClash = useCallback(() => {
+    setCinematicStage("hidden");
+    setClashIndex(0);
+    setScoredClashIndex(-1);
+    setP1CinematicScore(0);
+    setP2CinematicScore(0);
+  }, []);
+
   useEffect(() => { onlineRoomIdRef.current = onlineRoomId; }, [onlineRoomId]);
   useEffect(() => { onlineSideRef.current = onlineSide; }, [onlineSide]);
   useEffect(() => { gameModeRef.current = gameMode; }, [gameMode]);
@@ -462,9 +602,10 @@ export default function App() {
     setIsWaitingForOpponent(false);
     setOnlineSide(null);
     onlineSideRef.current = null;
+    resetCinematicClash();
     setView("landing");
     setIsDeployModalOpen(false);
-  }, []);
+  }, [resetCinematicClash]);
 
   const ensurePusher = useCallback(async (playerName: string) => {
     if (pusherRef.current) return pusherRef.current;
@@ -578,6 +719,7 @@ export default function App() {
       setExcludedIds([]);
       setMustPick(false);
       setResultData(null);
+      resetCinematicClash();
       setView("draft");
       setIsDeployModalOpen(false);
       importStarterAllAnimeCasts().catch(() => {});
@@ -603,7 +745,14 @@ export default function App() {
       if (state.mustPick !== undefined) setMustPick(state.mustPick);
       if (state.view !== undefined) setView(state.view);
       if (state.loadingResult !== undefined) setLoadingResult(state.loadingResult);
-      if (statsMatch(state.resultData)) setResultData(state.resultData);
+      if (statsMatch(state.resultData)) {
+        setResultData(state.resultData);
+        setCinematicStage("intro");
+        setClashIndex(0);
+        setScoredClashIndex(-1);
+        setP1CinematicScore(0);
+        setP2CinematicScore(0);
+      }
     });
 
     channel.bind("client-room-cancelled", () => {
@@ -644,6 +793,7 @@ export default function App() {
       setExcludedIds([]);
       setMustPick(false);
       setResultData(null);
+      resetCinematicClash();
       setView("draft");
       setIsDeployModalOpen(false);
       importStarterAllAnimeCasts().catch(() => {});
@@ -768,6 +918,7 @@ export default function App() {
       setExcludedIds([]);
       setMustPick(false);
       setResultData(null);
+      resetCinematicClash();
       setView("draft");
       setIsDeployModalOpen(false);
 
@@ -835,6 +986,7 @@ export default function App() {
     setExcludedIds([]);
     setMustPick(false);
     setResultData(null);
+    resetCinematicClash();
     setIsDeployModalOpen(false);
 
     // Resolve the final active anime list ONCE here and pass it through
@@ -1256,11 +1408,10 @@ export default function App() {
     team1Slots: SlottedTeam = p1Slots,
     team2Slots: SlottedTeam = p2Slots
   ) => {
-    setView("results");
     setLoadingResult(true);
     sfx.playShowdown();
     if (gameMode === "online-2p") {
-      syncGameState({ view: "results", loadingResult: true });
+      syncGameState({ loadingResult: true });
     }
 
     try {
@@ -1280,9 +1431,16 @@ export default function App() {
       if (res.ok) {
         const stats = await res.json();
         setResultData(stats);
-        sfx.playVictory();
+        
+        // Start cinematic sequence
+        setCinematicStage("intro");
+        setClashIndex(0);
+        setScoredClashIndex(-1);
+        setP1CinematicScore(0);
+        setP2CinematicScore(0);
+        
         if (gameMode === "online-2p") {
-          syncGameState({ resultData: stats, view: "results", loadingResult: false });
+          syncGameState({ resultData: stats, loadingResult: false });
         }
 
         await fetch(`${API_BASE}/api/draft/save`, {
@@ -1598,6 +1756,7 @@ export default function App() {
                       onSelectFeud={() => setView("feud")}
                       onSelectGuessWho={() => setView("guesswho")}
                       onSelectParty={() => setView("party")}
+                      onOpenAbout={() => setShowAbout(true)}
                     />
                   ) : (
                     <div className="pt-4">
@@ -2156,7 +2315,7 @@ export default function App() {
                 isMobileOnlineDraft ? (
                   <div className="flex min-h-0 w-full flex-1 flex-col gap-1.5 overflow-hidden touch-none">
                     <div className="h-[54px] w-full flex-shrink-0 px-1">
-                      <TeamSlots
+                      <TeamSlots fitPreviews={fitPreviews}
                         playerName={opponentOnlineName}
                         slots={opponentOnlineSlots}
                         skipUsed={opponentOnlineSkipUsed}
@@ -2182,7 +2341,7 @@ export default function App() {
                       </div>
 
                       <div className="min-h-0 min-w-[136px] overflow-hidden">
-                        <TeamSlots
+                        <TeamSlots fitPreviews={fitPreviews}
                           playerName={ownOnlineName}
                           slots={ownOnlineSlots}
                           skipUsed={ownOnlineSkipUsed}
@@ -2202,7 +2361,7 @@ export default function App() {
                   {(gameMode === "online-2p" || gameMode === "vs-ai") && (
                     <div className="w-full flex justify-center px-4 animate-fadeInDown">
                       <div className="w-full max-w-md">
-                        <TeamSlots
+                        <TeamSlots fitPreviews={fitPreviews}
                           playerName={gameMode === "vs-ai" ? "Smart AI" : (onlineSide === "p2" ? player1Name : player2Name)}
                           isAI={gameMode === "vs-ai"}
                           slots={onlineSide === "p2" ? p1Slots : p2Slots}
@@ -2219,7 +2378,7 @@ export default function App() {
                     {/* Left Column: P1 in Local 2P mode */}
                     {gameMode === "local-2p" && (
                       <div className="w-20 sm:w-24 flex-shrink-0 flex flex-col justify-self-stretch animate-fadeInLeft">
-                        <TeamSlots
+                        <TeamSlots fitPreviews={fitPreviews}
                           playerName={player1Name}
                           slots={p1Slots}
                           skipUsed={p1SkipUsed}
@@ -2255,7 +2414,7 @@ export default function App() {
 
                     {/* Right Column: Player or P2 Slots */}
                     <div className="w-20 sm:w-24 flex-shrink-0 flex flex-col justify-self-stretch animate-fadeInRight">
-                      <TeamSlots
+                      <TeamSlots fitPreviews={fitPreviews}
                         playerName={gameMode === "local-2p" ? player2Name : (onlineSide === "p2" ? player2Name : player1Name)}
                         slots={gameMode === "local-2p" ? p2Slots : (onlineSide === "p2" ? p2Slots : p1Slots)}
                         skipUsed={gameMode === "local-2p" ? p2SkipUsed : (onlineSide === "p2" ? p2SkipUsed : p1SkipUsed)}
@@ -2275,7 +2434,7 @@ export default function App() {
                 <div className="grid lg:grid-cols-12 gap-6 items-stretch">
                   {/* Left: P1 Roster */}
                   <div className="lg:col-span-3 flex flex-col justify-self-stretch">
-                    <TeamSlots
+                    <TeamSlots fitPreviews={fitPreviews}
                       playerName={player1Name}
                       slots={p1Slots}
                       skipUsed={p1SkipUsed}
@@ -2296,7 +2455,7 @@ export default function App() {
 
                   {/* Right: P2 Roster */}
                   <div className="lg:col-span-3 flex flex-col justify-self-stretch">
-                    <TeamSlots
+                    <TeamSlots fitPreviews={fitPreviews}
                       playerName={player2Name}
                       isAI={gameMode === "vs-ai"}
                       slots={p2Slots}
@@ -2323,6 +2482,187 @@ export default function App() {
                   />
                 )}
               </AnimatePresence>
+
+              {/* CINEMATIC CLASH OVERLAY */}
+              <AnimatePresence>
+                {cinematicStage !== "hidden" && resultData?.battleReport && (
+                  (() => {
+                    const duels = getCinematicDuels(resultData.battleReport.duels);
+                    const duel = duels[clashIndex];
+                    const p1Character = duel ? findCharacterForDuel(p1Slots, duel.role, duel.p1Name) : null;
+                    const p2Character = duel ? findCharacterForDuel(p2Slots, duel.role, duel.p2Name) : null;
+                    const p1Wins = duel?.winner === "p1";
+                    const p2Wins = duel?.winner === "p2";
+                    const isDraw = duel?.winner === "draw";
+                    const showMath = cinematicStage === "impact" || cinematicStage === "score";
+
+                    return (
+                      <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{
+                          opacity: 1,
+                          x: cinematicStage === "impact" ? [0, -8, 7, -5, 4, 0] : 0,
+                        }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: cinematicStage === "impact" ? 0.28 : 0.35 }}
+                        className="absolute inset-0 z-50 overflow-hidden rounded-3xl border border-white/10 bg-black/85 backdrop-blur-sm"
+                      >
+                        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(250,204,21,0.18),transparent_34%),linear-gradient(90deg,rgba(0,229,255,0.11),transparent,rgba(16,185,129,0.12))]" />
+
+                        <div className="absolute top-3 left-3 right-3 z-20 grid grid-cols-[1fr_auto_1fr] items-center gap-2 rounded-2xl border border-white/10 bg-black/60 p-2 font-mono shadow-2xl sm:top-5 sm:left-8 sm:right-8 sm:p-3">
+                          <div className={`rounded-xl border px-3 py-2 ${cinematicStage === "score" && p1Wins ? "border-emerald-300/50 bg-emerald-400/15 text-emerald-200" : "border-white/10 text-white"}`}>
+                            <p className="truncate text-[9px] uppercase tracking-widest text-slate-400">{player1Name}</p>
+                            <motion.p key={`p1-score-${p1CinematicScore}`} initial={{ scale: 1.5 }} animate={{ scale: 1 }} className="text-3xl font-black">{p1CinematicScore}</motion.p>
+                            <p className="text-[8px] uppercase tracking-widest text-slate-500">Point Bank</p>
+                          </div>
+                          <div className="text-center">
+                            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-amber-300">Role Clash</p>
+                            <p className="mt-1 text-[9px] uppercase tracking-widest text-slate-500">{Math.min(clashIndex + 1, duels.length)} / {duels.length}</p>
+                          </div>
+                          <div className={`rounded-xl border px-3 py-2 text-right ${cinematicStage === "score" && p2Wins ? "border-emerald-300/50 bg-emerald-400/15 text-emerald-200" : "border-white/10 text-white"}`}>
+                            <p className="truncate text-[9px] uppercase tracking-widest text-slate-400">{player2Name}</p>
+                            <motion.p key={`p2-score-${p2CinematicScore}`} initial={{ scale: 1.5 }} animate={{ scale: 1 }} className="text-3xl font-black">{p2CinematicScore}</motion.p>
+                            <p className="text-[8px] uppercase tracking-widest text-slate-500">Point Bank</p>
+                          </div>
+                        </div>
+
+                        {cinematicStage === "intro" && (
+                          <div className="relative z-10 flex h-full flex-col items-center justify-center text-center">
+                            <motion.h2 initial={{ scale: 0.55, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="text-4xl font-black uppercase tracking-tighter text-white sm:text-6xl">
+                              Battle Commence
+                            </motion.h2>
+                            <p className="mt-3 font-mono text-xs uppercase tracking-[0.25em] text-amber-300">Original role-duel logic engaged</p>
+                          </div>
+                        )}
+
+                        {duel && cinematicStage !== "intro" && (
+                          <div className="relative z-10 flex h-full flex-col items-center justify-center gap-6 px-4 pt-24 text-center">
+                            <div>
+                              <h2 className="text-xl font-black uppercase tracking-widest text-white sm:text-3xl">{duel.label} Duel</h2>
+                              <p className="mt-1 text-[10px] font-mono uppercase tracking-widest text-slate-400">
+                                {duel.p1Suitability ?? "Fit"} x{(duel.p1FitMultiplier ?? 1).toFixed(2)} vs {duel.p2Suitability ?? "Fit"} x{(duel.p2FitMultiplier ?? 1).toFixed(2)}
+                              </p>
+                            </div>
+
+                            <div className="relative flex w-full max-w-3xl items-center justify-center">
+                              <motion.div
+                                key={`p1-${duel.role}-${clashIndex}`}
+                                initial={{ x: -360, y: 20, rotate: -10, scale: 0.82 }}
+                                animate={{
+                                  x: cinematicStage === "launch" ? -110 : cinematicStage === "impact" ? -18 : p1Wins ? -210 : isDraw ? -72 : -295,
+                                  y: cinematicStage === "score" && p1Wins ? -250 : cinematicStage === "score" && !p1Wins ? 90 : 0,
+                                  rotate: cinematicStage === "impact" ? -2 : p1Wins ? -8 : -16,
+                                  scale: cinematicStage === "score" && p1Wins ? 0.64 : cinematicStage === "score" ? 0.72 : 1,
+                                  opacity: cinematicStage === "score" && p2Wins ? 0.25 : 1,
+                                }}
+                                transition={{ duration: cinematicStage === "launch" ? 0.9 : 0.48, ease: [0.2, 0.8, 0.2, 1] }}
+                                className={`relative h-56 w-36 overflow-hidden rounded-2xl border bg-neutral-950 shadow-2xl sm:h-64 sm:w-44 ${cinematicStage === "score" && p1Wins ? "border-emerald-300 shadow-[0_0_42px_rgba(52,211,153,0.34)]" : "border-nexus-blue/50"}`}
+                              >
+                                {p1Character && (
+                                  <CharacterImage url={p1Character.image} fallbackUrl={p1Character.malFallbackUrl} name={p1Character.name} themeColor={p1Character.themeColor} className="h-full w-full object-cover object-top" />
+                                )}
+                                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black via-black/75 to-transparent p-3 text-left">
+                                  <p className="truncate text-sm font-black uppercase text-white">{duel.p1Name}</p>
+                                  <p className="font-mono text-[10px] uppercase text-nexus-cyan">{duel.p1Suitability ?? "Fit"} {duel.p1FitScore ?? 0}</p>
+                                  {showMath && (
+                                    <motion.p initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="font-mono text-xs font-black text-amber-300">
+                                      {duel.p1BaseScore ?? duel.p1Score} -&gt; {duel.p1Score}
+                                    </motion.p>
+                                  )}
+                                </div>
+                              </motion.div>
+
+                              <AnimatePresence>
+                                {cinematicStage === "impact" && (
+                                  <motion.div
+                                    initial={{ scale: 0.2, opacity: 0 }}
+                                    animate={{ scale: 1.35, opacity: 1 }}
+                                    exit={{ scale: 1.8, opacity: 0 }}
+                                    className="pointer-events-none absolute z-30 flex h-44 w-44 items-center justify-center rounded-full bg-amber-300/25 shadow-[0_0_90px_rgba(250,204,21,0.65)]"
+                                  >
+                                    <div className="h-24 w-1 rotate-45 bg-white shadow-[0_0_24px_white]" />
+                                    <div className="absolute h-24 w-1 -rotate-45 bg-cyan-200 shadow-[0_0_24px_rgba(103,232,249,0.9)]" />
+                                  </motion.div>
+                                )}
+                              </AnimatePresence>
+
+                              <motion.div
+                                key={`p2-${duel.role}-${clashIndex}`}
+                                initial={{ x: 360, y: -20, rotate: 10, scale: 0.82 }}
+                                animate={{
+                                  x: cinematicStage === "launch" ? 110 : cinematicStage === "impact" ? 18 : p2Wins ? 210 : isDraw ? 72 : 295,
+                                  y: cinematicStage === "score" && p2Wins ? -250 : cinematicStage === "score" && !p2Wins ? -90 : 0,
+                                  rotate: cinematicStage === "impact" ? 2 : p2Wins ? 8 : 16,
+                                  scale: cinematicStage === "score" && p2Wins ? 0.64 : cinematicStage === "score" ? 0.72 : 1,
+                                  opacity: cinematicStage === "score" && p1Wins ? 0.25 : 1,
+                                }}
+                                transition={{ duration: cinematicStage === "launch" ? 0.9 : 0.48, ease: [0.2, 0.8, 0.2, 1] }}
+                                className={`relative h-56 w-36 overflow-hidden rounded-2xl border bg-neutral-950 shadow-2xl sm:h-64 sm:w-44 ${cinematicStage === "score" && p2Wins ? "border-emerald-300 shadow-[0_0_42px_rgba(52,211,153,0.34)]" : "border-emerald-400/50"}`}
+                              >
+                                {p2Character && (
+                                  <CharacterImage url={p2Character.image} fallbackUrl={p2Character.malFallbackUrl} name={p2Character.name} themeColor={p2Character.themeColor} className="h-full w-full object-cover object-top" />
+                                )}
+                                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black via-black/75 to-transparent p-3 text-right">
+                                  <p className="truncate text-sm font-black uppercase text-white">{duel.p2Name}</p>
+                                  <p className="font-mono text-[10px] uppercase text-emerald-300">{duel.p2Suitability ?? "Fit"} {duel.p2FitScore ?? 0}</p>
+                                  {showMath && (
+                                    <motion.p initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="font-mono text-xs font-black text-amber-300">
+                                      {duel.p2BaseScore ?? duel.p2Score} -&gt; {duel.p2Score}
+                                    </motion.p>
+                                  )}
+                                </div>
+                              </motion.div>
+                            </div>
+
+                            <AnimatePresence mode="wait">
+                              {cinematicStage === "score" && (
+                                <motion.div
+                                  key={`${duel.role}-winner-text`}
+                                  initial={{ y: 16, opacity: 0, scale: 0.9 }}
+                                  animate={{ y: 0, opacity: 1, scale: 1 }}
+                                  exit={{ opacity: 0 }}
+                                  className="rounded-2xl border border-white/10 bg-black/55 px-5 py-3 shadow-2xl"
+                                >
+                                  <p className="text-xl font-black uppercase text-white">
+                                    {duel.winner === "draw" ? "Draw Clash" : `${duel.winner === "p1" ? duel.p1Name : duel.p2Name} wins`}
+                                  </p>
+                                  <p className="mt-1 max-w-lg text-[10px] font-mono uppercase tracking-widest text-slate-400">{duel.detail}</p>
+                                </motion.div>
+                              )}
+                            </AnimatePresence>
+                          </div>
+                        )}
+
+                        {cinematicStage === "final" && (
+                          <div className="relative z-10 flex h-full flex-col items-center justify-center text-center">
+                            <motion.h2 initial={{ scale: 0.85, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="text-4xl font-black uppercase text-white">
+                              {resultData.winnerId === "draw" ? "Final Clash Draw" : `${resultData.winner} Wins`}
+                            </motion.h2>
+                            <p className="mt-3 font-mono text-xs uppercase tracking-[0.25em] text-amber-300">
+                              Final battle score {resultData.player1Power} - {resultData.player2Power}
+                            </p>
+                          </div>
+                        )}
+
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setCinematicStage("hidden");
+                            setView("results");
+                            if (gameMode === "online-2p") {
+                              syncGameState({ view: "results" });
+                            }
+                          }}
+                          className="absolute bottom-4 right-4 z-30 rounded-xl border border-white/10 bg-white/10 px-4 py-2 text-[10px] font-black uppercase tracking-widest text-slate-300 transition hover:border-white/25 hover:text-white"
+                        >
+                          Skip Cinematic
+                        </button>
+                      </motion.div>
+                    );
+                  })()
+                )}
+              </AnimatePresence>
+
             </motion.div>
           )}
 
@@ -2380,6 +2720,16 @@ export default function App() {
                       )}
                     </div>
 
+                    {resultData.mvp && (
+                      <div className="flex flex-col items-center mt-2 p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl max-w-sm mx-auto">
+                        <span className="text-[10px] font-mono font-black text-amber-500 uppercase tracking-widest mb-1">Match MVP</span>
+                        <span className="text-xl font-black text-white">{resultData.mvp.name}</span>
+                        <span className="text-[9px] font-mono text-amber-400/70 mt-1 uppercase text-center">
+                          {resultData.mvpReason ?? resultData.mvpAnalysis?.reason ?? "Best role fit plus highest duel impact."}
+                        </span>
+                      </div>
+                    )}
+
                     <div className="grid grid-cols-3 max-w-md mx-auto items-center py-4 bg-neutral-900/40 rounded-2xl border border-white/5 font-mono">
                       <div className="text-center">
                         <p className="text-[9px] text-neutral-400 leading-none truncate">{player1Name}</p>
@@ -2414,7 +2764,12 @@ export default function App() {
                                 <div className={`min-w-0 ${duel.winner === "p1" ? "text-emerald-300" : "text-slate-400"}`}>
                                   <p className="truncate text-[10px] font-bold">{duel.p1Name}</p>
                                   <p className="text-sm font-black">{duel.p1Score}</p>
-                                  <p className="text-[8px] font-mono uppercase text-slate-600">Fit {duel.p1FitScore ?? 0}</p>
+                                  <p className="text-[8px] font-mono uppercase text-slate-600">
+                                    {duel.p1Suitability ?? "Fit"} {duel.p1FitScore ?? 0} x{(duel.p1FitMultiplier ?? 1).toFixed(2)}
+                                  </p>
+                                  <p className="text-[8px] font-mono uppercase text-slate-700">
+                                    Base {duel.p1BaseScore ?? duel.p1Score} -&gt; Final {duel.p1Score}
+                                  </p>
                                 </div>
                                 <div className="text-center">
                                   <p className="text-[8px] font-mono font-black uppercase tracking-widest text-slate-500">{duel.label}</p>
@@ -2423,7 +2778,12 @@ export default function App() {
                                 <div className={`min-w-0 text-right ${duel.winner === "p2" ? "text-emerald-300" : "text-slate-400"}`}>
                                   <p className="truncate text-[10px] font-bold">{duel.p2Name}</p>
                                   <p className="text-sm font-black">{duel.p2Score}</p>
-                                  <p className="text-[8px] font-mono uppercase text-slate-600">Fit {duel.p2FitScore ?? 0}</p>
+                                  <p className="text-[8px] font-mono uppercase text-slate-600">
+                                    {duel.p2Suitability ?? "Fit"} {duel.p2FitScore ?? 0} x{(duel.p2FitMultiplier ?? 1).toFixed(2)}
+                                  </p>
+                                  <p className="text-[8px] font-mono uppercase text-slate-700">
+                                    Base {duel.p2BaseScore ?? duel.p2Score} -&gt; Final {duel.p2Score}
+                                  </p>
                                 </div>
                               </div>
                             ))}
@@ -2737,10 +3097,10 @@ export default function App() {
       {/* FOOTER */}
       {!(isMobile && view === "draft") && (
         <footer className="border-t border-neutral-900 bg-neutral-950/60 backdrop-blur-md py-4 px-6 text-center text-[10px] font-mono text-neutral-500 flex flex-col sm:flex-row justify-between items-center max-w-7xl w-full mx-auto gap-2 mt-auto">
-          <span>(c) 2026 ANIME BATTLE. ALL RIGHTS RESERVED.</span>
+          <span>© 2026 ANIME BATTLE. ALL RIGHTS RESERVED.</span>
           <span 
             onClick={() => setShowAbout(true)}
-            className="text-violet-400 hover:text-nexus-cyan transition-colors cursor-pointer select-none font-bold"
+            className="text-[#00e5ff] hover:text-[#60efff] drop-shadow-[0_0_12px_rgba(0,229,255,0.6)] transition-all cursor-pointer select-none font-bold tracking-wider"
             title="Click to view Creator Card"
           >
             MADE FOR ANIME ENTHUSIASTS WORLDWIDE

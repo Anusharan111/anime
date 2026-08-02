@@ -1,5 +1,6 @@
 class SoundEffects {
   private ctx: AudioContext | null = null;
+  muted = false;
 
   private initCtx() {
     try {
@@ -18,6 +19,7 @@ class SoundEffects {
    * Play a bright, positive double chime for correct answers
    */
   playCorrect() {
+    if (this.muted) return;
     this.initCtx();
     if (!this.ctx) return;
     const now = this.ctx.currentTime;
@@ -40,6 +42,7 @@ class SoundEffects {
    * Play a harsh, low buzzer sound for wrong guesses/strikes
    */
   playWrong() {
+    if (this.muted) return;
     this.initCtx();
     if (!this.ctx) return;
     const now = this.ctx.currentTime;
@@ -62,6 +65,7 @@ class SoundEffects {
    * Play a positive sci-fi rising sweep for draft clicks
    */
   playSelect() {
+    if (this.muted) return;
     this.initCtx();
     if (!this.ctx) return;
     const now = this.ctx.currentTime;
@@ -84,6 +88,7 @@ class SoundEffects {
    * Play a futuristic falling sweep for skips or cancels
    */
   playSkip() {
+    if (this.muted) return;
     this.initCtx();
     if (!this.ctx) return;
     const now = this.ctx.currentTime;
@@ -106,6 +111,7 @@ class SoundEffects {
    * Play an upbeat triumphant fanfare for round/game victories
    */
   playVictory() {
+    if (this.muted) return;
     this.initCtx();
     if (!this.ctx) return;
     const now = this.ctx.currentTime;
@@ -130,6 +136,7 @@ class SoundEffects {
    * Play a dramatic bass drop or showdown rumble sound
    */
   playShowdown() {
+    if (this.muted) return;
     this.initCtx();
     if (!this.ctx) return;
     const now = this.ctx.currentTime;
@@ -152,6 +159,7 @@ class SoundEffects {
    * Play a fast chiptune click flutter representing card spinning
    */
   playCardSpin() {
+    if (this.muted) return;
     this.initCtx();
     if (!this.ctx) return;
     const now = this.ctx.currentTime;
@@ -173,6 +181,7 @@ class SoundEffects {
    * Play different audio cues based on the rarity of decrypted character card
    */
   playReveal(rarity: "Common" | "Rare" | "Epic" | "Legendary") {
+    if (this.muted) return;
     this.initCtx();
     if (!this.ctx) return;
     const now = this.ctx.currentTime;
@@ -251,4 +260,35 @@ if (typeof window !== "undefined") {
   window.addEventListener("click", unlock);
   window.addEventListener("keydown", unlock);
   window.addEventListener("touchstart", unlock);
+}
+
+export function playSound(name: string) {
+  if (sfx.muted) return;
+  switch (name) {
+    case "click":
+      sfx.playSelect();
+      break;
+    case "success":
+      sfx.playCorrect();
+      break;
+    case "error":
+      sfx.playWrong();
+      break;
+    case "victory":
+      sfx.playVictory();
+      break;
+    case "skip":
+      sfx.playSkip();
+      break;
+    default:
+      sfx.playSelect();
+  }
+}
+
+export function stopMusic() {
+  // No ambient background music loop is currently playing; retained for API parity.
+}
+
+export function toggleMute(muted: boolean) {
+  sfx.muted = muted;
 }

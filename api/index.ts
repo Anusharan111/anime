@@ -197,6 +197,24 @@ function getRoleFitScore(character: Character, role: RoleId): number {
   return Math.round(fitScore);
 }
 
+function getRoleSuitabilityLabel(fitScore: number) {
+  if (fitScore >= 92) return "Perfect Fit";
+  if (fitScore >= 82) return "Strong Fit";
+  if (fitScore >= 70) return "Stable Fit";
+  if (fitScore >= 58) return "Weak Fit";
+  return "Bad Fit";
+}
+
+function getRoleFitMultiplier(fitScore: number) {
+  if (fitScore >= 94) return 1.24;
+  if (fitScore >= 86) return 1.14;
+  if (fitScore >= 76) return 1.04;
+  if (fitScore >= 66) return 0.94;
+  if (fitScore >= 56) return 0.82;
+  if (fitScore >= 46) return 0.68;
+  return 0.52;
+}
+
 function getRoleCombatBreakdown(character: Character, role: RoleId) {
   const { strength, speed, iq, defense, magic } = character.stats;
   const roleScore = {
@@ -208,15 +226,20 @@ function getRoleCombatBreakdown(character: Character, role: RoleId) {
     support_2: strength * 0.24 + speed * 0.06 + iq * 0.16 + defense * 0.06 + magic * 0.48,
   }[role];
   const fitScore = getRoleFitScore(character, role);
-  const fitAdjustment = Math.round((fitScore - 60) * 0.55);
-  const rawPowerBonus = Math.round(character.overallPower * 0.08);
+  const fitMultiplier = getRoleFitMultiplier(fitScore);
+  const fitAdjustment = Math.round((fitMultiplier - 1) * 100);
+  const rawPowerBonus = Math.round(character.overallPower * 0.065);
   const rarityBonus = RARITY_BONUS[character.rarity];
-  const score = Math.max(1, Math.round(roleScore * 1.45 + rawPowerBonus + rarityBonus + fitAdjustment));
+  const baseScore = Math.round(roleScore * 1.35 + rawPowerBonus + rarityBonus);
+  const score = Math.max(1, Math.round(baseScore * fitMultiplier));
 
   return {
     score,
+    baseScore,
     fitScore,
+    fitMultiplier,
     fitAdjustment,
+    suitability: getRoleSuitabilityLabel(fitScore),
   };
 }
 
@@ -241,6 +264,35 @@ function calculateBalanceBonus(stats: ReturnType<typeof calculateStats>) {
 
 function calculateRarityBonus(team: Character[]) {
   return team.reduce((total, character) => total + RARITY_BONUS[character.rarity], 0);
+}
+
+function calculateRoleSynergyBonuses(roster: Record<RoleId, Character | null>) {
+  const captain = roster.captain;
+  const viceCaptain = roster.vice_captain;
+  const defender = roster.tank;
+  const healer = roster.healer;
+  const speedSupport = roster.support_1;
+  const powerSupport = roster.support_2;
+
+  const captainCommand = captain && viceCaptain
+    ? Math.round(Math.min(30, Math.max(0, (captain.stats.iq + viceCaptain.stats.iq - 130) * 0.22)))
+    : 0;
+  const guardCore = defender && healer
+    ? Math.round(Math.min(32, Math.max(0, (defender.stats.defense + healer.stats.magic - 125) * 0.24)))
+    : 0;
+  const tempoCombo = speedSupport && captain
+    ? Math.round(Math.min(24, Math.max(0, (speedSupport.stats.speed + captain.stats.iq - 130) * 0.18)))
+    : 0;
+  const powerChain = powerSupport && viceCaptain
+    ? Math.round(Math.min(24, Math.max(0, (powerSupport.stats.magic + viceCaptain.stats.magic - 130) * 0.18)))
+    : 0;
+
+  return {
+    captainCommand,
+    guardCore,
+    tempoCombo,
+    powerChain,
+  };
 }
 
 function normalizeCharacterName(name: string) {
@@ -359,26 +411,39 @@ function buildBattleReport(
       p2Score,
       p1FitScore: p1Breakdown?.fitScore || 0,
       p2FitScore: p2Breakdown?.fitScore || 0,
+      p1BaseScore: p1Breakdown?.baseScore || 0,
+      p2BaseScore: p2Breakdown?.baseScore || 0,
+      p1FitMultiplier: p1Breakdown?.fitMultiplier || 0,
+      p2FitMultiplier: p2Breakdown?.fitMultiplier || 0,
+      p1Suitability: p1Breakdown?.suitability || "Empty",
+      p2Suitability: p2Breakdown?.suitability || "Empty",
+      p1FitAdjustment: p1Breakdown?.fitAdjustment || 0,
+      p2FitAdjustment: p2Breakdown?.fitAdjustment || 0,
       winner,
       detail: winner === "draw"
-        ? `Even clash. Role fit: ${p1Breakdown?.fitScore || 0} vs ${p2Breakdown?.fitScore || 0}`
-        : `${winner === "p1" ? p1Character?.name : p2Character?.name} wins the ${role.label} duel with better role fit (${winner === "p1" ? p1Breakdown?.fitScore : p2Breakdown?.fitScore})`,
+        ? `Even clash. ${p1Character?.name || "P1"} was a ${p1Breakdown?.suitability || "Empty"} (${p1Breakdown?.fitScore || 0}), ${p2Character?.name || "P2"} was a ${p2Breakdown?.suitability || "Empty"} (${p2Breakdown?.fitScore || 0}).`
+        : `${winner === "p1" ? p1Character?.name : p2Character?.name} wins the ${role.label} duel. Role fit changed the score: ${p1Character?.name || "P1"} ${p1Breakdown?.suitability || "Empty"} x${(p1Breakdown?.fitMultiplier || 0).toFixed(2)}, ${p2Character?.name || "P2"} ${p2Breakdown?.suitability || "Empty"} x${(p2Breakdown?.fitMultiplier || 0).toFixed(2)}.`,
     };
   });
 
+  const p1Synergy = calculateRoleSynergyBonuses(p1Roster);
   const p1Bonuses = {
     teamPower: Math.round(p1Stats.overall * 0.35),
     duelControl: p1DuelWins * 18,
     rarityEdge: calculateRarityBonus(player1Team),
     balance: calculateBalanceBonus(p1Stats),
     completeTeam: player1Team.length >= 6 ? 30 : 0,
+    ...Object.fromEntries(Object.entries(p1Synergy).filter(([, value]) => value > 0)),
   };
+  
+  const p2Synergy = calculateRoleSynergyBonuses(p2Roster);
   const p2Bonuses = {
     teamPower: Math.round(p2Stats.overall * 0.35),
     duelControl: p2DuelWins * 18,
     rarityEdge: calculateRarityBonus(player2Team),
     balance: calculateBalanceBonus(p2Stats),
     completeTeam: player2Team.length >= 6 ? 30 : 0,
+    ...Object.fromEntries(Object.entries(p2Synergy).filter(([, value]) => value > 0)),
   };
 
   const p1BattleScore = Math.round(
@@ -403,8 +468,10 @@ function buildBattleReport(
     },
     rules: [
       "Each role duels the matching enemy role.",
-      "Role score strongly rewards the stats that fit that slot. Raw power and rarity help, but bad role placement is punished.",
-      "Teams gain bonuses for duel wins, total power, rarity edge, balance, and filling all 6 roles.",
+      "Role suitability now multiplies each card's duel score. Great fits gain extra value, weak fits lose a real chunk of their power.",
+      "Raw power and rarity still help, but a powerful card in the wrong slot can score less than a weaker card placed correctly.",
+      "Teams gain synergy bonuses for smart pairings: Captain + Vice Captain IQ, Defender + Healer sustain, Captain + Speed Support tempo, and Vice Captain + Power Support energy.",
+      "Teams also gain bonuses for duel wins, total power, rarity edge, balance, and filling all 6 roles.",
       "Highest final battle score wins. Exact ties become a draw.",
     ],
   };
@@ -426,6 +493,55 @@ function findBattleMVP(
     const highestRole = ROLE_ORDER.find((role) => activeSlots?.[role.id]?.id === highest.id)?.id || "captain";
     return getRoleCombatScore(current, currentRole) > getRoleCombatScore(highest, highestRole) ? current : highest;
   }, activeTeam[0]);
+}
+
+function getBattleMVPAnalysis(
+  player1Slots: BattleSlots | undefined,
+  player2Slots: BattleSlots | undefined,
+  team1: Character[],
+  team2: Character[],
+  winnerTeam: BattleSide
+) {
+  const p1Roster = getSlotsFromTeam(player1Slots, team1);
+  const p2Roster = getSlotsFromTeam(player2Slots, team2);
+  const candidates = ROLE_ORDER.flatMap((role) => {
+    const entries: Array<{ side: Exclude<BattleSide, "draw">; character: Character; role: RoleId; label: string }> = [];
+    const p1Character = p1Roster[role.id];
+    const p2Character = p2Roster[role.id];
+
+    if ((winnerTeam === "p1" || winnerTeam === "draw") && p1Character) {
+      entries.push({ side: "p1", character: p1Character, role: role.id, label: role.label });
+    }
+    if ((winnerTeam === "p2" || winnerTeam === "draw") && p2Character) {
+      entries.push({ side: "p2", character: p2Character, role: role.id, label: role.label });
+    }
+
+    return entries;
+  });
+
+  const fallback = findBattleMVP(player1Slots, player2Slots, team1, team2, winnerTeam);
+  const best = candidates.reduce((highest, current) => {
+    const currentBreakdown = getRoleCombatBreakdown(current.character, current.role);
+    const highestBreakdown = getRoleCombatBreakdown(highest.character, highest.role);
+    const currentValue = currentBreakdown.score + currentBreakdown.fitScore * 0.35;
+    const highestValue = highestBreakdown.score + highestBreakdown.fitScore * 0.35;
+    return currentValue > highestValue ? current : highest;
+  }, candidates[0] || { side: "p1" as const, character: fallback, role: "captain" as RoleId, label: "Captain" });
+
+  const breakdown = getRoleCombatBreakdown(best.character, best.role);
+
+  return {
+    character: best.character,
+    side: best.side,
+    role: best.role,
+    roleLabel: best.label,
+    score: breakdown.score,
+    baseScore: breakdown.baseScore,
+    fitScore: breakdown.fitScore,
+    fitMultiplier: breakdown.fitMultiplier,
+    suitability: breakdown.suitability,
+    reason: `${best.character.name} earned MVP as ${best.label}: ${breakdown.suitability} (${breakdown.fitScore} fit), ${breakdown.baseScore} base -> ${breakdown.score} final duel score.`,
+  };
 }
 
 // ---------------- API ENDPOINTS ----------------
@@ -868,7 +984,8 @@ app.post("/api/draft/calculate", async (req, res) => {
       winnerId = "p2";
     }
 
-    const mvpChar = findBattleMVP(player1Slots, player2Slots, player1Team, player2Team, winnerId);
+    const mvpAnalysis = getBattleMVPAnalysis(player1Slots, player2Slots, player1Team, player2Team, winnerId);
+    const mvpChar = mvpAnalysis.character;
 
     // Call Gemini API for Commentaries
     let commentary = "";
@@ -924,7 +1041,7 @@ app.post("/api/draft/calculate", async (req, res) => {
         
 The tactical engine resolved every role duel and team bonus. **${winnerName}** ${winnerId === "draw" ? "forced a complete draw" : "won through stronger role control, better stat fit, and cleaner team synergy"}.
         
-Final battle score: **${battleReport.p1BattleScore}** vs **${battleReport.p2BattleScore}**. MVP: **${mvpChar.name}**.`;
+Final battle score: **${battleReport.p1BattleScore}** vs **${battleReport.p2BattleScore}**. MVP: **${mvpChar.name}** - ${mvpAnalysis.reason}.`;
       }
     } else {
       commentary = `### Final Battle Resolved
@@ -933,7 +1050,7 @@ The draft moved into a six-role tactical battle: Captain, Vice Captain, Defender
       
 Final battle score: **${battleReport.p1BattleScore}** vs **${battleReport.p2BattleScore}**. ${winnerName === "Draw" ? "Both teams ended perfectly even." : `**${winnerName}** wins by controlling ${winnerId === "p1" ? battleReport.p1DuelWins : battleReport.p2DuelWins} role duels and stacking better battle bonuses.`}
 
-MVP: **${mvpChar.name}**.`;
+MVP: **${mvpChar.name}** - ${mvpAnalysis.reason}.`;
     }
 
     res.json({
@@ -944,6 +1061,8 @@ MVP: **${mvpChar.name}**.`;
       winner: winnerName,
       winnerId,
       mvp: mvpChar,
+      mvpReason: mvpAnalysis.reason,
+      mvpAnalysis,
       commentary,
       battleReport,
     });

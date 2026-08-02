@@ -16,6 +16,7 @@ interface LandingPageProps {
   onSelectFeud: () => void;
   onSelectGuessWho: () => void;
   onSelectParty: () => void;
+  onOpenAbout?: () => void;
 }
 
 const MODES = [
@@ -66,6 +67,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   onSelectFeud,
   onSelectGuessWho,
   onSelectParty,
+  onOpenAbout,
 }) => {
   const handlers = [onSelectBattle, onSelectFeud, onSelectGuessWho, onSelectParty];
 
@@ -129,8 +131,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       </main>
 
       <footer className="home-footer">
-        <span>(C) 2026 ANIME BATTLE. ALL RIGHTS RESERVED</span>
-        <span>MADE FOR ANIME ENTHUSIASTS WORLDWIDE</span>
+        <span>© 2026 ANIME BATTLE. ALL RIGHTS RESERVED.</span>
+        <span 
+          className="home-footer-right"
+          onClick={onOpenAbout}
+          title="Click to view Creator Card"
+        >
+          MADE FOR ANIME ENTHUSIASTS WORLDWIDE
+        </span>
       </footer>
     </div>
   );

@@ -2258,8 +2258,8 @@ export default function App() {
                         </div>
                       </div>
                     </div>
-                  )}
-                </>
+
+
               )}
             </motion.div>
           )}
@@ -2269,36 +2269,8 @@ export default function App() {
             <motion.div
               key="draft"
               initial={{ opacity: 0, scale: 0.98 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 1.02 }}
-              className={`${isMobileOnlineDraft ? "gap-1" : "space-y-2 sm:space-y-6"} flex flex-col h-full`}
-            >
-              {/* STAGE HEADER METRICS */}
-              <div className={`flex ${isMobileOnlineDraft ? "flex-row" : "flex-col sm:flex-row"} justify-between items-center nexus-glass border-nexus-blue/20 ${isMobileOnlineDraft ? "rounded-xl p-1.5 gap-1" : "rounded-2xl p-2 sm:p-5 gap-2 sm:gap-4"} relative overflow-hidden flex-shrink-0`}>
-                <div className="absolute inset-0 bg-nexus-blue/5 pointer-events-none" />
-                <div className={`flex items-center ${isMobileOnlineDraft ? "gap-2 min-w-0" : "gap-4"} relative z-10`}>
-                  <div className={`${isMobileOnlineDraft ? "px-2 py-1 text-[9px]" : "px-4 py-1.5 text-xs"} rounded-lg bg-nexus-blue text-white font-mono font-black shadow-[0_0_15px_rgba(30,144,255,0.4)] whitespace-nowrap`}>
-                    ROUND {round} / 6
-                  </div>
-                  <div className="min-w-0">
-                    <h3 className={`${isMobileOnlineDraft ? "text-[10px] tracking-wide truncate" : "text-base tracking-widest"} font-black uppercase text-white flex items-center gap-2`}>
-                      {activeTurn === "p1" ? (
-                  <div className="bg-red-500/10 border border-red-500/30 text-red-400 text-[10px] px-4 py-1.5 font-mono font-black rounded-lg animate-pulse flex items-center gap-2">
-                    <AlertCircle className="w-3 h-3" /> MANDATORY LOCK-IN: NO SKIPS REMAINING
-                  </div>
-                )}
-
-                <button
-                  onClick={() => setView("landing")}
-                  className={`${isMobileOnlineDraft ? "px-2 py-1 text-[8px] tracking-wide" : "px-4 py-2 text-[10px] tracking-widest"} font-mono font-black text-slate-500 hover:text-red-400 transition-colors uppercase rounded-lg border border-white/5 hover:border-red-400/20 whitespace-nowrap`}
-                >
-                  Terminate Mission
-                </button>
-              </div>
-
-              {/* THREE COLUMN DRAFT COVENANT */}
-              {isMobile ? (
-                isMobileOnlineDraft ? (
+              animate={{ opacity: 1, scale: 1 }}>
+            {isMobileOnlineDraft ? (
                   <div className="flex min-h-0 w-full flex-1 flex-col gap-1.5 overflow-hidden touch-none">
                     <div className="h-[54px] w-full flex-shrink-0 px-1">
                       <TeamSlots fitPreviews={fitPreviews}
@@ -2415,7 +2387,7 @@ export default function App() {
                     </div>
                   </div>
                 </div>
-                )
+                ) }
               ) : (
                 <div className="grid lg:grid-cols-12 gap-6 items-stretch">
                   {/* Left: P1 Roster */}

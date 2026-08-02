@@ -2258,9 +2258,7 @@ export default function App() {
                         </div>
                       </div>
                     </div>
-
-
-
+                </>
               )}
             </motion.div>
           )}
@@ -2467,7 +2465,7 @@ export default function App() {
                         className="absolute inset-0 z-50 overflow-hidden rounded-3xl border border-white/10 bg-black/85 backdrop-blur-sm"
                       >
                         <div className="absolute top-3 left-3 right-3 z-20 grid grid-cols-[1fr_auto_1fr] items-center gap-2 rounded-2xl border border-white/10 bg-black/60 p-2 font-mono shadow-2xl sm:top-5 sm:left-8 sm:right-8 sm:p-3">
-                          <div className={`rounded-xl border px-3 py-2 ${cinematicStage === "score" && p1Wins ? "border-emerald-300/50 bg-emerald-400/15 text-emerald-200" : "border-white/10 text-white"}`}>
+                          <div className={`rounded-xl border px-3 py-2 ${cinematicStage === "score" && p1Wins ? "border-amber-300/50 bg-amber-400/15 text-amber-200" : "border-white/10 text-white"}`}>
                             <p className="truncate text-[9px] uppercase tracking-widest text-slate-400">{player1Name}</p>
                             <motion.p key={`p1-score-${p1CinematicScore}`} initial={{ scale: 1.5 }} animate={{ scale: 1 }} className="text-3xl font-black">{p1CinematicScore}</motion.p>
                             <p className="text-[8px] uppercase tracking-widest text-slate-500">Point Bank</p>
@@ -2476,7 +2474,7 @@ export default function App() {
                             <p className="text-[10px] font-black uppercase tracking-[0.3em] text-amber-300">Role Clash</p>
                             <p className="mt-1 text-[9px] uppercase tracking-widest text-slate-500">{Math.min(clashIndex + 1, duels.length)} / {duels.length}</p>
                           </div>
-                          <div className={`rounded-xl border px-3 py-2 text-right ${cinematicStage === "score" && p2Wins ? "border-emerald-300/50 bg-emerald-400/15 text-emerald-200" : "border-white/10 text-white"}`}>
+                          <div className={`rounded-xl border px-3 py-2 text-right ${cinematicStage === "score" && p2Wins ? "border-amber-300/50 bg-amber-400/15 text-amber-200" : "border-white/10 text-white"}`}>
                             <p className="truncate text-[9px] uppercase tracking-widest text-slate-400">{player2Name}</p>
                             <motion.p key={`p2-score-${p2CinematicScore}`} initial={{ scale: 1.5 }} animate={{ scale: 1 }} className="text-3xl font-black">{p2CinematicScore}</motion.p>
                             <p className="text-[8px] uppercase tracking-widest text-slate-500">Point Bank</p>
@@ -2513,7 +2511,7 @@ export default function App() {
                                   opacity: cinematicStage === "score" && p2Wins ? 0.25 : 1,
                                 }}
                                 transition={{ duration: cinematicStage === "launch" ? 0.9 : 0.48, ease: [0.2, 0.8, 0.2, 1] }}
-                                className={`relative h-56 w-36 overflow-hidden rounded-2xl border bg-neutral-950 shadow-2xl sm:h-64 sm:w-44 ${cinematicStage === "score" && p1Wins ? "border-emerald-300 shadow-[0_0_42px_rgba(52,211,153,0.34)]" : "border-nexus-blue/50"}`}
+                                className={`relative h-56 w-36 overflow-hidden rounded-2xl border bg-neutral-950 shadow-2xl sm:h-64 sm:w-44 ${cinematicStage === "score" && p1Wins ? "border-amber-300 shadow-[0_0_42px_rgba(251,191,36,0.34)]" : "border-white/20"}`}
                               >
                                 {p1Character && (
                                   <CharacterImage url={p1Character.image} fallbackUrl={p1Character.malFallbackUrl} name={p1Character.name} themeColor={p1Character.themeColor} className="h-full w-full object-cover object-top" />
@@ -2554,14 +2552,14 @@ export default function App() {
                                   opacity: cinematicStage === "score" && p1Wins ? 0.25 : 1,
                                 }}
                                 transition={{ duration: cinematicStage === "launch" ? 0.9 : 0.48, ease: [0.2, 0.8, 0.2, 1] }}
-                                className={`relative h-56 w-36 overflow-hidden rounded-2xl border bg-neutral-950 shadow-2xl sm:h-64 sm:w-44 ${cinematicStage === "score" && p2Wins ? "border-emerald-300 shadow-[0_0_42px_rgba(52,211,153,0.34)]" : "border-white/10"}`}
+                                className={`relative h-56 w-36 overflow-hidden rounded-2xl border bg-neutral-950 shadow-2xl sm:h-64 sm:w-44 ${cinematicStage === "score" && p2Wins ? "border-amber-300 shadow-[0_0_42px_rgba(251,191,36,0.34)]" : "border-white/20"}`}
                               >
                                 {p2Character && (
                                   <CharacterImage url={p2Character.image} fallbackUrl={p2Character.malFallbackUrl} name={p2Character.name} themeColor={p2Character.themeColor} className="h-full w-full object-cover object-top" />
                                 )}
                                 <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black via-black/75 to-transparent p-3 text-right">
                                   <p className="truncate text-sm font-black uppercase text-white">{duel.p2Name}</p>
-                                  <p className="font-mono text-[10px] uppercase text-emerald-300">{duel.p2Suitability ?? "Fit"} {duel.p2FitScore ?? 0}</p>
+                                  <p className="font-mono text-[10px] uppercase text-nexus-cyan">{duel.p2Suitability ?? "Fit"} {duel.p2FitScore ?? 0}</p>
                                   {showMath && (
                                     <motion.p initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="font-mono text-xs font-black text-amber-300">
                                       {duel.p2BaseScore ?? duel.p2Score} -&gt; {duel.p2Score}
@@ -2718,7 +2716,7 @@ export default function App() {
                           <div className="space-y-2">
                             {resultData.battleReport.duels.map((duel) => (
                               <div key={duel.role} className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 rounded-xl border border-white/5 bg-white/[0.03] p-2.5">
-                                <div className={`min-w-0 ${duel.winner === "p1" ? "text-emerald-300" : "text-slate-400"}`}>
+                                <div className={`min-w-0 ${duel.winner === "p1" ? "text-amber-300" : "text-slate-400"}`}>
                                   <p className="truncate text-[10px] font-bold">{duel.p1Name}</p>
                                   <p className="text-sm font-black">{duel.p1Score}</p>
                                   <p className="text-[8px] font-mono uppercase text-slate-600">
@@ -2732,7 +2730,7 @@ export default function App() {
                                   <p className="text-[8px] font-mono font-black uppercase tracking-widest text-slate-500">{duel.label}</p>
                                   <p className="text-[9px] text-slate-600">VS</p>
                                 </div>
-                                <div className={`min-w-0 text-right ${duel.winner === "p2" ? "text-emerald-300" : "text-slate-400"}`}>
+                                <div className={`min-w-0 text-right ${duel.winner === "p2" ? "text-amber-300" : "text-slate-400"}`}>
                                   <p className="truncate text-[10px] font-bold">{duel.p2Name}</p>
                                   <p className="text-sm font-black">{duel.p2Score}</p>
                                   <p className="text-[8px] font-mono uppercase text-slate-600">

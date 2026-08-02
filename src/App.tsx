@@ -2283,20 +2283,6 @@ export default function App() {
                   <div className="min-w-0">
                     <h3 className={`${isMobileOnlineDraft ? "text-[10px] tracking-wide truncate" : "text-base tracking-widest"} font-black uppercase text-white flex items-center gap-2`}>
                       {activeTurn === "p1" ? (
-                        <><Swords className="w-4 h-4 text-nexus-cyan" /> {player1Name}'S DECISION</>
-                      ) : gameMode === "vs-ai" ? (
-                        <><Cpu className="w-4 h-4 text-nexus-purple animate-pulse" /> AI THINKING</>
-                      ) : (
-                        <><Swords className="w-4 h-4 text-fuchsia-400" /> {player2Name}'S DECISION</>
-                      )}
-                    </h3>
-                    <p className={`${isMobileOnlineDraft ? "hidden" : ""} text-[10px] font-mono text-nexus-cyan/60 font-bold uppercase tracking-widest`}>
-                      Battle frequency stable
-                    </p>
-                  </div>
-                </div>
-
-                {mustPick && (
                   <div className="bg-red-500/10 border border-red-500/30 text-red-400 text-[10px] px-4 py-1.5 font-mono font-black rounded-lg animate-pulse flex items-center gap-2">
                     <AlertCircle className="w-3 h-3" /> MANDATORY LOCK-IN: NO SKIPS REMAINING
                   </div>

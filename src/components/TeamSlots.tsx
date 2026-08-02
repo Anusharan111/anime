@@ -149,11 +149,9 @@ export default function TeamSlots({
                   ${layout === "compact-horizontal-top" ? 'w-10 h-10 sm:w-12 sm:h-12' : (isMobile ? (isLarge ? 'w-full h-[12.5vh] max-h-[78px] min-h-[54px]' : 'w-16 h-16 sm:w-20 sm:h-20') : 'w-11 h-11 sm:w-13 sm:h-13')}
                   ${isOccupied 
                     ? 'border-nexus-blue/40 bg-nexus-blue/10 shadow-[0_0_15px_rgba(30,144,255,0.1)]' 
-                    : canDrop || canTapPlace
-                      ? 'border-nexus-cyan animate-nexus-pulse bg-nexus-cyan/20 cursor-pointer scale-110 z-20 shadow-[0_0_20px_rgba(0,229,255,0.3)]' 
-                      : isInteractive
-                        ? 'border-white/20 bg-white/10 hover:border-nexus-cyan/40 hover:bg-white/15 cursor-pointer shadow-lg active:scale-95' 
-                        : 'border-white/5 bg-white/5 opacity-50'
+                    : isInteractive 
+                      ? 'border-white/20 bg-white/10 hover:border-nexus-cyan/40 hover:bg-white/15 cursor-pointer shadow-lg active:scale-95' 
+                      : 'border-white/5 bg-white/5 opacity-50'
                   }
                 `}
               >

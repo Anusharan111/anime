@@ -36,6 +36,8 @@ import AnimeGuessWhoGame from "./pages/AnimeGuessWhoGame";
 import AnimePartyGames from "./pages/AnimePartyGames";
 import LandingPage from "./LandingPage";
 import { sfx } from "./utils/audio";
+import { getRoleFitScore, getRoleSuitabilityLabel, getRoleFitMultiplier } from "./utils/roleUtils";
+import DraftView from "./components/DraftView";
 
 type ViewState = "landing" | "draft" | "results" | "feud" | "guesswho" | "party";
 type GameHubMode = "hub" | "battle";
@@ -216,37 +218,11 @@ const getBalancedCharacterPool = (
   return balancedPool.length >= 8 ? balancedPool : availableCharacters;
 };
 
-const getRoleFitScore = (character: Character, role: RoleId) => {
-  const { strength, speed, iq, defense, magic } = character.stats;
-  const fitScore = {
-    captain: (iq + strength + magic) / 3,
-    vice_captain: (iq + speed + magic) / 3,
-    tank: defense,
-    healer: (magic + iq + defense) / 3,
-    support_1: (speed + iq) / 2,
-    support_2: (magic + strength) / 2,
-  }[role];
 
-  return Math.round(fitScore);
-};
 
-const getRoleSuitabilityLabel = (fitScore: number) => {
-  if (fitScore >= 92) return "Perfect Fit";
-  if (fitScore >= 82) return "Strong Fit";
-  if (fitScore >= 70) return "Stable Fit";
-  if (fitScore >= 58) return "Weak Fit";
-  return "Bad Fit";
-};
 
-const getRoleFitMultiplier = (fitScore: number) => {
-  if (fitScore >= 94) return 1.24;
-  if (fitScore >= 86) return 1.14;
-  if (fitScore >= 76) return 1.04;
-  if (fitScore >= 66) return 0.94;
-  if (fitScore >= 56) return 0.82;
-  if (fitScore >= 46) return 0.68;
-  return 0.52;
-};
+
+
 
 type BattleDuel = BattleReport["duels"][number];
 
@@ -332,6 +308,7 @@ export default function App() {
   // --- Navigation History: pushState on view change, popstate to go back ---
   const isInitialRender = useRef(true);
   const isPopstateNavigation = useRef(false);
+  const winnerCalculatedRef = useRef(false);
 
   useEffect(() => {
     const state: AppHistoryState = { animeBattleInternal: true, view, selectedGameHubMode };
@@ -393,6 +370,12 @@ export default function App() {
       document.documentElement.style.height = previousHtmlHeight;
     };
   }, [isMobile, view]);
+
+  useEffect(() => {
+    if (view === "landing") {
+      window.scrollTo(0, 0);
+    }
+  }, [view]);
 
   // Result States
   const [loadingResult, setLoadingResult] = useState(false);
@@ -809,11 +792,15 @@ export default function App() {
     if (gameMode === "online-2p" && onlineSide === "p1") {
       const p1Full = Object.values(p1Slots).every(v => v !== null);
       const p2Full = Object.values(p2Slots).every(v => v !== null);
-      if (p1Full && p2Full && view === "draft") {
+      if (p1Full && p2Full && view === "draft" && !winnerCalculatedRef.current) {
+        winnerCalculatedRef.current = true;
         const team1 = Object.values(p1Slots).filter(Boolean) as Character[];
         const team2 = Object.values(p2Slots).filter(Boolean) as Character[];
         calculateWinner(team1, team2, p1Slots, p2Slots);
       }
+    } else {
+      // Reset when not in online P1 mode
+      winnerCalculatedRef.current = false;
     }
   }, [p1Slots, p2Slots, gameMode, onlineSide, view]);
 
@@ -1097,11 +1084,9 @@ export default function App() {
     sfx.playSelect();
 
     // Clean up character names to prevent duplicates matching different ID strings (e.g. mal-17 vs anilist-17 or different casing)
-    const normalizeName = (name: string) => name.toLowerCase().replace(/[^a-z0-9]/g, "");
-
     const pickedCharacters = [...Object.values(p1Slots), ...Object.values(p2Slots)].filter(Boolean) as Character[];
     const pickedIds = new Set(pickedCharacters.map((c) => c.id));
-    const pickedNames = new Set(pickedCharacters.map((c) => normalizeName(c.name)));
+    const pickedNames = new Set(pickedCharacters.map((c) => normalizeCharacterName(c.name)));
 
     // Resolve activeAnimes from current state
     const activeAnimes = category === "choose" ? [...selectedAnimes] : [];
@@ -1109,7 +1094,7 @@ export default function App() {
     const updatedExcludes = [...excludedIds, activeCharacter.id];
     
     // Check if duplicate ID or if duplicate normalized name exists in the drafted rosters
-    if (pickedIds.has(activeCharacter.id) || pickedNames.has(normalizeName(activeCharacter.name))) {
+    if (pickedIds.has(activeCharacter.id) || pickedNames.has(normalizeCharacterName(activeCharacter.name))) {
       setExcludedIds(updatedExcludes);
       pullNewCharacter(updatedExcludes, activeAnimes, activeSlots);
       if (gameMode === "online-2p") {
@@ -1561,14 +1546,13 @@ export default function App() {
                           }`}
                       >
                         <Zap className="w-3 h-3" /> TACTICAL SKIP {activeTurn === "p1" ? (p1SkipUsed ? "(OFFLINE)" : "(ACTIVE)") : (p2SkipUsed ? "(OFFLINE)" : "(ACTIVE)")}
-                      </button>
-                    </>
-                  )}
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-        ) : (
+</button>
+                      </> )}
+                  </motion.div>
+                )}
+</AnimatePresence>
+            </div>
+          ) : (
           <div className="flex flex-col items-center gap-3 sm:gap-4">
             <Loader2 className="w-10 h-10 sm:w-12 sm:h-12 text-nexus-blue animate-spin" />
             {gameMode === "online-2p" && activeTurn !== onlineSide ? (
@@ -1595,7 +1579,7 @@ export default function App() {
   const opponentOnlineName = ownOnlineSide === "p2" ? player1Name : player2Name;
 
   return (
-    <div className={`${isMobileDraft ? "h-[100dvh] overflow-hidden" : "min-h-screen overflow-x-hidden"} ${view === "landing" ? "bg-black" : "bg-[#050816]"} text-slate-100 flex flex-col justify-between font-sans relative selection:bg-nexus-cyan/30`}>
+    <div className={`${isMobileDraft ? "h-[100dvh] overflow-hidden" : "min-h-screen overflow-x-clip"} ${view === "landing" ? "bg-black" : "bg-[#050816]"} text-slate-100 flex flex-col justify-between font-sans relative selection:bg-nexus-cyan/30`}>
       {/* 🌌 Animated Background */}
       {view !== "landing" && (
         <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
@@ -1647,9 +1631,9 @@ export default function App() {
           {view === "landing" && (
             <motion.div
               key="landing"
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -15 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
               transition={{ duration: 0.4 }}
               className="space-y-12 relative"
             >
@@ -1999,7 +1983,7 @@ export default function App() {
                                           ))}
                                         {animeList.filter((a) => !animeSearchQuery.trim() || a.toLowerCase().includes(animeSearchQuery.toLowerCase())).length === 0 && (
                                           <p className="px-3.5 py-2 text-[10px] text-neutral-500 font-mono">No anime found matching "{animeSearchQuery}"</p>
-                                        )}
+)}
                                       </div>
                                     )}
                                     {selectedAnimes.length > 0 && (
@@ -2229,167 +2213,32 @@ export default function App() {
           )}
 
           {/* 2. DRAFTING ROOM VIEW */}
-          {view === "draft" && (
-            <motion.div
-              key="draft"
-              initial={{ opacity: 0, scale: 0.98 }}
-              animate={{ opacity: 1, scale: 1 }}>
-            {isMobileDraft ? (
-              isMobileOnlineDraft ? (
-                  <div className="flex min-h-0 w-full flex-1 flex-col gap-1.5 overflow-hidden touch-none">
-                    <div className="h-[54px] w-full flex-shrink-0 px-1">
-                      <TeamSlots
-                        playerName={opponentOnlineName}
-                        slots={opponentOnlineSlots}
-                        skipUsed={opponentOnlineSkipUsed}
-                        activeTurn={activeTurn !== ownOnlineSide}
-                        layout="compact-horizontal-top"
-                        isMobile={true}
-                      />
-                    </div>
-
-                    <div className="grid min-h-0 flex-1 grid-cols-[minmax(0,1fr)_38vw] gap-2 overflow-hidden">
-                      <div className="relative min-w-0 overflow-hidden rounded-2xl border border-nexus-blue/10 bg-black/20 p-1.5">
-                        <div className="absolute inset-0 pointer-events-none opacity-5">
-                          <div className="h-px w-full bg-nexus-cyan absolute top-1/4 animate-pulse" />
-                          <div className="h-px w-full bg-nexus-blue absolute top-3/4 animate-pulse delay-500" />
-                        </div>
-                        <div className="flex h-full min-h-0 flex-col items-center justify-center overflow-hidden">
-                          {renderDraftCardArea()}
-                          <div className="mt-1 flex flex-shrink-0 gap-3 rounded-full border border-white/5 bg-black/30 px-2 py-1 text-[7px] font-mono font-black uppercase tracking-wider text-slate-500">
-                            <span>P1 {p1SkipUsed ? "USED" : "SKIP"}</span>
-                            <span>P2 {p2SkipUsed ? "USED" : "SKIP"}</span>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="min-h-0 min-w-[136px] overflow-hidden">
-                        <TeamSlots
-                          playerName={ownOnlineName}
-                          slots={ownOnlineSlots}
-                          skipUsed={ownOnlineSkipUsed}
-                          activeTurn={activeTurn === ownOnlineSide}
-                          onSlotSelect={activeTurn === ownOnlineSide ? handleSlotSelect : undefined}
-                          isDraggingActive={isDraggingActive && activeTurn === ownOnlineSide}
-                          layout="compact-vertical"
-                          isMobile={true}
-                          isLarge={true}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                <div className="flex flex-col gap-1 sm:gap-2 w-full flex-1">
-                  {/* Top Area: Opponent in Online/AI mode */}
-                  {(gameMode === "online-2p" || gameMode === "vs-ai") && (
-                    <div className="w-full flex justify-center px-4 animate-fadeInDown">
-                      <div className="w-full max-w-md">
-                        <TeamSlots
-                          playerName={gameMode === "vs-ai" ? "Smart AI" : (onlineSide === "p2" ? player1Name : player2Name)}
-                          isAI={gameMode === "vs-ai"}
-                          slots={onlineSide === "p2" ? p1Slots : p2Slots}
-                          skipUsed={onlineSide === "p2" ? p1SkipUsed : p2SkipUsed}
-                          activeTurn={activeTurn === (onlineSide === "p2" ? "p1" : "p2")}
-                          layout="compact-horizontal-top"
-                          isMobile={true}
-                        />
-                      </div>
-                    </div>
-                  )}
-
-                  <div className="flex items-stretch justify-between gap-1.5 sm:gap-3 w-full flex-1">
-                    {/* Left Column: P1 in Local 2P mode */}
-                    {gameMode === "local-2p" && (
-                      <div className="w-20 sm:w-24 flex-shrink-0 flex flex-col justify-self-stretch animate-fadeInLeft">
-                        <TeamSlots
-                          playerName={player1Name}
-                          slots={p1Slots}
-                          skipUsed={p1SkipUsed}
-                          activeTurn={activeTurn === "p1"}
-                          onSlotSelect={handleSlotSelect}
-                          layout="compact-vertical"
-                          isMobile={true}
-                        />
-                      </div>
-                    )}
-
-                    {/* Center Column: Active Card */}
-                    <div className={`flex-1 flex flex-col items-center ${gameMode === "local-2p" ? "justify-center" : "justify-start"} p-1 sm:p-4 relative`}>
-                      <div className="absolute inset-0 pointer-events-none opacity-5">
-                        <div className="h-px w-full bg-nexus-cyan absolute top-1/4 animate-pulse" />
-                        <div className="h-px w-full bg-nexus-blue absolute top-3/4 animate-pulse delay-500" />
-                      </div>
-                      
-                      {renderDraftCardArea()}
-
-                      {/* Mobile Skip status display */}
-                      <div className="flex gap-4 items-center justify-center mt-4 text-[8px] font-mono font-black uppercase tracking-widest text-slate-500 bg-black/20 px-3 py-1 rounded-full border border-white/5">
-                        <div className="flex items-center gap-1.5">
-                          <div className={`w-1.5 h-1.5 rounded-full ${p1SkipUsed ? 'bg-red-500' : 'bg-nexus-purple animate-pulse'}`} />
-                          <span>P1: {p1SkipUsed ? "USED" : "SKIP"}</span>
-                        </div>
-                        <div className="flex items-center gap-1.5">
-                          <div className={`w-1.5 h-1.5 rounded-full ${p2SkipUsed ? 'bg-red-500' : 'bg-nexus-purple animate-pulse'}`} />
-                          <span>P2: {p2SkipUsed ? "USED" : "SKIP"}</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Right Column: Player or P2 Slots */}
-                    <div className="w-20 sm:w-24 flex-shrink-0 flex flex-col justify-self-stretch animate-fadeInRight">
-                      <TeamSlots
-                        playerName={gameMode === "local-2p" ? player2Name : (onlineSide === "p2" ? player2Name : player1Name)}
-                        slots={gameMode === "local-2p" ? p2Slots : (onlineSide === "p2" ? p2Slots : p1Slots)}
-                        skipUsed={gameMode === "local-2p" ? p2SkipUsed : (onlineSide === "p2" ? p2SkipUsed : p1SkipUsed)}
-                        activeTurn={gameMode === "local-2p" ? activeTurn === "p2" : (gameMode === "online-2p" ? activeTurn === onlineSide : activeTurn === "p1")}
-                        onSlotSelect={gameMode === "local-2p"
-                          ? handleSlotSelect
-                          : ((gameMode !== "online-2p" || activeTurn === onlineSide) ? handleSlotSelect : undefined)
-                        }
-                        layout="compact-vertical"
-                        isMobile={true}
-                      />
-                    </div>
-                  </div>
-                </div>
-                )
-              ) : (
-                <div className="grid lg:grid-cols-12 gap-6 items-stretch">
-                  {/* Left: P1 Roster */}
-                  <div className="lg:col-span-3 flex flex-col justify-self-stretch">
-                    <TeamSlots
-                      playerName={player1Name}
-                      slots={p1Slots}
-                      skipUsed={p1SkipUsed}
-                      activeTurn={activeTurn === "p1" && !aiIsProcessing}
-                      onSlotSelect={(gameMode !== "online-2p" || onlineSide === "p1") ? handleSlotSelect : undefined}
-                      isDraggingActive={isDraggingActive && (gameMode !== "online-2p" || onlineSide === "p1")}
-                    />
-                  </div>
-
-                  {/* Center: Active Draft Card */}
-                  <div className="lg:col-span-6 flex flex-col items-center justify-center min-h-[550px] sm:min-h-[700px] p-4 sm:p-6 relative nexus-glass rounded-3xl border-nexus-blue/10">
-                    <div className="absolute inset-0 pointer-events-none opacity-10">
-                      <div className="h-px w-full bg-nexus-cyan absolute top-1/4 animate-pulse" />
-                      <div className="h-px w-full bg-nexus-blue absolute top-3/4 animate-pulse delay-500" />
-                    </div>
-                    {renderDraftCardArea()}
-                  </div>
-
-                  {/* Right: P2 Roster */}
-                  <div className="lg:col-span-3 flex flex-col justify-self-stretch">
-                    <TeamSlots
-                      playerName={player2Name}
-                      isAI={gameMode === "vs-ai"}
-                      slots={p2Slots}
-                      skipUsed={p2SkipUsed}
-                      activeTurn={activeTurn === "p2"}
-                      onSlotSelect={(gameMode === "local-2p" || (gameMode === "online-2p" && onlineSide === "p2")) ? handleSlotSelect : undefined}
-                      isDraggingActive={isDraggingActive && (gameMode === "local-2p" || (gameMode === "online-2p" && onlineSide === "p2"))}
-                    />
-                  </div>
-                </div>
-              )}
+           {view === "draft" && ( <>
+  <DraftView
+    isMobile={isMobile}
+    isMobileDraft={isMobileDraft}
+    isMobileOnlineDraft={isMobileOnlineDraft}
+    ownOnlineSide={ownOnlineSide}
+    ownOnlineName={ownOnlineName}
+    opponentOnlineName={opponentOnlineName}
+    ownOnlineSlots={ownOnlineSlots}
+    opponentOnlineSlots={opponentOnlineSlots}
+    ownOnlineSkipUsed={ownOnlineSkipUsed}
+    opponentOnlineSkipUsed={opponentOnlineSkipUsed}
+    isDraggingActive={isDraggingActive}
+    activeTurn={activeTurn}
+    p1SkipUsed={p1SkipUsed}
+    p2SkipUsed={p2SkipUsed}
+    p1Slots={p1Slots}
+    p2Slots={p2Slots}
+    player1Name={player1Name}
+    player2Name={player2Name}
+    gameMode={gameMode}
+    onlineSide={onlineSide}
+    aiIsProcessing={aiIsProcessing}
+    handleSlotSelect={handleSlotSelect}
+    renderDraftCardArea={renderDraftCardArea}
+   />
 
               {/* Deploy Modal for scroll-free selection */}
               <AnimatePresence>
@@ -2605,8 +2454,7 @@ export default function App() {
                 )}
               </AnimatePresence>
 
-            </motion.div>
-          )}
+            </> )}
 
           {/* 3. SHOWDOWN RESULTS VIEW */}
           {view === "results" && (
@@ -3037,7 +2885,7 @@ export default function App() {
       </AnimatePresence>
 
       {/* FOOTER */}
-      {!(isMobile && view === "draft") && (
+      {view !== "landing" && (
         <footer className="border-t border-neutral-900 bg-neutral-950/60 backdrop-blur-md py-4 px-6 text-center text-[10px] font-mono text-neutral-500 flex flex-col sm:flex-row justify-between items-center max-w-7xl w-full mx-auto gap-2 mt-auto">
           <span>© 2026 ANIME BATTLE. ALL RIGHTS RESERVED.</span>
         </footer>

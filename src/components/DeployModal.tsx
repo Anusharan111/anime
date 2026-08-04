@@ -2,8 +2,10 @@ import React from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Character, RoleId, SlottedTeam } from "../types";
 import { ROLE_CATEGORIES } from "../data/roles";
-import { Shield, Swords, Heart, Zap, Crosshair, Sparkles, X, Plus } from "lucide-react";
+import { X, Plus } from "lucide-react";
 import CharacterImage from "./CharacterImage";
+import { RoleIcon } from "./RoleIcon";
+import { getRoleFitScore } from "../utils/roleUtils";
 
 interface DeployModalProps {
   character: Character;
@@ -11,43 +13,6 @@ interface DeployModalProps {
   onSelect: (roleId: RoleId) => void;
   onClose: () => void;
 }
-
-const RoleIcon = ({ id, className }: { id: string; className?: string }) => {
-  switch (id) {
-    case "captain": return <TrophyIcon className={className} />;
-    case "vice_captain": return <Swords className={className} />;
-    case "tank": return <Shield className={className} />;
-    case "healer": return <Heart className={className} />;
-    case "support_1": return <Zap className={className} />;
-    case "support_2": return <Crosshair className={className} />;
-    default: return <Sparkles className={className} />;
-  }
-};
-
-const TrophyIcon = ({ className }: { className?: string }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />
-    <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
-    <path d="M4 22h16" />
-    <path d="M10 22V18" />
-    <path d="M14 22V18" />
-    <path d="M18 4H6v7a6 6 0 0 0 12 0V4Z" />
-  </svg>
-);
-
-const getRoleFitScore = (character: Character, role: RoleId) => {
-  const { strength, speed, iq, defense, magic } = character.stats;
-  const fitScore = {
-    captain: (iq + strength + magic) / 3,
-    vice_captain: (iq + speed + magic) / 3,
-    tank: defense,
-    healer: (magic + iq + defense) / 3,
-    support_1: (speed + iq) / 2,
-    support_2: (magic + strength) / 2,
-  }[role];
-
-  return Math.round(fitScore);
-};
 
 export default function DeployModal({ character, slots, onSelect, onClose }: DeployModalProps) {
   // Prevent clicks from reaching background

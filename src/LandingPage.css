@@ -12,7 +12,8 @@
   --green: #45f2a5;
 
   position: relative;
-  min-height: 100vh;
+  min-height: calc(100vh - 130px);
+  min-height: calc(100dvh - 130px);
   padding: 54px 0 82px;
   overflow-x: hidden;
   color: var(--text);

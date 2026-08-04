@@ -1,2 +1,0 @@
-// Refactored App placeholder
-export {};

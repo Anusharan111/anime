@@ -1,8 +1,8 @@
 {
   "api/index.ts": {
-    "mtime": 1785080540.660026,
-    "ast_hash": "e39ca3e66c3bdd2a1c50b25758cde983",
-    "semantic_hash": "e39ca3e66c3bdd2a1c50b25758cde983"
+    "mtime": 1785686096.5472496,
+    "ast_hash": "dad49232564b9c75629a06c6093577c2",
+    "semantic_hash": ""
   },
   "metadata.json": {
     "mtime": 1780572347.551335,
@@ -50,13 +50,13 @@
     "semantic_hash": "6d79c6670ee865cb1e1cab57d15d11df"
   },
   "server.ts": {
-    "mtime": 1783955195.7240777,
-    "ast_hash": "9ccd45d5c79042ab6153a9d73685a7f5",
-    "semantic_hash": "9ccd45d5c79042ab6153a9d73685a7f5"
+    "mtime": 1785696825.370245,
+    "ast_hash": "a192a35c32ca221b8d61055bbc853439",
+    "semantic_hash": ""
   },
   "src/App.tsx": {
-    "mtime": 1785492454.575786,
-    "ast_hash": "24c84dfc79e56005e37cb56bc803d825",
+    "mtime": 1785745093.2007284,
+    "ast_hash": "3808d73e01534236bb2a58502df0124f",
     "semantic_hash": ""
   },
   "src/components/CharacterCard.tsx": {
@@ -85,14 +85,14 @@
     "semantic_hash": "4ec6853977da0a1426de206c9420dd8f"
   },
   "src/components/MyAnimeListPortal.tsx": {
-    "mtime": 1785080830.4477901,
-    "ast_hash": "f715bc5d81dd8c680a11521ef99b5505",
-    "semantic_hash": "f715bc5d81dd8c680a11521ef99b5505"
+    "mtime": 1785731218.4406092,
+    "ast_hash": "9cac04f876b7ea45d88774717d5e6c60",
+    "semantic_hash": ""
   },
   "src/components/TeamSlots.tsx": {
-    "mtime": 1785080799.5861218,
-    "ast_hash": "62460c0d0f1b666a7cf227ba71959403",
-    "semantic_hash": "62460c0d0f1b666a7cf227ba71959403"
+    "mtime": 1785687542.3699214,
+    "ast_hash": "2db535846a699952b4a0c95ce853e03f",
+    "semantic_hash": ""
   },
   "src/components/feud/FinalWinner.tsx": {
     "mtime": 1781715845.6660995,
@@ -180,9 +180,9 @@
     "semantic_hash": "b6b671243251164c3622251d210e7e12"
   },
   "src/data/characters.ts": {
-    "mtime": 1784032723.8281994,
-    "ast_hash": "abe2fdd4712d4df6ea63f4d39c106f71",
-    "semantic_hash": "abe2fdd4712d4df6ea63f4d39c106f71"
+    "mtime": 1785745369.8002803,
+    "ast_hash": "7cb7e8a9ecb180943920ac643f518594",
+    "semantic_hash": ""
   },
   "src/data/roles.ts": {
     "mtime": 1780679767.8877916,
@@ -220,9 +220,9 @@
     "semantic_hash": "ef8007af9a707333149941f94955825c"
   },
   "src/pages/AnimeGuessWhoGame.tsx": {
-    "mtime": 1784018075.7892656,
-    "ast_hash": "c6f106d376c3528842c4e8ead259829d",
-    "semantic_hash": "c6f106d376c3528842c4e8ead259829d"
+    "mtime": 1785745475.3286948,
+    "ast_hash": "14271020f4fa12dcad3700accf50eb2c",
+    "semantic_hash": ""
   },
   "src/pages/AnimePartyGames.tsx": {
     "mtime": 1784045865.6234286,
@@ -235,9 +235,9 @@
     "semantic_hash": "a52d075434dab5470dba8918e236b8b7"
   },
   "src/utils/audio.ts": {
-    "mtime": 1781893397.089253,
-    "ast_hash": "df63084ee3b0c2924a09594ee50cec56",
-    "semantic_hash": "df63084ee3b0c2924a09594ee50cec56"
+    "mtime": 1785680066.3163483,
+    "ast_hash": "6a4243ba8e353b7ff4519e77b814de62",
+    "semantic_hash": ""
   },
   "src/vite-env.d.ts": {
     "mtime": 1780650551.8145764,
@@ -270,8 +270,8 @@
     "semantic_hash": ""
   },
   "src/LandingPage.tsx": {
-    "mtime": 1785509505.0298834,
-    "ast_hash": "88fbf89d5f468d7324ff447be76f3e5e",
+    "mtime": 1785683655.348509,
+    "ast_hash": "797302a88795df8b2fb1a17ecf697329",
     "semantic_hash": ""
   },
   "src/components/LeafField.tsx": {
@@ -352,6 +352,106 @@
   "public/zo.mp4": {
     "mtime": 1785410630.907725,
     "ast_hash": "e6f6874bccbf5099d1d2b97d096987f3",
+    "semantic_hash": ""
+  },
+  "analyze-and-optimize.js": {
+    "mtime": 1785673587.2024188,
+    "ast_hash": "90e456265ac5ffafc8a7ac7311e4cc4c",
+    "semantic_hash": ""
+  },
+  "analyze-structure.js": {
+    "mtime": 1785672790.8143873,
+    "ast_hash": "bd9743a539263a45ff88250786d11b8c",
+    "semantic_hash": ""
+  },
+  "cleanup-unused-code.js": {
+    "mtime": 1785673791.2081773,
+    "ast_hash": "c4a2ea717d8dd0f3bd96d76998b1beed",
+    "semantic_hash": ""
+  },
+  "execute-optimization.js": {
+    "mtime": 1785674295.4096131,
+    "ast_hash": "b5ea57b258ab358c56c5ea51b3c1e412",
+    "semantic_hash": ""
+  },
+  "optimize-reorganize.js": {
+    "mtime": 1785673707.0139675,
+    "ast_hash": "0ea02eba213cb2ad4eca003cc788a355",
+    "semantic_hash": ""
+  },
+  "src/App.refactored.tsx": {
+    "mtime": 1785683692.69453,
+    "ast_hash": "fdf2f423eafe86151db2522e2742d3fb",
+    "semantic_hash": ""
+  },
+  "src/components/StandardLayout.tsx": {
+    "mtime": 1785679482.5239294,
+    "ast_hash": "4313749b688496d2baab82fc76606c41",
+    "semantic_hash": ""
+  },
+  "src/context/AudioContext.tsx": {
+    "mtime": 1785675963.450534,
+    "ast_hash": "5fca12e1aa3a3b9d1f91e9e57e0f841f",
+    "semantic_hash": ""
+  },
+  "src/context/GameContext.tsx": {
+    "mtime": 1785675931.2465928,
+    "ast_hash": "fd4eca449882df7203e7e1ca598abc6d",
+    "semantic_hash": ""
+  },
+  "src/navigation/router.ts": {
+    "mtime": 1785683694.7766545,
+    "ast_hash": "eca2472d51e53ef901799c78edfa8212",
+    "semantic_hash": ""
+  },
+  "src/navigation/types.ts": {
+    "mtime": 1785675819.94842,
+    "ast_hash": "88c37a05b51b9df0735ea22f414b9e1f",
+    "semantic_hash": ""
+  },
+  "src/pages/DraftPage.tsx": {
+    "mtime": 1785683763.4099188,
+    "ast_hash": "91b4572f6415d230e896e1d652db0106",
+    "semantic_hash": ""
+  },
+  "src/pages/GuessWhoGame.tsx": {
+    "mtime": 1785683709.9311013,
+    "ast_hash": "abc42a9addf2c400f94f9c26c23d352d",
+    "semantic_hash": ""
+  },
+  "src/pages/LandingPage.tsx": {
+    "mtime": 1785676007.4534304,
+    "ast_hash": "fc78452869993f783fcbf970ad020f86",
+    "semantic_hash": ""
+  },
+  "src/pages/PartyGame.tsx": {
+    "mtime": 1785683711.9197097,
+    "ast_hash": "6cdd94d7ad4c44b33a25351c6add27ab",
+    "semantic_hash": ""
+  },
+  "src/pages/ResultsPage.tsx": {
+    "mtime": 1785683766.4964614,
+    "ast_hash": "91b4572f6415d230e896e1d652db0106",
+    "semantic_hash": ""
+  },
+  "update-imports.js": {
+    "mtime": 1785674372.6125295,
+    "ast_hash": "f81ff32a3d0f13541dfe487ad21e4476",
+    "semantic_hash": ""
+  },
+  ".qwen/skills/project-reorganization-and-optimization/SKILL.md": {
+    "mtime": 1785673921.2349274,
+    "ast_hash": "eb0edc2a04d6d7c1570d7e27764695bd",
+    "semantic_hash": ""
+  },
+  ".qwen/skills/react-performance-optimization/SKILL.md": {
+    "mtime": 1785680295.9475243,
+    "ast_hash": "3c93cdbe97a7db1abd7df875ccf0ba8e",
+    "semantic_hash": ""
+  },
+  ".qwen/skills/ui-designer/SKILL.md": {
+    "mtime": 1785677596.760497,
+    "ast_hash": "010df94a7668e5b73af9f74ad0d93459",
     "semantic_hash": ""
   }
 }

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Users, UserPlus, Play, Drama, HelpCircle, X, Shuffle } from "lucide-react";
+import { Users, UserPlus, Play, Drama, HelpCircle, X } from "lucide-react";
 import { sfx } from "../../utils/audio";
 
 export type PartyGameMode = "guess-character" | "guess-imposter";

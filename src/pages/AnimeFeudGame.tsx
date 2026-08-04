@@ -12,7 +12,7 @@ import StrikeSystem from "../components/feud/StrikeSystem";
 import ScoreBoard from "../components/feud/ScoreBoard";
 import GuessInput from "../components/feud/GuessInput";
 import FinalWinner from "../components/feud/FinalWinner";
-import { Play, Sparkles, AlertCircle, ArrowRight, ShieldCheck, UserCheck } from "lucide-react";
+import { AlertCircle, ArrowRight, ShieldCheck } from "lucide-react";
 
 interface AnimeFeudGameProps {
   onExit: () => void;

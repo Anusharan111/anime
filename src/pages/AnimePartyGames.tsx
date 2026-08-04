@@ -4,7 +4,7 @@ import { Character } from "../types";
 import { CHARACTERS } from "../data/characters";
 import { API_BASE } from "../config";
 import Pusher from "pusher-js";
-import { Loader2, Copy, Check, Users, Play, LogOut, Crown } from "lucide-react";
+import { Copy, Check, Users, Play, LogOut, Crown } from "lucide-react";
 import { sfx } from "../utils/audio";
 import GuessCharacterMode from "../components/party/GuessCharacterMode";
 import GuessImposterMode from "../components/party/GuessImposterMode";

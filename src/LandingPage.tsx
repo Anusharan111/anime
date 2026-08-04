@@ -73,11 +73,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
   return (
     <div className="homepage-v2">
-      {/* ── fixed background: vignette only (no stacking context trap) ── */}
-      <div className="home-bg" aria-hidden="true">
-        <div className="home-bg-vignette" />
-      </div>
-
       {/* ── videos at root level so z-index is globally respected ── */}
       <video src="/zo.mp4" className="home-bg-video home-bg-video-left"  autoPlay loop muted playsInline aria-hidden="true" />
       <video src="/go.mp4" className="home-bg-video home-bg-video-right" autoPlay loop muted playsInline aria-hidden="true" />

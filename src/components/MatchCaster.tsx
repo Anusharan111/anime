@@ -56,7 +56,7 @@ export default function MatchCaster({ commentary, p1Name, p2Name, winner }: Matc
   };
 
   return (
-    <div className="rounded-2xl border border-neutral-800 bg-neutral-950/80 backdrop-blur-xl p-5 shadow-[0_4px_30px_rgba(0,0,0,0.4)] relative overflow-hidden">
+    <div className="rounded-2xl border border-neutral-800 mirror-panel p-5 shadow-[0_4px_30px_rgba(0,0,0,0.4)] relative overflow-hidden">
       {/* Absolute styling backdrops */}
       <div className="absolute top-0 right-0 w-48 h-48 bg-violet-600/5 rounded-full filter blur-3xl pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-48 h-48 bg-fuchsia-600/5 rounded-full filter blur-3xl pointer-events-none" />

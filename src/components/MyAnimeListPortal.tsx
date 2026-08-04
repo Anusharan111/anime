@@ -316,7 +316,7 @@ export default function MyAnimeListPortal({ onPoolUpdated }: MALPortalProps) {
             onClick={() => { setActiveTab("search"); setError(""); }}
             className="px-5 py-2.5 rounded-xl font-black uppercase text-[10px] tracking-wider transition-all duration-300 flex items-center gap-2 bg-gradient-to-r from-nexus-blue to-nexus-cyan text-white shadow-lg"
           >
-            <Search className="w-3.5 h-3.5" /> Character Search
+            <Search className="w-3.5 h-3.5" /> Character
           </button>
         </div>
       </div>
@@ -376,28 +376,20 @@ export default function MyAnimeListPortal({ onPoolUpdated }: MALPortalProps) {
                 <input type="text" value={query}
                   onChange={e => setQuery(e.target.value)}
                   onKeyDown={e => e.key === "Enter" && searchAniList()}
-                  placeholder="Search anime character — Gojo, Luffy, Goku, Levi, Naruto…"
+                  placeholder="Search anime character…"
                   className="w-full bg-black/40 border border-white/10 rounded-2xl py-3.5 pl-11 pr-4 text-sm font-mono font-bold text-white placeholder:text-neutral-600 focus:outline-none focus:border-nexus-cyan/50 focus:ring-1 focus:ring-nexus-cyan/20 transition-all"
                 />
               </div>
               <button onClick={searchAniList} disabled={loading || summoning}
                 className="px-8 py-3.5 sm:py-0 rounded-2xl bg-nexus-blue hover:bg-nexus-cyan text-white font-black uppercase text-xs tracking-widest transition-all disabled:opacity-50 shadow-[0_0_20px_rgba(30,144,255,0.3)] active:scale-95 flex items-center justify-center gap-2 whitespace-nowrap">
-                {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Zap className="w-4 h-4 fill-white" />}
-                SCAN
+                {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
+                SEARCH
               </button>
             </div>
 
             {/* Quick chips */}
             {results.length === 0 && !loading && (
               <div className="text-center space-y-5 py-12">
-                <div className="flex flex-wrap justify-center gap-2">
-                  {["Gojo Satoru", "Monkey D Luffy", "Son Goku", "Naruto Uzumaki", "Levi Ackerman", "Killua Zoldyck", "Roronoa Zoro", "Itachi Uchiha"].map(name => (
-                    <button key={name} onClick={() => { setQuery(name); }}
-                      className="px-4 py-2 rounded-xl border border-white/8 bg-white/5 hover:border-nexus-blue/50 hover:bg-nexus-blue/8 text-[11px] font-mono text-neutral-400 hover:text-white transition-all">
-                      {name}
-                    </button>
-                  ))}
-                </div>
                 <p className="text-neutral-700 font-mono text-[9px] uppercase tracking-[0.3em]">
                   Powered by AniList via GraphQL API · 100k+ characters
                 </p>

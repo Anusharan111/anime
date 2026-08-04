@@ -8,11 +8,10 @@ import { sfx } from "../utils/audio";
 
 import GWLobby from "../components/guesswho/GWLobby";
 import GWCharacterGrid from "../components/guesswho/GWCharacterGrid";
-import GWQuestionPanel from "../components/guesswho/GWQuestionPanel";
 import GWSecretCard from "../components/guesswho/GWSecretCard";
 import GWGuessModal from "../components/guesswho/GWGuessModal";
 import GWGameOver from "../components/guesswho/GWGameOver";
-import { Search, Target, LogOut, MessageCircleQuestion } from "lucide-react";
+import { Search, Target, LogOut } from "lucide-react";
 
 interface QuestionEntry {
   question: string;
@@ -511,28 +510,13 @@ export default function AnimeGuessWhoGame({ onExit }: AnimeGuessWhoGameProps) {
                 <GWSecretCard character={mySecret} />
 
                 {/* Guess Button */}
-                {isMyTurn && (
-                  <button
-                    onClick={() => setShowGuessModal(true)}
-                    className="w-full py-3 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-extrabold text-sm flex items-center justify-center gap-2 shadow-lg shadow-red-950/30 transition duration-300 transform hover:scale-[1.02] border border-red-500/30"
-                  >
-                    <Target className="w-4 h-4" />
-                    MAKE A GUESS
-                  </button>
-                )}
-
-                {/* Question Panel */}
-                <GWQuestionPanel
-                  questions={questions}
-                  onAskQuestion={handleAskQuestion}
-                  onAnswer={handleAnswer}
-                  isMyTurn={isMyTurn}
-                  waitingForAnswer={waitingForAnswer}
-                  pendingQuestion={pendingQuestion}
-                  myName={myName}
-                  opponentName={opponentName}
-                  mySide={mySide || "p1"}
-                />
+                <button
+                  onClick={() => setShowGuessModal(true)}
+                  className="w-full py-3 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-extrabold text-sm flex items-center justify-center gap-2 shadow-lg shadow-red-950/30 transition duration-300 transform hover:scale-[1.02] border border-red-500/30"
+                >
+                  <Target className="w-4 h-4" />
+                  MAKE A GUESS
+                </button>
               </div>
             </div>
           </motion.div>

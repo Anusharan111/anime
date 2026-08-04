@@ -4,7 +4,6 @@ import { motion, AnimatePresence } from "motion/react";
 import Pusher from "pusher-js";
 import {
   Swords,
-  Trophy,
   Users,
   Computer,
   Sparkles,
@@ -31,14 +30,12 @@ import { ROLE_CATEGORIES } from "./data/roles";
 import { CHARACTERS } from "./data/characters";
 import CharacterCard from "./components/CharacterCard";
 import TeamSlots from "./components/TeamSlots";
-import MyAnimeListPortal from "./components/MyAnimeListPortal";
 import DeployModal from "./components/DeployModal";
 import AnimeFeudGame from "./pages/AnimeFeudGame";
 import AnimeGuessWhoGame from "./pages/AnimeGuessWhoGame";
 import AnimePartyGames from "./pages/AnimePartyGames";
 import LandingPage from "./LandingPage";
 import { sfx } from "./utils/audio";
-import { Search } from "lucide-react";
 
 type ViewState = "landing" | "draft" | "results" | "feud" | "guesswho" | "party";
 type GameHubMode = "hub" | "battle";
@@ -277,7 +274,6 @@ export default function App() {
   const [selectedAnimes, setSelectedAnimes] = useState<string[]>([]);
   const [animeSearchQuery, setAnimeSearchQuery] = useState("");
   const [isAnimeDropdownOpen, setIsAnimeDropdownOpen] = useState(false);
-  const [showNavSearch, setShowNavSearch] = useState(false);
   const [importedCastAnimes, setImportedCastAnimes] = useState<Set<string>>(() => new Set());
   const [player1Name, setPlayer1Name] = useState("Hero Picker");
   const [player2Name, setPlayer2Name] = useState("AI Overlord");
@@ -323,18 +319,6 @@ export default function App() {
   const [isMobile, setIsMobile] = useState(false);
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
   const [isStartingGame, setIsStartingGame] = useState(false);
-
-  const fitPreviews = useMemo(() => {
-    if (!activeCharacter || (!isDraggingActive && !selectedCardId)) return undefined;
-    const previews: Record<string, string> = {};
-    ROLE_CATEGORIES.forEach(role => {
-      const score = getRoleFitScore(activeCharacter, role.id);
-      const mult = getRoleFitMultiplier(score);
-      const label = getRoleSuitabilityLabel(score);
-      previews[role.id] = `${label} x${mult.toFixed(2)}`;
-    });
-    return previews;
-  }, [activeCharacter, isDraggingActive, selectedCardId]);
 
   useEffect(() => {
     const checkWidth = () => {
@@ -1611,15 +1595,17 @@ export default function App() {
   const opponentOnlineName = ownOnlineSide === "p2" ? player1Name : player2Name;
 
   return (
-    <div className={`${isMobileDraft ? "h-[100dvh] overflow-hidden" : "min-h-screen overflow-x-hidden"} bg-[#050816] text-slate-100 flex flex-col justify-between font-sans relative selection:bg-nexus-cyan/30`}>
+    <div className={`${isMobileDraft ? "h-[100dvh] overflow-hidden" : "min-h-screen overflow-x-hidden"} ${view === "landing" ? "bg-black" : "bg-[#050816]"} text-slate-100 flex flex-col justify-between font-sans relative selection:bg-nexus-cyan/30`}>
       {/* 🌌 Animated Background */}
-      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,#1e1b4b_0%,#050816_70%)]" />
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e90ff08_1px,transparent_1px),linear-gradient(to_bottom,#1e90ff08_1px,transparent_1px)] bg-[size:40px_40px] [transform:perspective(1000px)_rotateX(60deg)_translateY(-100px)] opacity-40 animate-pulse" />
-        <div className="absolute top-1/4 left-1/4 w-1 h-1 bg-white rounded-full animate-ping opacity-20" />
-        <div className="absolute top-1/2 right-1/3 w-1 h-1 bg-nexus-cyan rounded-full animate-pulse opacity-40 delay-700" />
-        <div className="absolute bottom-1/3 left-1/2 w-1.5 h-1.5 bg-nexus-purple rounded-full animate-bounce opacity-20 delay-1000" />
-      </div>
+      {view !== "landing" && (
+        <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,#1e1b4b_0%,#050816_70%)]" />
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e90ff08_1px,transparent_1px),linear-gradient(to_bottom,#1e90ff08_1px,transparent_1px)] bg-[size:40px_40px] [transform:perspective(1000px)_rotateX(60deg)_translateY(-100px)] opacity-40 animate-pulse" />
+          <div className="absolute top-1/4 left-1/4 w-1 h-1 bg-white rounded-full animate-ping opacity-20" />
+          <div className="absolute top-1/2 right-1/3 w-1 h-1 bg-nexus-cyan rounded-full animate-pulse opacity-40 delay-700" />
+          <div className="absolute bottom-1/3 left-1/2 w-1.5 h-1.5 bg-nexus-purple rounded-full animate-bounce opacity-20 delay-1000" />
+        </div>
+      )}
 
       {/* HEADER BAR */}
       <header className="sticky top-0 z-50 nexus-glass border-b border-nexus-blue/20 py-2 px-2 sm:py-4 sm:px-6">
@@ -1641,12 +1627,6 @@ export default function App() {
 
           <div className="flex items-center gap-3 relative">
             <button
-              onClick={() => setShowNavSearch(!showNavSearch)}
-              className={`py-1.5 px-3 rounded-lg border text-[9px] sm:text-[10px] font-mono font-bold transition-all flex items-center gap-1.5 group ${showNavSearch ? "border-purple-500 bg-purple-500/10 text-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.25)]" : "nexus-glass border-white/5 hover:border-nexus-cyan/40 text-slate-300"}`}
-            >
-              <Search className={`w-3 h-3 transition-transform ${showNavSearch ? "text-purple-400" : "text-nexus-cyan group-hover:scale-125"}`} /> SEARCH ANIME
-            </button>
-            <button
               id="btn-leaderboard"
               onClick={() => {
                 setShowLeaderboard(!showLeaderboard);
@@ -1656,128 +1636,6 @@ export default function App() {
             >
               <Award className="w-3 h-3 text-nexus-cyan group-hover:scale-125 transition-transform" /> TOP
             </button>
-
-            {/* Nav Search Dropdown */}
-            <AnimatePresence>
-              {showNavSearch && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                  className="absolute right-0 top-[calc(100%+12px)] w-80 sm:w-96 bg-neutral-950/95 backdrop-blur-xl border border-neutral-800 rounded-2xl shadow-2xl p-4 z-50 origin-top-right"
-                >
-                  <div className="space-y-3">
-                    <label className="text-[10px] font-mono text-neutral-400 tracking-widest uppercase">
-                      CHARACTER POOL FILTER
-                    </label>
-                    <div className="grid grid-cols-2 gap-3">
-                      <button
-                        onClick={() => {
-                          setCategory("all");
-                          setSelectedAnimes([]);
-                          setAnimeSearchQuery("");
-                          importStarterAllAnimeCasts();
-                        }}
-                        className={`py-2 px-3 rounded-xl border text-[10px] font-black uppercase tracking-wide transition-all cursor-pointer ${category === "all"
-                            ? "border-purple-500 bg-purple-500/10 text-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.25)]"
-                            : "border-neutral-800 bg-neutral-900/30 text-neutral-400 hover:border-neutral-700"
-                          }`}
-                      >
-                        🌐 All Anime
-                      </button>
-                      <button
-                        onClick={() => setCategory("choose")}
-                        className={`py-2 px-3 rounded-xl border text-[10px] font-black uppercase tracking-wide transition-all cursor-pointer ${category === "choose"
-                            ? "border-purple-500 bg-purple-500/10 text-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.25)]"
-                            : "border-neutral-800 bg-neutral-900/30 text-neutral-400 hover:border-neutral-700"
-                          }`}
-                      >
-                        🎯 Choose Anime
-                      </button>
-                    </div>
-
-                    {category === "choose" && (
-                      <div className="space-y-1.5 pt-1 relative">
-                        <input
-                          id="inp-anime-search"
-                          type="text"
-                          value={animeSearchQuery}
-                          onFocus={() => setIsAnimeDropdownOpen(true)}
-                          onBlur={() => {
-                            setTimeout(() => setIsAnimeDropdownOpen(false), 200);
-                          }}
-                          onChange={(e) => {
-                            setAnimeSearchQuery(e.target.value);
-                          }}
-                          placeholder="Select or search anime… e.g. Naruto, Bleach"
-                          className="w-full bg-neutral-900/80 border border-neutral-700 rounded-xl py-2 px-3 text-xs text-white font-mono focus:border-purple-500 focus:outline-none cursor-pointer"
-                        />
-                        {isAnimeDropdownOpen && (
-                          <div className="absolute z-20 left-0 right-0 top-full mt-1 bg-neutral-900 border border-neutral-700 rounded-xl max-h-48 overflow-y-auto shadow-2xl">
-                            {animeList
-                              .filter((a) => !animeSearchQuery.trim() || a.toLowerCase().includes(animeSearchQuery.toLowerCase()))
-                              .map((anime) => (
-                                <button
-                                  key={anime}
-                                  onMouseDown={() => {
-                                    if (!selectedAnimes.includes(anime)) {
-                                      setSelectedAnimes((prev) => [...prev, anime]);
-                                      importCastForAnime(anime)
-                                        .catch((error) => {
-                                          console.warn("Auto import failed", error);
-                                        });
-                                    }
-                                    setAnimeSearchQuery("");
-                                    setIsAnimeDropdownOpen(false);
-                                  }}
-                                  className={`w-full text-left px-3.5 py-2 text-xs font-mono hover:bg-purple-500/15 transition-colors cursor-pointer ${selectedAnimes.includes(anime) ? "text-purple-400 bg-purple-500/10" : "text-slate-200"
-                                    }`}
-                                >
-                                  {anime}
-                                </button>
-                              ))}
-                            {animeList.filter((a) => !animeSearchQuery.trim() || a.toLowerCase().includes(animeSearchQuery.toLowerCase())).length === 0 && (
-                              <p className="px-3.5 py-2 text-[10px] text-neutral-500 font-mono">No anime found matching "{animeSearchQuery}"</p>
-                            )}
-                          </div>
-                        )}
-                        {selectedAnimes.length > 0 && (
-                          <div className="flex flex-wrap gap-1.5 mt-2">
-                            {selectedAnimes.map((anime) => (
-                              <span
-                                key={anime}
-                                className="inline-flex items-center gap-1.5 text-[10px] font-mono font-bold text-purple-400 bg-purple-500/10 border border-purple-500/30 px-2 py-0.5 rounded-lg"
-                              >
-                                {anime}
-                                <button
-                                  type="button"
-                                  onClick={() => {
-                                    setSelectedAnimes((prev) => prev.filter((a) => a !== anime));
-                                  }}
-                                  className="hover:text-red-400 font-bold font-sans cursor-pointer transition-colors"
-                                >
-                                  ✕
-                                </button>
-                              </span>
-                            ))}
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setSelectedAnimes([]);
-                                setAnimeSearchQuery("");
-                              }}
-                              className="text-[9px] font-mono text-slate-400 hover:text-red-400 transition-colors cursor-pointer self-center ml-1"
-                            >
-                              ✕ clear all
-                            </button>
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
           </div>
         </div>
       </header>
@@ -1823,7 +1681,7 @@ export default function App() {
               </AnimatePresence>
 
               {showLeaderboard ? (
-                <div className="w-full max-w-3xl mx-auto rounded-2xl border border-neutral-800 bg-neutral-950/80 p-6 space-y-6">
+                <div className="w-full max-w-3xl mx-auto rounded-2xl border border-neutral-800 mirror-panel p-6 space-y-6">
                   <div className="flex justify-between items-center border-b border-white/5 pb-3">
                     <div>
                       <h2 className="text-xl font-black text-white uppercase flex items-center gap-2">
@@ -1902,7 +1760,7 @@ export default function App() {
                       {/* GAME SETUP MATRIX */}
                       <div className="grid md:grid-cols-2 gap-6 sm:gap-8 max-w-5xl mx-auto items-stretch">
                         {/* Setup Controls */}
-                        <div className="rounded-3xl border border-neutral-800/80 bg-neutral-950/70 p-5 sm:p-8 flex flex-col justify-between space-y-6 sm:space-y-8 relative overflow-hidden backdrop-blur-md shadow-2xl">
+                        <div className="rounded-3xl border border-neutral-800/80 mirror-panel p-5 sm:p-8 flex flex-col justify-between space-y-6 sm:space-y-8 relative overflow-hidden shadow-2xl">
                           <div className="space-y-5">
                             <div className="flex border-b border-white/5 pb-4 items-center gap-2.5">
                               <Flame className="w-5 h-5 text-violet-400" />
@@ -2067,7 +1925,118 @@ export default function App() {
                               </div>
                             )}
 
-                            {/* Anime Filter removed and moved to navbar */}
+                            {/* Anime Filter */}
+                            {(gameMode !== "online-2p" || onlineAction === "create" || (onlineRoomId && onlineSide === "p1")) && (
+                              <div className="space-y-2 pt-1 animate-fadeIn">
+                                <label className="text-[10px] font-mono text-neutral-400 tracking-widest uppercase">
+                                  CHARACTER POOL FILTER
+                                </label>
+                                <div className="grid grid-cols-2 gap-3">
+                                  <button
+                                    onClick={() => {
+                                      setCategory("all");
+                                      setSelectedAnimes([]);
+                                      setAnimeSearchQuery("");
+                                      importStarterAllAnimeCasts();
+                                    }}
+                                    className={`py-2.5 px-3 rounded-xl border text-[10px] font-black uppercase tracking-wide transition-all cursor-pointer ${category === "all"
+                                        ? "border-purple-500 bg-purple-500/10 text-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.25)]"
+                                        : "border-neutral-800 bg-neutral-900/30 text-neutral-400 hover:border-neutral-700"
+                                      }`}
+                                  >
+                                    🌐 All Anime
+                                  </button>
+                                  <button
+                                    onClick={() => setCategory("choose")}
+                                    className={`py-2.5 px-3 rounded-xl border text-[10px] font-black uppercase tracking-wide transition-all cursor-pointer ${category === "choose"
+                                        ? "border-purple-500 bg-purple-500/10 text-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.25)]"
+                                        : "border-neutral-800 bg-neutral-900/30 text-neutral-400 hover:border-neutral-700"
+                                      }`}
+                                  >
+                                    🎯 Choose Anime
+                                  </button>
+                                </div>
+
+                                {category === "choose" && (
+                                  <div className="space-y-1.5 pt-1 relative">
+                                    <input
+                                      id="inp-anime-search"
+                                      type="text"
+                                      value={animeSearchQuery}
+                                      onFocus={() => setIsAnimeDropdownOpen(true)}
+                                      onBlur={() => {
+                                        setTimeout(() => setIsAnimeDropdownOpen(false), 200);
+                                      }}
+                                      onChange={(e) => {
+                                        setAnimeSearchQuery(e.target.value);
+                                      }}
+                                      placeholder="Select or search anime… e.g. Naruto, Bleach"
+                                      className="w-full bg-neutral-900/50 border border-neutral-800 rounded-xl py-2.5 px-3.5 text-xs text-white font-mono font-bold focus:border-purple-500 focus:outline-none cursor-pointer"
+                                    />
+                                    {isAnimeDropdownOpen && (
+                                      <div className="absolute z-20 left-0 right-0 top-full mt-1 bg-neutral-900 border border-neutral-700 rounded-xl max-h-40 overflow-y-auto shadow-2xl">
+                                        {animeList
+                                          .filter((a) => !animeSearchQuery.trim() || a.toLowerCase().includes(animeSearchQuery.toLowerCase()))
+                                          .map((anime) => (
+                                            <button
+                                              key={anime}
+                                              onMouseDown={() => {
+                                                if (!selectedAnimes.includes(anime)) {
+                                                  setSelectedAnimes((prev) => [...prev, anime]);
+                                                  importCastForAnime(anime)
+                                                    .catch((error) => {
+                                                      console.warn("Auto import failed", error);
+                                                    });
+                                                }
+                                                setAnimeSearchQuery("");
+                                                setIsAnimeDropdownOpen(false);
+                                              }}
+                                              className={`w-full text-left px-3.5 py-2 text-xs font-mono hover:bg-purple-500/15 transition-colors cursor-pointer ${selectedAnimes.includes(anime) ? "text-purple-400 bg-purple-500/10" : "text-slate-200"
+                                                }`}
+                                            >
+                                              {anime}
+                                            </button>
+                                          ))}
+                                        {animeList.filter((a) => !animeSearchQuery.trim() || a.toLowerCase().includes(animeSearchQuery.toLowerCase())).length === 0 && (
+                                          <p className="px-3.5 py-2 text-[10px] text-neutral-500 font-mono">No anime found matching "{animeSearchQuery}"</p>
+                                        )}
+                                      </div>
+                                    )}
+                                    {selectedAnimes.length > 0 && (
+                                      <div className="flex flex-wrap gap-1.5 mt-2">
+                                        {selectedAnimes.map((anime) => (
+                                          <span
+                                            key={anime}
+                                            className="inline-flex items-center gap-1.5 text-[10px] font-mono font-bold text-purple-400 bg-purple-500/10 border border-purple-500/30 px-2.5 py-1 rounded-lg"
+                                          >
+                                            🎯 {anime}
+                                            <button
+                                              type="button"
+                                              onClick={() => {
+                                                setSelectedAnimes((prev) => prev.filter((a) => a !== anime));
+                                              }}
+                                              className="hover:text-red-400 font-bold font-sans cursor-pointer transition-colors"
+                                            >
+                                              ✕
+                                            </button>
+                                          </span>
+                                        ))}
+                                        <button
+                                          type="button"
+                                          onClick={() => {
+                                            setSelectedAnimes([]);
+                                            setAnimeSearchQuery("");
+                                          }}
+                                          className="text-[9px] font-mono text-slate-400 hover:text-red-400 transition-colors cursor-pointer self-center ml-1"
+                                        >
+                                          ✕ clear all
+                                        </button>
+                                      </div>
+                                    )}
+                                  </div>
+                                )}
+                              </div>
+                            )}
 
                             {/* Player Names */}
                             {(gameMode !== "online-2p" || onlineAction !== null) && (
@@ -2125,26 +2094,17 @@ export default function App() {
 
                           {(gameMode !== "online-2p" || (onlineRoomId && onlineSide === "p1")) && (
                             isMobile ? (
-                              <div className="grid grid-cols-2 gap-3 mt-6">
-                                <button
-                                  id="btn-start-battle-mobile"
-                                  onClick={() => startNewGame(gameMode)}
-                                  disabled={!hasEnoughSelectedCharacters}
-                                  className={`py-3.5 rounded-xl text-[10px] uppercase tracking-[0.15em] font-black transition-all flex items-center justify-center gap-1.5 cursor-pointer ${!hasEnoughSelectedCharacters
-                                      ? "bg-neutral-800 text-neutral-500 border border-neutral-700/50 cursor-not-allowed opacity-50"
-                                      : "bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white shadow-[0_0_20px_rgba(139,92,246,0.3)] active:scale-95"
-                                    }`}
-                                >
-                                  <Swords className="w-3.5 h-3.5" /> DRAFT ARENA
-                                </button>
-                                <button
-                                  id="btn-party-games-mobile"
-                                  onClick={() => setView("party")}
-                                  className="py-3.5 rounded-xl text-[10px] uppercase tracking-[0.15em] font-black transition-all flex items-center justify-center gap-1.5 cursor-pointer bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-500 hover:to-pink-500 text-white shadow-[0_0_20px_rgba(244,63,94,0.3)] active:scale-95"
-                                >
-                                  <Users className="w-3.5 h-3.5" /> PARTY GAMES
-                                </button>
-                              </div>
+                              <button
+                                id="btn-start-battle-mobile"
+                                onClick={() => startNewGame(gameMode)}
+                                disabled={!hasEnoughSelectedCharacters}
+                                className={`w-full py-4 rounded-xl text-xs uppercase tracking-[0.2em] font-black transition-all flex items-center justify-center gap-2 mt-6 cursor-pointer ${!hasEnoughSelectedCharacters
+                                    ? "bg-neutral-800 text-neutral-500 border border-neutral-700/50 cursor-not-allowed opacity-50 shadow-none scale-100"
+                                    : "bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white shadow-[0_0_30px_rgba(139,92,246,0.35)] hover:shadow-[0_0_35px_rgba(139,92,246,0.45)] active:scale-95"
+                                  }`}
+                              >
+                                <Play className="w-4 h-4 fill-white" /> ENTER DRAFTING ARENA <ArrowRight className="w-4 h-4" />
+                              </button>
                             ) : (
                               <button
                                 id="btn-start-battle"
@@ -2162,7 +2122,7 @@ export default function App() {
                         </div>
 
                         {/* Spotlight Roster Card */}
-                        <div className="rounded-3xl border border-neutral-800/85 bg-neutral-950/70 p-5 sm:p-6 flex flex-col justify-between relative overflow-hidden backdrop-blur-md">
+                        <div className="rounded-3xl border border-neutral-800/85 mirror-panel p-5 sm:p-6 flex flex-col justify-between relative overflow-hidden">
                           <div className="absolute inset-0 z-0 pointer-events-none opacity-20 filter blur-xl scale-75" style={{ background: hottestSpotlight.themeColor }} />
 
                           <div className="relative z-10 space-y-4">
@@ -2222,12 +2182,7 @@ export default function App() {
                         </div>
                       </div>
 
-                      {/* MyAnimeList Live Portal Recruiter */}
-                      <div className="max-w-5xl mx-auto">
-                          <MyAnimeListPortal
-                            onPoolUpdated={fetchTotalCharactersCount}
-                          />
-                      </div>
+                      {/* MyAnimeList Live Portal Recruiter moved to navbar */}
 
                       {/* HOW TO PLAY */}
                       <div className="max-w-5xl mx-auto space-y-4 px-1 sm:px-0">
@@ -2265,15 +2220,6 @@ export default function App() {
                             </p>
                           </div>
                         </div>
-                        <div className="flex justify-center pt-1">
-                          <button
-                            type="button"
-                            onClick={() => setShowAbout(true)}
-                            className="rounded-lg border border-white/10 bg-white/5 px-4 py-1.5 text-[10px] font-mono font-black uppercase tracking-widest text-slate-300 transition-all hover:border-nexus-cyan/40 hover:bg-nexus-cyan/10 hover:text-white cursor-pointer"
-                          >
-                            About
-                          </button>
-                        </div>
                       </div>
                     </div>
                   )}
@@ -2292,7 +2238,7 @@ export default function App() {
               isMobileOnlineDraft ? (
                   <div className="flex min-h-0 w-full flex-1 flex-col gap-1.5 overflow-hidden touch-none">
                     <div className="h-[54px] w-full flex-shrink-0 px-1">
-                      <TeamSlots fitPreviews={fitPreviews}
+                      <TeamSlots
                         playerName={opponentOnlineName}
                         slots={opponentOnlineSlots}
                         skipUsed={opponentOnlineSkipUsed}
@@ -2318,7 +2264,7 @@ export default function App() {
                       </div>
 
                       <div className="min-h-0 min-w-[136px] overflow-hidden">
-                        <TeamSlots fitPreviews={fitPreviews}
+                        <TeamSlots
                           playerName={ownOnlineName}
                           slots={ownOnlineSlots}
                           skipUsed={ownOnlineSkipUsed}
@@ -2338,7 +2284,7 @@ export default function App() {
                   {(gameMode === "online-2p" || gameMode === "vs-ai") && (
                     <div className="w-full flex justify-center px-4 animate-fadeInDown">
                       <div className="w-full max-w-md">
-                        <TeamSlots fitPreviews={fitPreviews}
+                        <TeamSlots
                           playerName={gameMode === "vs-ai" ? "Smart AI" : (onlineSide === "p2" ? player1Name : player2Name)}
                           isAI={gameMode === "vs-ai"}
                           slots={onlineSide === "p2" ? p1Slots : p2Slots}
@@ -2355,7 +2301,7 @@ export default function App() {
                     {/* Left Column: P1 in Local 2P mode */}
                     {gameMode === "local-2p" && (
                       <div className="w-20 sm:w-24 flex-shrink-0 flex flex-col justify-self-stretch animate-fadeInLeft">
-                        <TeamSlots fitPreviews={fitPreviews}
+                        <TeamSlots
                           playerName={player1Name}
                           slots={p1Slots}
                           skipUsed={p1SkipUsed}
@@ -2391,7 +2337,7 @@ export default function App() {
 
                     {/* Right Column: Player or P2 Slots */}
                     <div className="w-20 sm:w-24 flex-shrink-0 flex flex-col justify-self-stretch animate-fadeInRight">
-                      <TeamSlots fitPreviews={fitPreviews}
+                      <TeamSlots
                         playerName={gameMode === "local-2p" ? player2Name : (onlineSide === "p2" ? player2Name : player1Name)}
                         slots={gameMode === "local-2p" ? p2Slots : (onlineSide === "p2" ? p2Slots : p1Slots)}
                         skipUsed={gameMode === "local-2p" ? p2SkipUsed : (onlineSide === "p2" ? p2SkipUsed : p1SkipUsed)}
@@ -2411,7 +2357,7 @@ export default function App() {
                 <div className="grid lg:grid-cols-12 gap-6 items-stretch">
                   {/* Left: P1 Roster */}
                   <div className="lg:col-span-3 flex flex-col justify-self-stretch">
-                    <TeamSlots fitPreviews={fitPreviews}
+                    <TeamSlots
                       playerName={player1Name}
                       slots={p1Slots}
                       skipUsed={p1SkipUsed}
@@ -2432,7 +2378,7 @@ export default function App() {
 
                   {/* Right: P2 Roster */}
                   <div className="lg:col-span-3 flex flex-col justify-self-stretch">
-                    <TeamSlots fitPreviews={fitPreviews}
+                    <TeamSlots
                       playerName={player2Name}
                       isAI={gameMode === "vs-ai"}
                       slots={p2Slots}
@@ -2726,7 +2672,7 @@ export default function App() {
                       </div>
                     )}
 
-                    <div className="grid grid-cols-3 max-w-md mx-auto items-center py-4 bg-neutral-900/40 rounded-2xl border border-white/5 font-mono">
+                    <div className="grid grid-cols-3 max-w-md mx-auto items-center py-4 mirror-panel-subtle rounded-2xl border border-white/5 font-mono">
                       <div className="text-center">
                         <p className="text-[9px] text-neutral-400 leading-none truncate">{player1Name}</p>
                         <p className="text-3xl font-black text-white mt-1">{resultData.player1Power}</p>
@@ -2859,7 +2805,7 @@ export default function App() {
 
                   {/* TEAM COMPARISON */}
                   <div className="grid md:grid-cols-2 gap-6 pt-4">
-                    <div className="p-4 rounded-xl border border-neutral-900 bg-neutral-950/60">
+                    <div className="p-4 rounded-xl border border-neutral-900 mirror-panel-subtle">
                       <h4 className="text-xs font-black font-mono uppercase tracking-widest text-violet-400 mb-3">
                         📋 {player1Name}'s Draft Team
                       </h4>
@@ -2889,7 +2835,7 @@ export default function App() {
                       </div>
                     </div>
 
-                    <div className="p-4 rounded-xl border border-neutral-900 bg-neutral-950/60">
+                    <div className="p-4 rounded-xl border border-neutral-900 mirror-panel-subtle">
                       <h4 className="text-xs font-black font-mono uppercase tracking-widest text-violet-400 mb-3">
                         📋 {player2Name}'s Draft Team
                       </h4>
@@ -3094,13 +3040,6 @@ export default function App() {
       {!(isMobile && view === "draft") && (
         <footer className="border-t border-neutral-900 bg-neutral-950/60 backdrop-blur-md py-4 px-6 text-center text-[10px] font-mono text-neutral-500 flex flex-col sm:flex-row justify-between items-center max-w-7xl w-full mx-auto gap-2 mt-auto">
           <span>© 2026 ANIME BATTLE. ALL RIGHTS RESERVED.</span>
-          <span 
-            onClick={() => setShowAbout(true)}
-            className="text-[#00e5ff] hover:text-[#60efff] drop-shadow-[0_0_12px_rgba(0,229,255,0.6)] transition-all cursor-pointer select-none font-bold tracking-wider"
-            title="Click to view Creator Card"
-          >
-            MADE FOR ANIME ENTHUSIASTS WORLDWIDE
-          </span>
         </footer>
       )}
     </div>

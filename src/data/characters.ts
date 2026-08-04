@@ -2,63 +2,6 @@ import { Character } from "../types";
 
 export const CHARACTERS: Character[] = [
   {
-    "id": "gojo",
-    "name": "Gojo Satoru",
-    "anime": "Jujutsu Kaisen",
-    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b127691-9zqh1xpIubn7.png",
-    "themeColor": "#06b6d4",
-    "stats": {
-      "strength": 95,
-      "speed": 98,
-      "iq": 96,
-      "defense": 100,
-      "magic": 99
-    },
-    "overallPower": 488,
-    "rarity": "Legendary",
-    "description": "The strongest Sorcerer alive, wielding the Limitless and Six Eyes. His domain expansion 'Infinite Void' leaves opponents completely paralyzed.",
-    "quote": "Don't worry, I'm the strongest.",
-    "signatureEmoji": "🌌"
-  },
-  {
-    "id": "naruto",
-    "name": "Naruto Uzumaki",
-    "anime": "Naruto Shippuden",
-    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b17-phjcWCkRuIhu.png",
-    "themeColor": "#f97316",
-    "stats": {
-      "strength": 94,
-      "speed": 92,
-      "iq": 85,
-      "defense": 90,
-      "magic": 98
-    },
-    "overallPower": 459,
-    "rarity": "Legendary",
-    "description": "The Seventh Hokage of Konoha, container of the Nine-Tailed Fox. Wielder of the Sage Mode, Rasenshuriken, and infinite determination.",
-    "quote": "I'm not gonna run away, I never go back on my word! That's my nindo: my ninja way!",
-    "signatureEmoji": "🦊"
-  },
-  {
-    "id": "luffy",
-    "name": "Monkey D. Luffy",
-    "anime": "One Piece",
-    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b40-MNypXsxSRb1R.png",
-    "themeColor": "#ef4444",
-    "stats": {
-      "strength": 96,
-      "speed": 94,
-      "iq": 80,
-      "defense": 95,
-      "magic": 93
-    },
-    "overallPower": 458,
-    "rarity": "Legendary",
-    "description": "Captain of the Straw Hat Pirates, possessing the Sun God Nika fruit. His Gear 5 turns battle into a rubber-hose cartoon of absolute freedom.",
-    "quote": "If you don't take risks, you can't create a future!",
-    "signatureEmoji": "👑"
-  },
-  {
     "id": "saitama",
     "name": "Saitama",
     "anime": "One Punch Man",
@@ -76,25 +19,6 @@ export const CHARACTERS: Character[] = [
     "description": "The hero who can defeat any opponent with a single punch. His physical capabilities transcend mortal understanding, leaving him bored with battle.",
     "quote": "I'm just a guy who's a hero for fun.",
     "signatureEmoji": "👊"
-  },
-  {
-    "id": "goku",
-    "name": "Son Goku",
-    "anime": "Dragon Ball Super",
-    "image": "https://s4.anilist.co/file/anilistcdn/character/large/246-wsRRr6z1kii8.png",
-    "themeColor": "#eab308",
-    "stats": {
-      "strength": 99,
-      "speed": 99,
-      "iq": 82,
-      "defense": 96,
-      "magic": 99
-    },
-    "overallPower": 475,
-    "rarity": "Legendary",
-    "description": "Earth's greatest protector Saiyan. Masters Ultra Instinct, enabling his body to react instantly to any attack without thinking.",
-    "quote": "I am the hope of the universe. I am the answer to all living things.",
-    "signatureEmoji": "🐉"
   },
   {
     "id": "vegeta",
@@ -290,45 +214,6 @@ export const CHARACTERS: Character[] = [
     "signatureEmoji": "⚔️"
   },
   {
-    "id": "levi",
-    "name": "Levi Ackerman",
-    "anime": "Attack on Titan",
-    "image": "https://cdn.myanimelist.net/images/characters/12/622510.jpg",
-    "malFallbackUrl": "https://cdn.myanimelist.net/images/characters/12/622510.jpg",
-    "themeColor": "#10b981",
-    "stats": {
-      "strength": 85,
-      "speed": 96,
-      "iq": 94,
-      "defense": 82,
-      "magic": 45
-    },
-    "overallPower": 402,
-    "rarity": "Epic",
-    "description": "Humanity's strongest soldier. Possesses lightning reflexes and ODM gear mastery. He handles titans like meat carving.",
-    "quote": "The only thing we're allowed to do... is to believe we won't regret the choice we made.",
-    "signatureEmoji": "🧹"
-  },
-  {
-    "id": "zoro",
-    "name": "Roronoa Zoro",
-    "anime": "One Piece",
-    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b62-S7oAeA9WInjV.png",
-    "themeColor": "#15803d",
-    "stats": {
-      "strength": 93,
-      "speed": 89,
-      "iq": 82,
-      "defense": 91,
-      "magic": 88
-    },
-    "overallPower": 443,
-    "rarity": "Epic",
-    "description": "The three-sword style master. Infuses his steel swords with advanced Conqueror's Haki to slice massive mountain targets.",
-    "quote": "If I die here, then I'm a man who could only go this far.",
-    "signatureEmoji": "🟢"
-  },
-  {
     "id": "tanjiro",
     "name": "Tanjiro Kamado",
     "anime": "Demon Slayer",
@@ -385,25 +270,6 @@ export const CHARACTERS: Character[] = [
     "description": "The rugged Captain of the Black Bulls. Swings dark magic-infused katanas to 'slash through dimensions', constantly breaking his limits.",
     "quote": "Surpass your limits. Right here. Right now.",
     "signatureEmoji": "🚬"
-  },
-  {
-    "id": "killua",
-    "name": "Killua Zoldyck",
-    "anime": "Hunter x Hunter",
-    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b27-Z5O02kQUydpT.jpg",
-    "themeColor": "#60a5fa",
-    "stats": {
-      "strength": 84,
-      "speed": 97,
-      "iq": 95,
-      "defense": 80,
-      "magic": 87
-    },
-    "overallPower": 443,
-    "rarity": "Epic",
-    "description": "Prodigal assassin of Zoldyck family. Transmutes Nen into crackling electricity, entering speedy Godspeed mode.",
-    "quote": "If I copy your assassination techniques, do I get your job?",
-    "signatureEmoji": "🍫"
   },
   {
     "id": "edward",
@@ -1047,24 +913,6 @@ export const CHARACTERS: Character[] = [
     "rarity": "Epic",
     "description": "Height: 160 cm (5'3\") Kurisu is a research member in Viktor Chondria University's Brain Research Program. Her age group matches that of third-year...",
     "signatureEmoji": "🔥"
-  },
-  {
-    "id": "ani_itachi_uchiha",
-    "name": "Itachi Uchiha",
-    "anime": "Naruto",
-    "image": "https://s4.anilist.co/file/anilistcdn/character/large/b14-9Kb1E5oel1ke.png",
-    "themeColor": "#14b8a6",
-    "stats": {
-      "strength": 80,
-      "speed": 83,
-      "iq": 61,
-      "defense": 75,
-      "magic": 69
-    },
-    "overallPower": 368,
-    "rarity": "Rare",
-    "description": "Height: 175 cm Itachi Uchiha is a missing-nin from Konohagakure, and a prominent member of Akatsuki, partnered with [Kisame...",
-    "signatureEmoji": "🌟"
   },
   {
     "id": "ani_makima",

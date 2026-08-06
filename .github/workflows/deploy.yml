@@ -57,6 +57,7 @@ jobs:
       - name: Build
         env:
           VITE_BASE_PATH: /anime/
+          VITE_API_BASE: ${{ vars.API_BASE }}
         run: npm run build
 
       - name: Show final artifact size

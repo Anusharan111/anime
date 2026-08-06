@@ -12,6 +12,7 @@
     "preview": "vite preview",
     "clean": "node -e \"const fs=require('fs');fs.rmSync('dist',{recursive:true,force:true});fs.rmSync('server.js',{force:true});\"",
     "lint": "tsc --noEmit",
+    "test": "node --test \"test/**/*.test.ts\"",
     "deploy": "vite build && npx gh-pages -d dist"
   },
   "dependencies": {

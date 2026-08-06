@@ -17,6 +17,7 @@ interface CharacterCardProps {
   onTapSelect?: () => void;
   isCompact?: boolean;
   onTouchDrop?: (roleId: string) => void;
+  sizeClass?: string;
 }
 
 export default function CharacterCard({
@@ -32,6 +33,7 @@ export default function CharacterCard({
   onTapSelect,
   isCompact = false,
   onTouchDrop,
+  sizeClass,
 }: CharacterCardProps) {
   
   const [isSpinning, setIsSpinning] = React.useState(false);
@@ -236,7 +238,7 @@ export default function CharacterCard({
 
   return (
     <div 
-      className={`relative ${isCompact ? 'w-[130px] h-[230px]' : 'w-[160px] h-[286px]'} sm:w-[260px] sm:h-[460px] md:w-[340px] md:h-[600px] perspective-1000 z-10 select-none group transition-transform duration-300 ${isSelected ? 'scale-105' : ''}`}
+      className={`relative ${sizeClass ?? `${isCompact ? 'w-[130px] h-[230px]' : 'w-[160px] h-[286px]'} sm:w-[260px] sm:h-[460px] md:w-[340px] md:h-[600px]`} perspective-1000 z-10 select-none group transition-transform duration-300 ${isSelected ? 'scale-105' : ''}`}
       style={{ touchAction: isMobileDevice && onTouchDrop ? "none" : undefined }}
       onMouseMove={handleMouseMove}
       onClick={handleCardTap}

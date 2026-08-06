@@ -25,12 +25,13 @@ import {
   LogIn
 } from "lucide-react";
 
-import { Character, MatchHistory, RoleId, SlottedTeam } from "./types";
+import { Character, MatchHistory, RoleId, SlottedTeam, BattleReport } from "./types";
 import { ROLE_CATEGORIES } from "./data/roles";
 import { CHARACTERS } from "./data/characters";
 import CharacterCard from "./components/CharacterCard";
 import TeamSlots from "./components/TeamSlots";
 import DeployModal from "./components/DeployModal";
+import CharacterSearch from "./components/CharacterSearch";
 import AnimeFeudGame from "./pages/AnimeFeudGame";
 import AnimeGuessWhoGame from "./pages/AnimeGuessWhoGame";
 import AnimePartyGames from "./pages/AnimePartyGames";
@@ -38,6 +39,8 @@ import LandingPage from "./LandingPage";
 import { sfx } from "./utils/audio";
 import { getRoleFitScore, getRoleSuitabilityLabel, getRoleFitMultiplier } from "./utils/roleUtils";
 import DraftView from "./components/DraftView";
+import { ratingDataset, RATING_ANIME_SET, getCharactersByAnime } from "./utils/ratingDataset";
+import { adaptRatingCharacters } from "./utils/ratingAdapter";
 
 type ViewState = "landing" | "draft" | "results" | "feud" | "guesswho" | "party";
 type GameHubMode = "hub" | "battle";
@@ -62,171 +65,37 @@ const getPageStateFromHash = (): { view: ViewState; selectedGameHubMode: GameHub
   return { view: "landing", selectedGameHubMode: "hub" };
 };
 
-type BattleReport = {
-  p1BattleScore: number;
-  p2BattleScore: number;
-  p1DuelWins: number;
-  p2DuelWins: number;
-  drawDuels: number;
-  rules: string[];
-  duels: Array<{
-    role: string;
-    label: string;
-    p1Name: string;
-    p2Name: string;
-    p1Score: number;
-    p2Score: number;
-    p1FitScore?: number;
-    p2FitScore?: number;
-    p1BaseScore?: number;
-    p2BaseScore?: number;
-    p1FitMultiplier?: number;
-    p2FitMultiplier?: number;
-    p1Suitability?: string;
-    p2Suitability?: string;
-    p1FitAdjustment?: number;
-    p2FitAdjustment?: number;
-    winner: "p1" | "p2" | "draw";
-    detail: string;
-  }>;
-  bonuses: {
-    p1: Record<string, number>;
-    p2: Record<string, number>;
-  };
-};
-
 const initialSlots: SlottedTeam = {
   captain: null,
   vice_captain: null,
-  tank: null,
+  strategist: null,
+  defender: null,
   healer: null,
-  support_1: null,
-  support_2: null,
+  support_speed: null,
+  support_power: null,
+  traitor: null,
 };
 
 import CharacterImage from "./components/CharacterImage";
 import { API_BASE } from "./config";
-
-const MIN_CHARACTERS_FOR_FULL_DRAFT = 14;
-type Rarity = Character["rarity"];
-
-const getAnimeKey = (anime: string) => anime.trim().toLowerCase();
-
-const buildAnimeCatalog = (characters: Character[]) => {
-  const labelsByKey = new Map<string, string>();
-  const countsByLabel: Record<string, number> = {};
-
-  for (const character of characters) {
-    if (!character.anime) continue;
-
-    const key = getAnimeKey(character.anime);
-    if (!labelsByKey.has(key)) {
-      labelsByKey.set(key, character.anime);
-    }
-
-    const label = labelsByKey.get(key)!;
-    countsByLabel[label] = (countsByLabel[label] || 0) + 1;
-  }
-
-  return {
-    animeList: [...labelsByKey.values()].sort(),
-    animeCounts: countsByLabel,
-  };
-};
-
-const getRequiredRarityForTeam = (slots: SlottedTeam): Rarity | null => {
-  const team = Object.values(slots).filter(Boolean) as Character[];
-  const hasLegendary = team.some((character) => character.rarity === "Legendary");
-  const hasEpic = team.some((character) => character.rarity === "Epic");
-
-  // Keep rarity variety as a light nudge only. Hard-forcing premium cards too often
-  // makes every draft start from the same famous-character pool.
-  if (Math.random() < 0.85) return null;
-
-  if (!hasLegendary) return "Legendary";
-  if (!hasEpic) return "Epic";
-  return null;
-};
+import {
+  MIN_RECOMMENDED_POOL,
+  ABSOLUTE_MIN,
+  DraftQuality,
+  getDraftQuality,
+  getDraftQualityLabel,
+  getAnimeKey,
+  buildAnimeCatalog,
+  getSuggestions,
+  dedupeCharacters,
+  DraftQueue,
+} from "./utils/draftPool";
 
 const normalizeCharacterName = (name: string) => name.toLowerCase().replace(/[^a-z0-9]/g, "");
-const normalizeAnimeName = (anime: string) => anime.trim().toLowerCase();
-
-const pickVariedCharacter = (availableCharacters: Character[], alreadySeenCharacters: Character[]) => {
-  const seenAnimeCounts = new Map<string, number>();
-  const seenNames = new Set(alreadySeenCharacters.map((character) => normalizeCharacterName(character.name)));
-
-  for (const character of alreadySeenCharacters) {
-    if (!character.anime) continue;
-    const animeKey = normalizeAnimeName(character.anime);
-    seenAnimeCounts.set(animeKey, (seenAnimeCounts.get(animeKey) || 0) + 1);
-  }
-
-  const uniqueCharacters = availableCharacters.filter(
-    (character) => !seenNames.has(normalizeCharacterName(character.name))
-  );
-  const pool = uniqueCharacters.length > 0 ? uniqueCharacters : availableCharacters;
-
-  const rarityWeight: Record<Rarity, number> = {
-    Common: 1.15,
-    Rare: 1.85,
-    Epic: 1.45,
-    Legendary: 1.05,
-  };
-
-  const weightedPool = pool.map((character) => {
-    const animeKey = character.anime ? normalizeAnimeName(character.anime) : "";
-    const animeRepeatCount = animeKey ? seenAnimeCounts.get(animeKey) || 0 : 0;
-    const animeWeight = 1 / (1 + animeRepeatCount * 1.6);
-    return {
-      character,
-      weight: rarityWeight[character.rarity] * animeWeight,
-    };
-  });
-
-  const totalWeight = weightedPool.reduce((total, item) => total + item.weight, 0);
-  let pickPoint = Math.random() * totalWeight;
-
-  for (const item of weightedPool) {
-    pickPoint -= item.weight;
-    if (pickPoint <= 0) return item.character;
-  }
-
-  return pool[Math.floor(Math.random() * pool.length)];
-};
-
-const getTeamDraftPower = (slots: SlottedTeam) => {
-  return Object.values(slots).reduce((total, character) => total + (character?.overallPower || 0), 0);
-};
-
-const getBalancedCharacterPool = (
-  availableCharacters: Character[],
-  activeSlots: SlottedTeam,
-  opponentSlots: SlottedTeam
-) => {
-  const activePower = getTeamDraftPower(activeSlots);
-  const opponentPower = getTeamDraftPower(opponentSlots);
-  const activePickCount = Object.values(activeSlots).filter(Boolean).length;
-  const opponentPickCount = Object.values(opponentSlots).filter(Boolean).length;
-
-  if (activePickCount === 0 || opponentPickCount === 0) return availableCharacters;
-  if (activePower <= opponentPower + 90) return availableCharacters;
-
-  const opponentAveragePower = opponentPower / opponentPickCount;
-  const maxAllowedPower = Math.max(330, Math.round(opponentAveragePower + 115));
-  const balancedPool = availableCharacters.filter((character) => character.overallPower <= maxAllowedPower);
-
-  return balancedPool.length >= 8 ? balancedPool : availableCharacters;
-};
-
-
-
-
-
-
 
 type BattleDuel = BattleReport["duels"][number];
 
-const CINEMATIC_ROLE_ORDER: RoleId[] = ["support_2", "support_1", "healer", "tank", "vice_captain", "captain"];
+const CINEMATIC_ROLE_ORDER: RoleId[] = ["traitor", "support_power", "support_speed", "healer", "defender", "strategist", "vice_captain", "captain"];
 
 const getCinematicDuels = (duels: BattleDuel[]) => {
   const order = new Map(CINEMATIC_ROLE_ORDER.map((role, index) => [role, index]));
@@ -235,6 +104,129 @@ const getCinematicDuels = (duels: BattleDuel[]) => {
     const bIndex = order.get(b.role as RoleId) ?? Number.MAX_SAFE_INTEGER;
     return aIndex - bIndex;
   });
+};
+
+const getCharacterPower = (char: Character | undefined): number => {
+  if (!char) return 0;
+  if (char.source === "rating-dataset" && char.rating != null) {
+    return char.rating;
+  }
+  return char.overallPower;
+};
+
+const generateLocalBattleReport = (
+  p1Name: string,
+  p2Name: string,
+  team1: Character[],
+  team2: Character[],
+  p1Slots: SlottedTeam,
+  p2Slots: SlottedTeam
+) => {
+  const roles: RoleId[] = ["captain", "vice_captain", "strategist", "defender", "healer", "support_speed", "support_power", "traitor"];
+  const roleLabels: Record<RoleId, string> = {
+    captain: "Captain",
+    vice_captain: "Vice Captain",
+    strategist: "Strategist",
+    defender: "Defender",
+    healer: "Healer",
+    support_speed: "Speed Support",
+    support_power: "Power Support",
+    traitor: "Traitor",
+  };
+
+  let p1DuelWins = 0;
+  let p2DuelWins = 0;
+  let drawDuels = 0;
+  let p1Power = 0;
+  let p2Power = 0;
+
+  const duels = roles.map((roleId) => {
+    const c1 = p1Slots[roleId];
+    const c2 = p2Slots[roleId];
+    const s1 = getCharacterPower(c1);
+    const s2 = getCharacterPower(c2);
+    let winner: "p1" | "p2" | "draw" = "draw";
+
+    if (roleId === "traitor") {
+      if (s1 > s2) { winner = "p2"; p2DuelWins++; }
+      else if (s2 > s1) { winner = "p1"; p1DuelWins++; }
+      else { drawDuels++; }
+      p1Power += s2;
+      p2Power += s1;
+    } else {
+      if (s1 > s2) { winner = "p1"; p1DuelWins++; }
+      else if (s2 > s1) { winner = "p2"; p2DuelWins++; }
+      else { drawDuels++; }
+      p1Power += s1;
+      p2Power += s2;
+    }
+
+    const p1IsRating = c1?.source === "rating-dataset" && c1.rating != null;
+    const p2IsRating = c2?.source === "rating-dataset" && c2.rating != null;
+
+    return {
+      role: roleId,
+      label: roleLabels[roleId],
+      p1Name: c1?.name || "Empty Slot",
+      p2Name: c2?.name || "Empty Slot",
+      p1Score: s1,
+      p2Score: s2,
+      p1FitScore: 85,
+      p2FitScore: 85,
+      p1BaseScore: s1,
+      p2BaseScore: s2,
+      p1FitMultiplier: 1.0,
+      p2FitMultiplier: 1.0,
+      p1Suitability: "Optimal",
+      p2Suitability: "Optimal",
+      p1FitAdjustment: 0,
+      p2FitAdjustment: 0,
+      winner,
+      p1IsRating,
+      p2IsRating,
+      p1Rating: c1?.rating,
+      p2Rating: c2?.rating,
+      detail: roleId === "traitor"
+        ? (winner === "draw"
+            ? "Traitor Draw! Both traitors gave equal power to enemy teams."
+            : `Traitor Betrayal! ${c1?.name || "P1"} (${s1} pts) gave points to P2, while ${c2?.name || "P2"} (${s2} pts) gave points to P1. ${winner === "p1" ? p1Name : p2Name} gained more points (${winner === "p1" ? s2 : s1} vs ${winner === "p1" ? s1 : s2}) and wins!`)
+        : `${winner === "draw" ? "Tie" : winner === "p1" ? c1?.name : c2?.name} won the ${roleLabels[roleId]} duel.`
+    };
+  });
+
+  const winnerId: "p1" | "p2" | "draw" = p1Power > p2Power ? "p1" : p2Power > p1Power ? "p2" : "draw";
+  const winner = winnerId === "p1" ? p1Name : winnerId === "p2" ? p2Name : "Draw";
+  const allChars = [...team1, ...team2];
+  const mvp = allChars.reduce((best, cur) => getCharacterPower(cur) > getCharacterPower(best) ? cur : best, team1[0] || CHARACTERS[0]);
+
+  const battleReport: BattleReport = {
+    p1Stats: { strength: 80, speed: 80, iq: 80, defense: 80, magic: 80, overall: p1Power },
+    p2Stats: { strength: 80, speed: 80, iq: 80, defense: 80, magic: 80, overall: p2Power },
+    p1BattleScore: p1Power,
+    p2BattleScore: p2Power,
+    p1DuelWins,
+    p2DuelWins,
+    drawDuels,
+    duels,
+    bonuses: {
+      p1: { teamPower: p1Power, duelControl: p1DuelWins * 10, completeTeam: 30 },
+      p2: { teamPower: p2Power, duelControl: p2DuelWins * 10, completeTeam: 30 },
+    },
+    rules: ["Role Duels: Each role competes directly.", "Traitor: Traitor score counts for enemy team."],
+  };
+
+  return {
+    player1Power: p1Power,
+    player2Power: p2Power,
+    p1SubStats: battleReport.p1Stats,
+    p2SubStats: battleReport.p2Stats,
+    winner,
+    winnerId,
+    mvp,
+    mvpReason: `${mvp.name} delivered peak tactical impact for the match victory.`,
+    commentary: `An intense battle between ${p1Name} and ${p2Name}! ${winner} secures the win.`,
+    battleReport,
+  };
 };
 
 const findCharacterForDuel = (slots: SlottedTeam, duelRole: string, fallbackName: string) => {
@@ -247,9 +239,8 @@ export default function App() {
   // Game Setup States
   const [view, setView] = useState<ViewState>("landing");
   const [category, setCategory] = useState<"all" | "choose">("all");
+  const [allAnime, setAllAnime] = useState(false);
   const [selectedAnimes, setSelectedAnimes] = useState<string[]>([]);
-  const [animeSearchQuery, setAnimeSearchQuery] = useState("");
-  const [isAnimeDropdownOpen, setIsAnimeDropdownOpen] = useState(false);
   const [importedCastAnimes, setImportedCastAnimes] = useState<Set<string>>(() => new Set());
   const [player1Name, setPlayer1Name] = useState("Hero Picker");
   const [player2Name, setPlayer2Name] = useState("AI Overlord");
@@ -278,6 +269,27 @@ export default function App() {
   const [p2CinematicScore, setP2CinematicScore] = useState(0);
   const [scoredClashIndex, setScoredClashIndex] = useState(-1);
 
+  // Screen position of each player's placement slot for the current duel role.
+  // Used to launch clash cards FROM the slot where the character was placed.
+  const [slotOrigins, setSlotOrigins] = useState<{ p1: { x: number; y: number } | null; p2: { x: number; y: number } | null }>({ p1: null, p2: null });
+  const clashOverlayRef = useRef<HTMLDivElement>(null);
+
+  const measureSlotOrigins = useCallback((duelRole: string | undefined) => {
+    if (!duelRole) return;
+    const overlay = clashOverlayRef.current;
+    const measure = (side: "p1" | "p2"): { x: number; y: number } | null => {
+      const el = document.querySelector<HTMLElement>(`[data-slot-side="${side}"][data-role-id="${duelRole}"]`);
+      if (!el || !overlay) return null;
+      const slotRect = el.getBoundingClientRect();
+      const overlayRect = overlay.getBoundingClientRect();
+      return {
+        x: slotRect.left + slotRect.width / 2 - (overlayRect.left + overlayRect.width / 2),
+        y: slotRect.top + slotRect.height / 2 - (overlayRect.top + overlayRect.height / 2),
+      };
+    };
+    setSlotOrigins({ p1: measure("p1"), p2: measure("p2") });
+  }, []);
+
   // Computes flat teams for compatibility with other game engines
   const p1Team = Object.values(p1Slots).filter(Boolean) as Character[];
   const p2Team = Object.values(p2Slots).filter(Boolean) as Character[];
@@ -295,6 +307,15 @@ export default function App() {
   const [isMobile, setIsMobile] = useState(false);
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
   const [isStartingGame, setIsStartingGame] = useState(false);
+  const [poolExhausted, setPoolExhausted] = useState(false);
+  const [importProgress, setImportProgress] = useState<{ title: string; current: number; total: number } | null>(null);
+
+  // Persistent draft pool (built once before the draft starts)
+  const draftPoolRef = useRef<Character[]>([]);
+  const draftQueueRef = useRef<DraftQueue | null>(null);
+  const importCacheRef = useRef<Map<string, Character[]>>(new Map());
+  const [poolSize, setPoolSize] = useState(0);
+  const [queueIndex, setQueueIndex] = useState(0);
 
   useEffect(() => {
     const checkWidth = () => {
@@ -408,6 +429,7 @@ export default function App() {
     if (cinematicStage === "hidden") return;
 
     if (cinematicStage === "intro") {
+      measureSlotOrigins(duels[0]?.role);
       const timer = window.setTimeout(() => setCinematicStage("launch"), 1100);
       return () => window.clearTimeout(timer);
     }
@@ -452,11 +474,12 @@ export default function App() {
 
       const timer = window.setTimeout(() => {
         setClashIndex((index) => index + 1);
+        measureSlotOrigins(duels[clashIndex + 1]?.role);
         setCinematicStage("launch");
       }, 1300);
       return () => window.clearTimeout(timer);
     }
-  }, [cinematicStage, clashIndex, gameMode, resultData?.battleReport, scoredClashIndex]);
+  }, [cinematicStage, clashIndex, gameMode, resultData?.battleReport, scoredClashIndex, measureSlotOrigins]);
 
   // Global States
   const [matchHistory, setMatchHistory] = useState<MatchHistory[]>([]);
@@ -473,33 +496,84 @@ export default function App() {
     return buildAnimeCatalog(CHARACTERS).animeList;
   });
   const selectedAnimeCharacterCount = selectedAnimes.reduce(
-    (total, anime) => total + (animeCounts[anime] || 0),
+    (total, anime) => {
+      if (RATING_ANIME_SET.has(anime)) {
+        return total + getCharactersByAnime(anime).length;
+      }
+      return total + (animeCounts[anime] || 0);
+    },
     0
   );
-  const hasEnoughSelectedCharacters =
-    category !== "choose" ||
-    (selectedAnimes.length > 0 && selectedAnimeCharacterCount >= MIN_CHARACTERS_FOR_FULL_DRAFT);
+  const draftQuality = getDraftQuality(selectedAnimeCharacterCount);
+  const canStartDraft = category === "all" || 
+    (category === "choose" && selectedAnimes.length > 0 && selectedAnimeCharacterCount >= ABSOLUTE_MIN);
+  const isPoolLimited = category === "choose" && selectedAnimeCharacterCount < MIN_RECOMMENDED_POOL && selectedAnimeCharacterCount >= ABSOLUTE_MIN;
 
   const importCastForAnime = async (anime: string) => {
     const key = getAnimeKey(anime);
-    if (importedCastAnimes.has(key)) return;
+    if (importCacheRef.current.has(key)) return importCacheRef.current.get(key) as Character[];
+    if (importedCastAnimes.has(key)) {
+      // Load from server-side pool if already imported this session
+      const latestPool = await fetchTotalCharactersCount();
+      if (latestPool) {
+        const cached = latestPool.filter((c) => c.anime && getAnimeKey(c.anime) === key);
+        if (cached.length > 0) {
+          importCacheRef.current.set(key, cached);
+          return cached;
+        }
+      }
+    }
 
+    setImportProgress({ title: anime, current: 0, total: 0 });
     const res = await fetch(`${API_BASE}/api/anime/import-cast`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ animeTitle: anime, limit: 40 }),
+      body: JSON.stringify({ animeTitle: anime, limit: 250 }),
     });
     const data = await res.json();
     if (!res.ok) {
+      setImportProgress(null);
       throw new Error(data.error || `Could not import ${anime}.`);
     }
+
+    const importedCharacters = data.totalImported ? await fetchTotalCharactersCount() : null;
+    const result: Character[] = importedCharacters
+      ? importedCharacters.filter((c) => c.anime && getAnimeKey(c.anime) === getAnimeKey(data.anime || anime))
+      : [];
 
     setImportedCastAnimes(prev => {
       const next = new Set(prev);
       next.add(key);
       return next;
     });
+    setImportProgress(null);
     await fetchTotalCharactersCount();
+
+    if (result.length > 0) {
+      importCacheRef.current.set(key, result);
+      return result;
+    }
+
+    return [];
+  };
+
+  const fetchRosterCharacters = async (anime: string): Promise<Character[]> => {
+    const key = getAnimeKey(anime);
+    if (importCacheRef.current.has(key)) return importCacheRef.current.get(key) as Character[];
+    try {
+      const all = await fetchTotalCharactersCount();
+      if (all) {
+        const cached = all.filter((c) => c.anime && getAnimeKey(c.anime) === key);
+        if (cached.length > 0) {
+          importCacheRef.current.set(key, cached);
+          return cached;
+        }
+      }
+      const chars = await importCastForAnime(anime);
+      return chars;
+    } catch {
+      return [];
+    }
   };
 
   const importStarterAllAnimeCasts = async () => {
@@ -537,12 +611,81 @@ export default function App() {
     return null;
   };
 
+  /**
+   * Build the persistent draft pool from the resolved anime filter.
+   * For the 9 rating-dataset anime, uses local dataset (no API).
+   * For other anime, fetches from API.
+   * Merges, dedupes by id, and shuffles once with Fisher-Yates.
+   */
+  const buildDraftPool = async (activeAnimes: string[], useAll: boolean): Promise<Character[]> => {
+    let characters: Character[] = [];
+
+    if (useAll || activeAnimes.length === 0) {
+      const all = await fetchTotalCharactersCount();
+      characters = all || [...CHARACTERS];
+    } else {
+      setImportProgress({ title: "", current: 0, total: activeAnimes.length });
+      
+      // Split anime into rating-dataset anime and API anime
+      const ratingAnimes = activeAnimes.filter((a) => RATING_ANIME_SET.has(a));
+      const apiAnimes = activeAnimes.filter((a) => !RATING_ANIME_SET.has(a));
+
+      // Add rating-dataset characters (local, instant)
+      for (const anime of ratingAnimes) {
+        const rawChars = getCharactersByAnime(anime);
+        const adapted = adaptRatingCharacters(rawChars);
+        characters.push(...adapted);
+      }
+
+      // Fetch API characters for other anime
+      for (let i = 0; i < apiAnimes.length; i++) {
+        const anime = apiAnimes[i];
+        setImportProgress({ title: anime, current: i + 1, total: apiAnimes.length });
+        const roster = await fetchRosterCharacters(anime);
+        characters.push(...roster);
+      }
+      setImportProgress(null);
+    }
+
+    // Deduplicate by id (case-sensitive) to guarantee uniqueness
+    const pool = dedupeCharacters(characters);
+    draftPoolRef.current = pool;
+    draftQueueRef.current = new DraftQueue(pool);
+    setPoolSize(pool.length);
+    setQueueIndex(0);
+    setPoolExhausted(false);
+    return pool;
+  };
+
+  /**
+   * Draw the next character from the persistent shuffled queue.
+   * No network calls — the queue was built once before the draft started.
+   */
+  const drawNext = async (): Promise<Character | null> => {
+    if (!draftQueueRef.current || draftQueueRef.current.remaining === 0) {
+      setPoolExhausted(true);
+      // Rebuild the pool (from the same anime set) and reshuffle
+      const activeAnimes = categoryRef.current === "choose" ? [...selectedAnimesRef.current] : [];
+      const useAll = allAnimeRef.current || categoryRef.current !== "choose";
+      await buildDraftPool(activeAnimes, useAll);
+      setPoolExhausted(false);
+      if (!draftQueueRef.current || draftQueueRef.current.remaining === 0) return null;
+    }
+
+    const character = draftQueueRef.current.draw() ?? null;
+    setQueueIndex((index) => index + 1);
+    return character;
+  };
+
   // Stable refs so async/socket callbacks always access latest values without stale closures
   const onlineRoomIdRef = useRef<string | null>(null);
   const onlineSideRef = useRef<"p1" | "p2" | null>(null);
   const gameModeRef = useRef<"vs-ai" | "local-2p" | "online-2p">("vs-ai");
   const pusherRef = useRef<Pusher | null>(null);
   const channelRef = useRef<any>(null);
+  const categoryRef = useRef<"all" | "choose">(category);
+  const selectedAnimesRef = useRef<string[]>(selectedAnimes);
+  const allAnimeRef = useRef<boolean>(allAnime);
   const pullNewCharacterRef = useRef<
     (excludes: string[], animes: string[], slots: SlottedTeam) => Promise<void>
   >(async () => {});
@@ -558,6 +701,9 @@ export default function App() {
   useEffect(() => { onlineRoomIdRef.current = onlineRoomId; }, [onlineRoomId]);
   useEffect(() => { onlineSideRef.current = onlineSide; }, [onlineSide]);
   useEffect(() => { gameModeRef.current = gameMode; }, [gameMode]);
+  useEffect(() => { categoryRef.current = category; }, [category]);
+  useEffect(() => { selectedAnimesRef.current = selectedAnimes; }, [selectedAnimes]);
+  useEffect(() => { allAnimeRef.current = allAnime; }, [allAnime]);
 
   const resetOnlineLobby = useCallback(() => {
     if (channelRef.current) {
@@ -693,14 +839,18 @@ export default function App() {
       importStarterAllAnimeCasts().catch(() => {});
 
       if (onlineSideRef.current === "p1") {
-        requestAnimationFrame(() => {
-          pullNewCharacterRef.current([], [], initialSlots);
+        // Build the persistent pool before the first draw (host side)
+        buildDraftPool([], true).then(() => {
+          requestAnimationFrame(() => {
+            pullNewCharacterRef.current([], [], initialSlots);
+          });
         });
       }
     });
 
     channel.bind("client-game-state-updated", (state: any) => {
       console.log("client-game-state-updated received:", state);
+      if (state.winnerCalculated !== undefined) winnerCalculatedRef.current = state.winnerCalculated;
       if (state.round !== undefined) setRound(state.round);
       if (state.activeTurn !== undefined) setActiveTurn(state.activeTurn);
       if (state.p1Slots !== undefined) setP1Slots(state.p1Slots);
@@ -714,6 +864,7 @@ export default function App() {
       if (state.view !== undefined) setView(state.view);
       if (state.loadingResult !== undefined) setLoadingResult(state.loadingResult);
       if (statsMatch(state.resultData)) {
+        winnerCalculatedRef.current = true;
         setResultData(state.resultData);
         setCinematicStage("intro");
         setClashIndex(0);
@@ -766,8 +917,11 @@ export default function App() {
       setIsDeployModalOpen(false);
       importStarterAllAnimeCasts().catch(() => {});
 
-      requestAnimationFrame(() => {
-        pullNewCharacterRef.current([], [], initialSlots);
+      // Build the persistent pool before the first draw
+      buildDraftPool([], true).then(() => {
+        requestAnimationFrame(() => {
+          pullNewCharacterRef.current([], [], initialSlots);
+        });
       });
     }, 500);
   };
@@ -787,9 +941,9 @@ export default function App() {
     };
   }, []);
 
-  // Auto-calculate winner in online mode when both teams are full (driven by P1)
+  // Auto-calculate winner in online mode when both teams are full (driven by either side)
   useEffect(() => {
-    if (gameMode === "online-2p" && onlineSide === "p1") {
+    if (gameMode === "online-2p") {
       const p1Full = Object.values(p1Slots).every(v => v !== null);
       const p2Full = Object.values(p2Slots).every(v => v !== null);
       if (p1Full && p2Full && view === "draft" && !winnerCalculatedRef.current) {
@@ -799,10 +953,9 @@ export default function App() {
         calculateWinner(team1, team2, p1Slots, p2Slots);
       }
     } else {
-      // Reset when not in online P1 mode
       winnerCalculatedRef.current = false;
     }
-  }, [p1Slots, p2Slots, gameMode, onlineSide, view]);
+  }, [p1Slots, p2Slots, gameMode, view]);
 
   const statsMatch = (data: any) => {
     return data && data.winnerId;
@@ -910,39 +1063,31 @@ export default function App() {
         isCardFlipped: true,
       });
 
+      // Build the persistent pool before the first draw
+      await buildDraftPool([], true);
       // Pull first card for P1
       pullNewCharacter([], [], initialSlots);
       return;
     }
 
-    if (category === "choose" && selectedAnimes.length === 0) {
+    if (category === "choose" && selectedAnimes.length === 0 && !allAnime) {
       return;
     }
 
     setIsStartingGame(true);
-    try {
-      const targets = category === "choose"
-        ? selectedAnimes
-        : ["Jujutsu Kaisen", "One Piece", "Attack on Titan", "Naruto", "Bleach", "Demon Slayer: Kimetsu no Yaiba"];
-
-      // Parallelize imports to save time
-      await Promise.all(targets.map(anime => importCastForAnime(anime)));
-    } catch (error) {
-      console.warn("Auto import failed", error);
-    }
-
-    const latestPool = await fetchTotalCharactersCount();
-    setIsStartingGame(false);
-
-    const latestCounts = latestPool ? buildAnimeCatalog(latestPool).animeCounts : animeCounts;
-    const latestSelectedCount = selectedAnimes.reduce(
-      (total, anime) => total + (latestCounts[anime] || 0),
-      0
-    );
-
-    if (category === "choose" && latestSelectedCount < MIN_CHARACTERS_FOR_FULL_DRAFT) {
+    // Guard against starting when below absolute minimum
+    if (category === "choose" && !allAnime && selectedAnimeCharacterCount < ABSOLUTE_MIN) {
+      setIsStartingGame(false);
       return;
     }
+
+    // Build the persistent draft pool once before the draft starts
+    const activeAnimes = category === "choose" ? [...selectedAnimes] : [];
+    await buildDraftPool(
+      activeAnimes,
+      allAnime || category === "all" || activeAnimes.length === 0
+    );
+    setIsStartingGame(false);
 
     setGameMode(mode);
     setPlayer1Name(player1Name.trim() || "Player 1");
@@ -961,34 +1106,18 @@ export default function App() {
     resetCinematicClash();
     setIsDeployModalOpen(false);
 
-    // Resolve the final active anime list ONCE here and pass it through
-    // the entire game flow — never re-read from state inside async callbacks
-    let activeAnimes: string[] = [];
-    if (category === "choose") {
-      activeAnimes = [...selectedAnimes];
-      // Handle edge case: category is "choose" but user typed a query without selecting
-      if (activeAnimes.length === 0 && animeSearchQuery.trim()) {
-        const query = animeSearchQuery.trim();
-        const match = animeList.find(a => a.toLowerCase().includes(query.toLowerCase()));
-        const resolved = match || query;
-        activeAnimes = [resolved];
-        setSelectedAnimes(activeAnimes);
-      }
-    }
-
-    // Pass activeAnimes explicitly — avoids stale state reads in async callbacks
+    // Draw the first character from the persistent queue
     pullNewCharacter([], activeAnimes, initialSlots);
     setView("draft");
   };
 
   /**
-   * Pull a random character from the API.
+   * Draw the next character from the persistent shuffled queue.
+   * No network calls — the queue was built once before the draft started.
    *
    * @param currentExcludes - IDs already picked/skipped this game
-   * @param activeAnimes    - The resolved anime filter for this game session.
-   *                          Always pass explicitly — never rely on reading
-   *                          `category`/`selectedAnimes` state inside this function,
-   *                          because React state closures inside async code can be stale.
+   * @param activeAnimes    - The resolved anime filter for this game session
+   * @param targetSlots     - The slots of the player drawing
    */
   const pullNewCharacter = async (
     currentExcludes: string[],
@@ -998,75 +1127,28 @@ export default function App() {
     setIsCardFlipped(true); // Flip card back to hide while loading
     sfx.playCardSpin();
     setActiveCharacter(null); // Clear previous to prevent visual artifacts
-    const requiredRarity = getRequiredRarityForTeam(targetSlots);
-    const opponentSlots = activeTurn === "p1" ? p2Slots : p1Slots;
-    const activePower = getTeamDraftPower(targetSlots);
-    const opponentPower = getTeamDraftPower(opponentSlots);
-    const activePickCount = Object.values(targetSlots).filter(Boolean).length;
-    const opponentPickCount = Object.values(opponentSlots).filter(Boolean).length;
 
-    try {
-      let url = `${API_BASE}/api/characters/random?exclude=${currentExcludes.join(",")}&activePower=${activePower}&opponentPower=${opponentPower}&activePickCount=${activePickCount}&opponentPickCount=${opponentPickCount}`;
-      if (activeAnimes.length > 0) {
-        url += `&animes=${encodeURIComponent(activeAnimes.join(","))}`;
-      }
-      if (requiredRarity) {
-        url += `&rarity=${encodeURIComponent(requiredRarity)}`;
-      }
-      const res = await fetch(url);
-      if (!res.ok) throw new Error("API signal lost");
+    const character = await drawNext();
 
-      const character = await res.json();
-      const reveal = () => {
-        setActiveCharacter(character);
-        setIsCardFlipped(true);
-        if (gameModeRef.current === "online-2p") {
-          syncGameState({ activeCharacter: character, isCardFlipped: true });
-        }
-      };
+    if (!character) {
+      // Queue empty and rebuild failed — keep the card hidden
+      setActiveCharacter(null);
+      setIsCardFlipped(true);
+      return;
+    }
+
+    const reveal = () => {
+      setActiveCharacter(character);
+      setIsCardFlipped(true);
       if (gameModeRef.current === "online-2p") {
-        reveal();
-      } else {
-        setTimeout(reveal, 300);
+        syncGameState({ activeCharacter: character, isCardFlipped: true });
       }
-    } catch (er) {
-      // Client-side fallback if network cuts out
-      let available = CHARACTERS.filter((c) => !currentExcludes.includes(c.id));
-      if (activeAnimes.length > 0) {
-        const filtered = available.filter((c) =>
-          c.anime && activeAnimes.some(anime => c.anime.toLowerCase().includes(anime.toLowerCase()))
-        );
-        available = filtered;
-      }
-      if (requiredRarity) {
-        const rarityFiltered = available.filter((c) => c.rarity === requiredRarity);
-        if (rarityFiltered.length > 0) {
-          available = rarityFiltered;
-        }
-      }
-      available = getBalancedCharacterPool(available, targetSlots, opponentSlots);
-      const alreadySeenCharacters = [
-        ...Object.values(p1Slots),
-        ...Object.values(p2Slots),
-        ...CHARACTERS.filter((character) => currentExcludes.includes(character.id)),
-      ].filter(Boolean) as Character[];
-      const backup = pickVariedCharacter(available, alreadySeenCharacters);
-      if (!backup) {
-        setActiveCharacter(null);
-        return;
-      }
-      const revealBackup = () => {
-        setActiveCharacter(backup);
-        setIsCardFlipped(true);
-        if (gameModeRef.current === "online-2p") {
-          syncGameState({ activeCharacter: backup, isCardFlipped: true });
-        }
-      };
-      if (gameModeRef.current === "online-2p") {
-        revealBackup();
-      } else {
-        setTimeout(revealBackup, 300);
-      }
+    };
+
+    if (gameModeRef.current === "online-2p") {
+      reveal();
+    } else {
+      setTimeout(reveal, 300);
     }
   };
 
@@ -1139,7 +1221,7 @@ export default function App() {
 
       const nextTeam = Object.values(nextSlots).filter(Boolean) as Character[];
 
-      if (round < 6) {
+      if (round < 8) {
         setRound(round + 1);
         setActiveTurn("p1");
         pullNewCharacter(updatedExcludes, activeAnimes, p1Slots);
@@ -1200,6 +1282,11 @@ export default function App() {
     const nextExcludes = [...excludedIds, activeCharacter.id];
     setExcludedIds(nextExcludes);
     setMustPick(true); // Player must pick the next revealed fighter
+
+    // Move the skipped character to the END of the queue so it naturally
+    // returns only after the remaining queue has been processed.
+    draftQueueRef.current?.skipToEnd(activeCharacter);
+
     pullNewCharacter(nextExcludes, activeAnimes, activeTurn === "p1" ? p1Slots : p2Slots);
 
     if (gameMode === "online-2p") {
@@ -1241,51 +1328,17 @@ export default function App() {
   ) => {
     setAiIsProcessing(true);
 
-    // Helper: fetch a random character respecting the anime filter
-    const fetchCandidate = async (excludes: string[], targetSlots: SlottedTeam): Promise<Character> => {
-      const requiredRarity = getRequiredRarityForTeam(targetSlots);
-      const opponentSlots = activeTurn === "p1" ? p2Slots : p1Slots;
-      const activePower = getTeamDraftPower(targetSlots);
-      const opponentPower = getTeamDraftPower(opponentSlots);
-      const activePickCount = Object.values(targetSlots).filter(Boolean).length;
-      const opponentPickCount = Object.values(opponentSlots).filter(Boolean).length;
-      try {
-        let url = `${API_BASE}/api/characters/random?exclude=${excludes.join(",")}&activePower=${activePower}&opponentPower=${opponentPower}&activePickCount=${activePickCount}&opponentPickCount=${opponentPickCount}`;
-        if (activeAnimes.length > 0) {
-          url += `&animes=${encodeURIComponent(activeAnimes.join(","))}`;
-        }
-        if (requiredRarity) {
-          url += `&rarity=${encodeURIComponent(requiredRarity)}`;
-        }
-        const res = await fetch(url);
-        if (res.ok) return await res.json();
-      } catch (_) { }
-
-      // Fallback to local pool
-      let available = CHARACTERS.filter((c) => !excludes.includes(c.id));
-      if (activeAnimes.length > 0) {
-        const filtered = available.filter((c) =>
-          c.anime && activeAnimes.some(anime => c.anime.toLowerCase().includes(anime.toLowerCase()))
-        );
-        available = filtered;
-      }
-      if (requiredRarity) {
-        const rarityFiltered = available.filter((c) => c.rarity === requiredRarity);
-        if (rarityFiltered.length > 0) {
-          available = rarityFiltered;
-        }
-      }
-      available = getBalancedCharacterPool(available, targetSlots, opponentSlots);
-      const alreadySeenCharacters = [
-        ...Object.values(p1Slots),
-        ...Object.values(p2Slots),
-        ...CHARACTERS.filter((character) => excludes.includes(character.id)),
-      ].filter(Boolean) as Character[];
-      return pickVariedCharacter(available, alreadySeenCharacters) || CHARACTERS[0];
+    // Helper: draw the next character from the persistent queue (no network)
+    const fetchCandidate = async (excludes: string[], targetSlots: SlottedTeam): Promise<Character | null> => {
+      return drawNext();
     };
 
     setTimeout(async () => {
       const candidate = await fetchCandidate(currentExcludes, currentAiSlots);
+      if (!candidate) {
+        setAiIsProcessing(false);
+        return;
+      }
 
       setActiveCharacter(candidate);
       setIsCardFlipped(true);
@@ -1299,13 +1352,18 @@ export default function App() {
           const shouldSkip = candidate.overallPower < decisionCriteria && !p2SkipUsed;
 
           if (shouldSkip) {
-            // AI decides to skip
+            // AI decides to skip — move candidate to end of queue
             setP2SkipUsed(true);
+            draftQueueRef.current?.skipToEnd(candidate);
             const nextExcludes = [...currentExcludes, candidate.id];
             setExcludedIds(nextExcludes);
 
             setTimeout(async () => {
               const forcedCandidate = await fetchCandidate(nextExcludes, currentAiSlots);
+              if (!forcedCandidate) {
+                setAiIsProcessing(false);
+                return;
+              }
 
               setActiveCharacter(forcedCandidate);
               setIsCardFlipped(true);
@@ -1360,7 +1418,7 @@ export default function App() {
     currentRound: number
   ) => {
     setAiIsProcessing(false);
-    if (currentRound < 6) {
+    if (currentRound < 8) {
       const nextRound = currentRound + 1;
       setRound(nextRound);
       setActiveTurn("p1");
@@ -1378,11 +1436,14 @@ export default function App() {
     team1Slots: SlottedTeam = p1Slots,
     team2Slots: SlottedTeam = p2Slots
   ) => {
+    winnerCalculatedRef.current = true;
     setLoadingResult(true);
     sfx.playShowdown();
     if (gameMode === "online-2p") {
-      syncGameState({ loadingResult: true });
+      syncGameState({ loadingResult: true, winnerCalculated: true });
     }
+
+    let stats: any = null;
 
     try {
       const res = await fetch(`${API_BASE}/api/draft/calculate`, {
@@ -1399,52 +1460,71 @@ export default function App() {
       });
 
       if (res.ok) {
-        const stats = await res.json();
-        setResultData(stats);
-        
-        // Start cinematic sequence
-        setCinematicStage("intro");
-        setClashIndex(0);
-        setScoredClashIndex(-1);
-        setP1CinematicScore(0);
-        setP2CinematicScore(0);
-        
-        if (gameMode === "online-2p") {
-          syncGameState({ resultData: stats, loadingResult: false });
-        }
-
-        await fetch(`${API_BASE}/api/draft/save`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            player1Name,
-            player2Name,
-            player1Team: team1,
-            player2Team: team2,
-            player1Power: stats.player1Power,
-            player2Power: stats.player2Power,
-            winner: stats.winner,
-            mvp: stats.mvp,
-            commentary: stats.commentary,
-            createdAt: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-          }),
-        });
-
-        fetchMatchHistory();
+        stats = await res.json();
       }
     } catch (e) {
-      console.error("Match winner calculation error", e);
-      if (gameMode === "online-2p") {
-        syncGameState({ loadingResult: false });
-      }
-    } finally {
-      setLoadingResult(false);
+      console.warn("API calculate failed, using local fallback:", e);
     }
+
+    if (!stats || !stats.battleReport) {
+      stats = generateLocalBattleReport(player1Name, player2Name, team1, team2, team1Slots, team2Slots);
+    }
+
+    setResultData(stats);
+    setActiveCharacter(null);
+    setIsDeployModalOpen(false);
+
+    // Start cinematic sequence
+    setCinematicStage("intro");
+    setClashIndex(0);
+    setScoredClashIndex(-1);
+    setP1CinematicScore(0);
+    setP2CinematicScore(0);
+
+    if (gameMode === "online-2p") {
+      syncGameState({ resultData: stats, loadingResult: false, winnerCalculated: true, activeCharacter: null });
+    }
+
+    try {
+      await fetch(`${API_BASE}/api/draft/save`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          player1Name,
+          player2Name,
+          player1Team: team1,
+          player2Team: team2,
+          player1Power: stats.player1Power,
+          player2Power: stats.player2Power,
+          winner: stats.winner,
+          mvp: stats.mvp,
+          commentary: stats.commentary,
+          createdAt: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+        }),
+      });
+
+      fetchMatchHistory();
+    } catch (_) {}
+
+    setLoadingResult(false);
   };
 
   const renderDraftCardArea = () => {
     return (
       <>
+        {poolExhausted && (
+          <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-black/70 backdrop-blur-md rounded-3xl border border-nexus-cyan/20">
+            <div className="space-y-4 text-center p-4">
+              <RefreshCw className="w-10 h-10 text-nexus-cyan animate-spin mx-auto" style={{ animationDuration: '1.5s' }} />
+              <div className="space-y-1">
+                <p className="text-sm font-mono text-nexus-cyan font-black uppercase tracking-[0.25em] animate-pulse">
+                  Character Pool Exhausted
+                </p>
+                <p className="text-[10px] text-slate-400 font-mono">Reshuffling Characters...</p>
+              </div>
+            </div>
+          </div>
+        )}
         {activeCharacter ? (
           <div className="flex flex-col items-center gap-4 sm:gap-6 w-full animate-fadeIn relative z-10">
             {aiIsProcessing && (
@@ -1579,7 +1659,7 @@ export default function App() {
   const opponentOnlineName = ownOnlineSide === "p2" ? player1Name : player2Name;
 
   return (
-    <div className={`${isMobileDraft ? "h-[100dvh] overflow-hidden" : "min-h-screen overflow-x-clip"} ${view === "landing" ? "bg-black" : "bg-[#050816]"} text-slate-100 flex flex-col justify-between font-sans relative selection:bg-nexus-cyan/30`}>
+    <div className={`${view === "draft" ? "h-[100dvh] overflow-hidden" : "min-h-screen overflow-x-clip"} ${view === "landing" ? "bg-black" : "bg-[#050816]"} text-slate-100 flex flex-col justify-between font-sans relative selection:bg-nexus-cyan/30`}>
       {/* 🌌 Animated Background */}
       {view !== "landing" && (
         <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
@@ -1625,7 +1705,7 @@ export default function App() {
       </header>
 
       {/* MAIN CONTENT AREA */}
-      <main className={`flex-1 max-w-7xl w-full mx-auto px-1 py-2 sm:p-6 flex flex-col justify-center relative z-10 ${isMobileDraft ? "min-h-0 overflow-hidden" : ""}`}>
+      <main className={`flex-1 max-w-7xl w-full mx-auto px-1 py-2 sm:p-6 flex flex-col justify-center relative z-10 ${view === "draft" ? "min-h-0 overflow-hidden" : ""}`}>
         <AnimatePresence mode="wait">
           {/* 1. LANDING PAGE VIEW */}
           {view === "landing" && (
@@ -1655,8 +1735,13 @@ export default function App() {
                       <div className="space-y-2">
                         <h3 className="text-xl font-black text-white uppercase tracking-widest nexus-glow-text">Syncing Multiverse</h3>
                         <p className="text-xs font-mono text-nexus-cyan/70 font-black uppercase tracking-[0.2em] animate-pulse">
-                          Recruiting Tactical Assets...
+                          {importProgress?.title ? `Importing ${importProgress.title} Characters...` : "Recruiting Tactical Assets..."}
                         </p>
+                        {importProgress && importProgress.total > 0 && (
+                          <p className="text-[10px] text-slate-400 font-mono">
+                            {importProgress.current} / {importProgress.total} anime imported
+                          </p>
+                        )}
                         <p className="text-[10px] text-slate-500 font-mono max-w-[200px] mx-auto">Connecting to AniList database to fetch the latest character stats</p>
                       </div>
                     </div>
@@ -1909,91 +1994,98 @@ export default function App() {
                               </div>
                             )}
 
-                            {/* Anime Filter */}
+{/* Anime Filter */}
                             {(gameMode !== "online-2p" || onlineAction === "create" || (onlineRoomId && onlineSide === "p1")) && (
-                              <div className="space-y-2 pt-1 animate-fadeIn">
-                                <label className="text-[10px] font-mono text-neutral-400 tracking-widest uppercase">
+                              <div className="space-y-3 pt-1 animate-fadeIn">
+                                <label className="text-[10px] font-mono text-neutral-400 tracking-widest uppercase flex items-center gap-2">
                                   CHARACTER POOL FILTER
                                 </label>
-                                <div className="grid grid-cols-2 gap-3">
+                                <div className="flex gap-2 items-center">
                                   <button
+                                    type="button"
                                     onClick={() => {
+                                      setAllAnime(true);
                                       setCategory("all");
                                       setSelectedAnimes([]);
-                                      setAnimeSearchQuery("");
-                                      importStarterAllAnimeCasts();
+                                      importStarterAllAnimeCasts().catch(console.warn);
                                     }}
-                                    className={`py-2.5 px-3 rounded-xl border text-[10px] font-black uppercase tracking-wide transition-all cursor-pointer ${category === "all"
-                                        ? "border-purple-500 bg-purple-500/10 text-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.25)]"
-                                        : "border-neutral-800 bg-neutral-900/30 text-neutral-400 hover:border-neutral-700"
-                                      }`}
+                                    className={`px-2 py-1 rounded text-xs font-mono ${allAnime ? "bg-purple-600 text-white" : "bg-neutral-800 border border-neutral-700 hover:border-amber-500 hover:bg-amber-500/10"}`}
                                   >
-                                    🌐 All Anime
+                                    All Anime
                                   </button>
                                   <button
-                                    onClick={() => setCategory("choose")}
-                                    className={`py-2.5 px-3 rounded-xl border text-[10px] font-black uppercase tracking-wide transition-all cursor-pointer ${category === "choose"
-                                        ? "border-purple-500 bg-purple-500/10 text-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.25)]"
-                                        : "border-neutral-800 bg-neutral-900/30 text-neutral-400 hover:border-neutral-700"
-                                      }`}
+                                    type="button"
+                                    onClick={() => {
+                                      setAllAnime(false);
+                                      setCategory("choose");
+                                    }}
+                                    className={`px-2 py-1 rounded text-xs font-mono ${!allAnime ? "bg-purple-600 text-white" : "bg-neutral-800 border border-neutral-700 hover:border-amber-500 hover:bg-amber-500/10"}`}
                                   >
-                                    🎯 Choose Anime
+                                    Choose Anime
                                   </button>
                                 </div>
 
-                                {category === "choose" && (
-                                  <div className="space-y-1.5 pt-1 relative">
-                                    <input
-                                      id="inp-anime-search"
-                                      type="text"
-                                      value={animeSearchQuery}
-                                      onFocus={() => setIsAnimeDropdownOpen(true)}
-                                      onBlur={() => {
-                                        setTimeout(() => setIsAnimeDropdownOpen(false), 200);
-                                      }}
-                                      onChange={(e) => {
-                                        setAnimeSearchQuery(e.target.value);
-                                      }}
-                                      placeholder="Select or search anime… e.g. Naruto, Bleach"
-                                      className="w-full bg-neutral-900/50 border border-neutral-800 rounded-xl py-2.5 px-3.5 text-xs text-white font-mono font-bold focus:border-purple-500 focus:outline-none cursor-pointer"
-                                    />
-                                    {isAnimeDropdownOpen && (
-                                      <div className="absolute z-20 left-0 right-0 top-full mt-1 bg-neutral-900 border border-neutral-700 rounded-xl max-h-40 overflow-y-auto shadow-2xl">
-                                        {animeList
-                                          .filter((a) => !animeSearchQuery.trim() || a.toLowerCase().includes(animeSearchQuery.toLowerCase()))
-                                          .map((anime) => (
-                                            <button
-                                              key={anime}
-                                              onMouseDown={() => {
-                                                if (!selectedAnimes.includes(anime)) {
+
+                                {!allAnime && category === "choose" && (
+                                  <div className="space-y-2">
+                                    {/* Draft Quality Indicator */}
+                                    <div className="flex items-center justify-between gap-2 px-1">
+                                      <div className="flex items-center gap-1.5">
+                                        <span className={`text-[10px] font-mono font-bold ${draftQuality === "excellent" ? "text-green-400" : draftQuality === "good" ? "text-green-400" : draftQuality === "recommended" ? "text-yellow-400" : draftQuality === "limited" ? "text-orange-400" : draftQuality === "very-small" ? "text-red-400" : "text-red-400"}`}>
+                                          {getDraftQualityLabel(draftQuality)}
+                                        </span>
+                                        <span className="hidden text-[9px] text-slate-500 font-mono">Pool: {selectedAnimeCharacterCount} characters</span>
+                                      </div>
+                                      <div className="h-2 flex-1 bg-neutral-800 rounded-full overflow-hidden max-w-[150px]">
+                                        <div 
+                                          className={`h-full rounded-full transition-all ${draftQuality === "excellent" ? "bg-green-500" : draftQuality === "good" ? "bg-green-500" : draftQuality === "recommended" ? "bg-yellow-500" : draftQuality === "limited" ? "bg-orange-500" : "bg-red-500"}`}
+                                          style={{ width: `${Math.min(100, (selectedAnimeCharacterCount / 100) * 100)}%` }}
+                                        />
+                                      </div>
+                                    </div>
+
+                                    {/* Suggestions when pool < 50 */}
+                                    {selectedAnimeCharacterCount < MIN_RECOMMENDED_POOL && selectedAnimes.length > 0 && (
+                                      <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-3 text-[9px] font-mono text-amber-300">
+                                        <div className="flex items-center gap-1.5 mb-1.5">
+                                          <AlertCircle className="w-3 h-3" />
+                                          <span>Limited Character Variety ({selectedAnimeCharacterCount}/{MIN_RECOMMENDED_POOL})</span>
+                                        </div>
+                                        <p className="text-slate-400 mb-2">Add these anime for better variety:</p>
+                                        <div className="flex flex-wrap gap-1.5">
+                                          {getSuggestions(animeCounts, selectedAnimes, 3).map(({ anime, count }) => (
+                                              <button
+                                                key={anime}
+                                                onClick={() => {
                                                   setSelectedAnimes((prev) => [...prev, anime]);
-                                                  importCastForAnime(anime)
-                                                    .catch((error) => {
-                                                      console.warn("Auto import failed", error);
-                                                    });
-                                                }
-                                                setAnimeSearchQuery("");
-                                                setIsAnimeDropdownOpen(false);
-                                              }}
-                                              className={`w-full text-left px-3.5 py-2 text-xs font-mono hover:bg-purple-500/15 transition-colors cursor-pointer ${selectedAnimes.includes(anime) ? "text-purple-400 bg-purple-500/10" : "text-slate-200"
-                                                }`}
-                                            >
-                                              {anime}
-                                            </button>
-                                          ))}
-                                        {animeList.filter((a) => !animeSearchQuery.trim() || a.toLowerCase().includes(animeSearchQuery.toLowerCase())).length === 0 && (
-                                          <p className="px-3.5 py-2 text-[10px] text-neutral-500 font-mono">No anime found matching "{animeSearchQuery}"</p>
-)}
+                                                  importCastForAnime(anime).catch(console.warn);
+                                                }}
+                                                className="px-2 py-1 bg-neutral-800 border border-neutral-700 rounded-lg hover:border-amber-500 hover:bg-amber-500/10 transition-colors cursor-pointer text-[9px] font-mono"
+                                              >
+                                                +{anime}
+                                              </button>
+                                            ))}
+                                        </div>
                                       </div>
                                     )}
-                                    {selectedAnimes.length > 0 && (
+                                    {/* Anime Search & Selection (Rating Dataset) */}
+                                    <CharacterSearch
+                                      onSelectAnime={(animeName) => {
+                                        setSelectedAnimes((prev) => [...new Set([...prev, animeName])]);
+                                      }}
+                                      placeholder="Search anime… e.g. One Piece, Naruto, Dragon Ball"
+                                      selectedAnimes={selectedAnimes}
+                                      animeList={animeList}
+                                    />
+                                     
+                                     {selectedAnimes.length > 0 && (
                                       <div className="flex flex-wrap gap-1.5 mt-2">
                                         {selectedAnimes.map((anime) => (
                                           <span
                                             key={anime}
                                             className="inline-flex items-center gap-1.5 text-[10px] font-mono font-bold text-purple-400 bg-purple-500/10 border border-purple-500/30 px-2.5 py-1 rounded-lg"
                                           >
-                                            🎯 {anime}
+                                            🎯 {anime} 
                                             <button
                                               type="button"
                                               onClick={() => {
@@ -2009,7 +2101,6 @@ export default function App() {
                                           type="button"
                                           onClick={() => {
                                             setSelectedAnimes([]);
-                                            setAnimeSearchQuery("");
                                           }}
                                           className="text-[9px] font-mono text-slate-400 hover:text-red-400 transition-colors cursor-pointer self-center ml-1"
                                         >
@@ -2060,19 +2151,17 @@ export default function App() {
                             )}
                           </div>
 
-                          {category === "choose" && selectedAnimes.length === 0 && (
+                          {category === "choose" && !allAnime && selectedAnimes.length === 0 && (
                             <div className="flex items-center gap-2 text-rose-400 bg-rose-500/10 border border-rose-500/20 px-4 py-3 rounded-xl font-mono text-[10px] font-bold leading-normal mt-4 shadow-sm animate-pulse">
                               <AlertCircle className="w-4 h-4 shrink-0" />
                               <span>Please select at least one anime before starting the game.</span>
                             </div>
                           )}
 
-                          {category === "choose" && selectedAnimes.length > 0 && selectedAnimeCharacterCount < MIN_CHARACTERS_FOR_FULL_DRAFT && (
-                            <div className="flex items-center gap-2 text-amber-300 bg-amber-500/10 border border-amber-500/20 px-4 py-3 rounded-xl font-mono text-[10px] font-bold leading-normal mt-4 shadow-sm">
+                          {category === "choose" && !allAnime && selectedAnimes.length > 0 && selectedAnimeCharacterCount < ABSOLUTE_MIN && (
+                            <div className="flex items-center gap-2 text-red-400 bg-red-500/10 border border-red-500/20 px-4 py-3 rounded-xl font-mono text-[10px] font-bold leading-normal mt-4 shadow-sm animate-pulse">
                               <AlertCircle className="w-4 h-4 shrink-0" />
-                              <span>
-                                Selected pool has {selectedAnimeCharacterCount}/{MIN_CHARACTERS_FOR_FULL_DRAFT} unique fighters. Add more anime or recruit more characters to avoid repeats.
-                              </span>
+                              <span>Need at least {ABSOLUTE_MIN} characters to start. Current pool: {selectedAnimeCharacterCount}.</span>
                             </div>
                           )}
 
@@ -2081,8 +2170,8 @@ export default function App() {
                               <button
                                 id="btn-start-battle-mobile"
                                 onClick={() => startNewGame(gameMode)}
-                                disabled={!hasEnoughSelectedCharacters}
-                                className={`w-full py-4 rounded-xl text-xs uppercase tracking-[0.2em] font-black transition-all flex items-center justify-center gap-2 mt-6 cursor-pointer ${!hasEnoughSelectedCharacters
+                                disabled={!canStartDraft}
+                                className={`w-full py-4 rounded-xl text-xs uppercase tracking-[0.2em] font-black transition-all flex items-center justify-center gap-2 mt-6 cursor-pointer ${!canStartDraft
                                     ? "bg-neutral-800 text-neutral-500 border border-neutral-700/50 cursor-not-allowed opacity-50 shadow-none scale-100"
                                     : "bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white shadow-[0_0_30px_rgba(139,92,246,0.35)] hover:shadow-[0_0_35px_rgba(139,92,246,0.45)] active:scale-95"
                                   }`}
@@ -2093,8 +2182,8 @@ export default function App() {
                               <button
                                 id="btn-start-battle"
                                 onClick={() => startNewGame(gameMode)}
-                                disabled={!hasEnoughSelectedCharacters}
-                                className={`w-full py-4 rounded-xl text-xs uppercase tracking-[0.2em] font-black transition-all flex items-center justify-center gap-2 mt-6 cursor-pointer ${!hasEnoughSelectedCharacters
+                                disabled={!canStartDraft}
+                                className={`w-full py-4 rounded-xl text-xs uppercase tracking-[0.2em] font-black transition-all flex items-center justify-center gap-2 mt-6 cursor-pointer ${!canStartDraft
                                     ? "bg-neutral-800 text-neutral-500 border border-neutral-700/50 cursor-not-allowed opacity-50 shadow-none scale-100"
                                     : "bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white shadow-[0_0_30px_rgba(139,92,246,0.35)] hover:shadow-[0_0_35px_rgba(139,92,246,0.45)] active:scale-95"
                                   }`}
@@ -2238,6 +2327,7 @@ export default function App() {
     aiIsProcessing={aiIsProcessing}
     handleSlotSelect={handleSlotSelect}
     renderDraftCardArea={renderDraftCardArea}
+    onSkip={handleSkip}
    />
 
               {/* Deploy Modal for scroll-free selection */}
@@ -2270,6 +2360,7 @@ export default function App() {
 
                     return (
                       <motion.div
+                        ref={clashOverlayRef}
                         initial={{ opacity: 0 }}
                         animate={{
                           opacity: 1,
@@ -2338,7 +2429,7 @@ export default function App() {
 
                               <motion.div
                                 key={`p1-${duel.role}-${clashIndex}`}
-                                initial={{ x: -560, y: 80, rotate: -14, scale: 0.85 }}
+                                initial={{ x: slotOrigins.p1?.x ?? -560, y: slotOrigins.p1?.y ?? 80, rotate: -14, scale: 0.85 }}
                                 animate={{
                                   x: cinematicStage === "launch" ? -110 : cinematicStage === "impact" ? -18 : p1Wins ? -210 : isDraw ? -72 : -295,
                                   y: cinematicStage === "score" && p1Wins ? -250 : cinematicStage === "score" && !p1Wins ? 90 : 0,
@@ -2379,7 +2470,7 @@ export default function App() {
 
                               <motion.div
                                 key={`p2-${duel.role}-${clashIndex}`}
-                                initial={{ x: 560, y: -80, rotate: 14, scale: 0.85 }}
+                                initial={{ x: slotOrigins.p2?.x ?? 560, y: slotOrigins.p2?.y ?? -80, rotate: 14, scale: 0.85 }}
                                 animate={{
                                   x: cinematicStage === "launch" ? 110 : cinematicStage === "impact" ? 18 : p2Wins ? 210 : isDraw ? 72 : 295,
                                   y: cinematicStage === "score" && p2Wins ? -250 : cinematicStage === "score" && !p2Wins ? -90 : 0,

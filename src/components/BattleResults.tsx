@@ -115,26 +115,31 @@ export default function BattleResults(props: any) {
                       <div key={duel.role} className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 rounded-xl border border-white/5 bg-white/[0.03] p-2.5">
                         <div className={`min-w-0 ${duel.winner === "p1" ? "text-amber-300" : "text-slate-400"}`}>
                           <p className="truncate text-[10px] font-bold">{duel.p1Name}</p>
-                          <p className="text-sm font-black">{duel.p1Score}</p>
+                          <p className="text-sm font-black">{duel.p1IsRating ? `⭐ ${duel.p1Rating}` : duel.p1Score}</p>
                           <p className="text-[8px] font-mono uppercase text-slate-600">
-                            {duel.p1Suitability ?? "Fit"} {duel.p1FitScore ?? 0} x{(duel.p1FitMultiplier ?? 1).toFixed(2)}
+                            {duel.p1IsRating ? "Rating Scale" : `${duel.p1Suitability ?? "Fit"} ${duel.p1FitScore ?? 0} x${(duel.p1FitMultiplier ?? 1).toFixed(2)}`}
                           </p>
                           <p className="text-[8px] font-mono uppercase text-slate-700">
-                            Base {duel.p1BaseScore ?? duel.p1Score} -&gt; Final {duel.p1Score}
+                            {duel.p1IsRating ? "Dataset Rating (0-500)" : `Base ${duel.p1BaseScore ?? duel.p1Score} -> Final ${duel.p1Score}`}
                           </p>
                         </div>
                         <div className="text-center">
                           <p className="text-[8px] font-mono font-black uppercase tracking-widest text-slate-500">{duel.label}</p>
+                          {duel.role === "traitor" && (
+                            <span className="text-[7px] font-mono text-purple-400 bg-purple-500/10 border border-purple-500/20 px-1 py-0.5 rounded uppercase tracking-tighter block mt-0.5">
+                              Points Swapped!
+                            </span>
+                          )}
                           <p className="text-[9px] text-slate-600">VS</p>
                         </div>
                         <div className={`min-w-0 text-right ${duel.winner === "p2" ? "text-amber-300" : "text-slate-400"}`}>
                           <p className="truncate text-[10px] font-bold">{duel.p2Name}</p>
-                          <p className="text-sm font-black">{duel.p2Score}</p>
+                          <p className="text-sm font-black">{duel.p2IsRating ? `⭐ ${duel.p2Rating}` : duel.p2Score}</p>
                           <p className="text-[8px] font-mono uppercase text-slate-600">
-                            {duel.p2Suitability ?? "Fit"} {duel.p2FitScore ?? 0} x{(duel.p2FitMultiplier ?? 1).toFixed(2)}
+                            {duel.p2IsRating ? "Rating Scale" : `${duel.p2Suitability ?? "Fit"} ${duel.p2FitScore ?? 0} x${(duel.p2FitMultiplier ?? 1).toFixed(2)}`}
                           </p>
                           <p className="text-[8px] font-mono uppercase text-slate-700">
-                            Base {duel.p2BaseScore ?? duel.p2Score} -&gt; Final {duel.p2Score}
+                            {duel.p2IsRating ? "Dataset Rating (0-500)" : `Base ${duel.p2BaseScore ?? duel.p2Score} -> Final ${duel.p2Score}`}
                           </p>
                         </div>
                       </div>

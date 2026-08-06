@@ -41,7 +41,10 @@ export const pickVariedCharacter = (availableCharacters: Character[], alreadySee
   );
   const pool = uniqueCharacters.length > 0 ? uniqueCharacters : availableCharacters;
 
-  const weightedPool = pool.map((character) => {
+  // Safety: if pool is empty, fall back to CHARACTERS
+  const finalPool = pool.length > 0 ? pool : CHARACTERS;
+
+  const weightedPool = finalPool.map((character) => {
     const animeKey = character.anime ? normalizeAnimeName(character.anime) : "";
     const animeRepeatCount = animeKey ? seenAnimeCounts.get(animeKey) || 0 : 0;
     const animeWeight = 1 / (1 + animeRepeatCount * 1.6);
@@ -59,7 +62,7 @@ export const pickVariedCharacter = (availableCharacters: Character[], alreadySee
     if (pickPoint <= 0) return item.character;
   }
 
-  return pool[Math.floor(Math.random() * pool.length)];
+  return finalPool[Math.floor(Math.random() * finalPool.length)];
 };
 
 export const getBalancedCharacterPool = (
@@ -95,10 +98,12 @@ export const getRoleFitScore = (character: Character, role: RoleId): number => {
   const fitScore = {
     captain: (iq + strength + magic) / 3,
     vice_captain: (iq + speed + magic) / 3,
-    tank: defense,
+    strategist: iq * 1.2 + (iq >= 80 ? 10 : iq <= 40 ? -20 : 0),
+    defender: defense,
     healer: (magic + iq + defense) / 3,
-    support_1: (speed + iq) / 2,
-    support_2: (magic + strength) / 2,
+    support_speed: (speed + iq) / 2,
+    support_power: (magic + strength) / 2,
+    traitor: (strength + speed + magic) / 3,
   }[role];
 
   return Math.round(fitScore);

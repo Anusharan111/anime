@@ -392,7 +392,7 @@
   border-top: 1px solid rgba(255,255,255,0.14);
   color: rgba(244,242,250,0.55);
   font-size: 10px;
-  font-weight: 700;
+  font-weight: 200;
   text-transform: uppercase;
   letter-spacing: 1.2px;
   line-height: 1.5;
@@ -402,7 +402,7 @@
 .home-footer-right {
   color: #00e5ff;
   text-shadow: 0 0 18px rgba(0,229,255,0.6);
-  font-weight: 800;
+  font-weight: 200;
   cursor: pointer;
   transition: color 0.3s, text-shadow 0.3s;
 }

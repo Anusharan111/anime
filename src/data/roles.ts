@@ -4,49 +4,65 @@ export const ROLE_CATEGORIES: RoleCategory[] = [
   {
     id: "captain",
     name: "Captain",
-    emoji: "C",
+    emoji: "👑",
     icon: "crown",
-    color: "#eab308", // Yellow / Gold
-    description: "Team leader. Commands tactical power coordinates."
+    color: "#eab308",
+    description: "Team leader. Commands tactical power coordinates.",
   },
   {
     id: "vice_captain",
     name: "Vice Captain",
-    emoji: "VC",
+    emoji: "⭐",
     icon: "award",
-    color: "#a855f7", // Purple
-    description: "Co-leader. Anchors active battle plans if leader falters."
+    color: "#a855f7",
+    description: "Co-leader. Anchors active battle plans if leader falters.",
   },
   {
-    id: "tank",
+    id: "strategist",
+    name: "Strategist",
+    emoji: "🧠",
+    icon: "brain",
+    color: "#6366f1",
+    description: "Master tactician. High IQ grants bonus; low IQ incurs penalty.",
+  },
+  {
+    id: "defender",
     name: "Defender",
-    emoji: "D",
+    emoji: "🛡",
     icon: "shield",
-    color: "#10b981", // Emerald / Green
-    description: "Heavy vanguard. Absorbs and deflects opposing strike vectors."
+    color: "#10b981",
+    description: "Heavy vanguard. Absorbs and deflects opposing strike vectors.",
   },
   {
     id: "healer",
     name: "Healer",
-    emoji: "H",
+    emoji: "❤️",
     icon: "heart",
-    color: "#ec4899", // Pink
-    description: "Vitality master. Restores spiritual force fields and power pools."
+    color: "#ec4899",
+    description: "Vitality master. Restores spiritual force fields and power pools.",
   },
   {
-    id: "support_1",
+    id: "support_speed",
     name: "Speed Support",
-    emoji: "S",
+    emoji: "⚡",
     icon: "zap",
-    color: "#06b6d4", // Cyan
-    description: "Utility buff. Accelerates spatial movement speeds."
+    color: "#06b6d4",
+    description: "Utility buff. Accelerates spatial movement speeds.",
   },
   {
-    id: "support_2",
+    id: "support_power",
     name: "Power Support",
-    emoji: "P",
+    emoji: "💥",
     icon: "sparkles",
-    color: "#f97316", // Orange
-    description: "Catalyst force. Elevates magic intensity and cosmic fields."
-  }
+    color: "#f97316",
+    description: "Catalyst force. Elevates magic intensity and cosmic fields.",
+  },
+  {
+    id: "traitor",
+    name: "Traitor",
+    emoji: "🎭",
+    icon: "mask",
+    color: "#dc2626",
+    description: "Double agent. Their duel score feeds the enemy team.",
+  },
 ];

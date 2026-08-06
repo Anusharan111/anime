@@ -2,6 +2,7 @@ import React from "react";
 import { motion } from "motion/react";
 import TeamSlots from "./TeamSlots";
 import { RoleId, SlottedTeam } from "../types";
+import { Zap } from "lucide-react";
 
 type DraftViewProps = {
   isMobile: boolean;
@@ -27,6 +28,50 @@ type DraftViewProps = {
   aiIsProcessing: boolean;
   handleSlotSelect: (roleId: RoleId) => void;
   renderDraftCardArea: () => React.ReactElement;
+  onSkip: () => void;
+};
+
+const SkipStrip: React.FC<{
+  used: boolean;
+  interactive: boolean;
+  onSkip: () => void;
+}> = ({ used, interactive, onSkip }) => {
+  if (used) {
+    return (
+      <div className="flex items-center justify-between gap-2 rounded-xl border border-dashed border-red-500/25 bg-black/85 px-3 py-2.5 mt-2.5">
+        <span className="flex items-center gap-1.5 text-[9px] font-black uppercase tracking-[0.2em] text-slate-500">
+          <Zap className="w-3 h-3 text-red-500/40" /> Tactical Skip
+        </span>
+        <span className="text-[8px] font-mono font-black uppercase tracking-widest text-red-400/60">Used</span>
+      </div>
+    );
+  }
+
+  if (interactive) {
+    return (
+      <button
+        type="button"
+        onClick={onSkip}
+        className="mt-2.5 w-full flex items-center justify-between gap-2 rounded-xl border border-red-500/30 bg-red-500/10 px-3 py-2.5 shadow-[0_0_20px_rgba(239,68,68,0.15)] transition-all hover:bg-red-500/20 hover:border-red-500/50 active:scale-[0.97] cursor-pointer"
+      >
+        <span className="flex items-center gap-1.5 text-[9px] font-black uppercase tracking-[0.2em] text-red-300">
+          <Zap className="w-3 h-3" /> Use Tactical Skip
+        </span>
+        <span className="flex items-center gap-1.5 text-[8px] font-mono font-black uppercase tracking-widest text-red-400 animate-pulse">
+          <span className="w-1 h-1 rounded-full bg-red-400" /> Active
+        </span>
+      </button>
+    );
+  }
+
+  return (
+    <div className="mt-2.5 flex items-center justify-between gap-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 opacity-70">
+      <span className="flex items-center gap-1.5 text-[9px] font-black uppercase tracking-[0.2em] text-slate-400">
+        <Zap className="w-3 h-3" /> Tactical Skip
+      </span>
+      <span className="text-[8px] font-mono font-black uppercase tracking-widest text-slate-500">Ready</span>
+    </div>
+  );
 };
 
 const DraftView: React.FC<DraftViewProps> = ({
@@ -53,9 +98,15 @@ const DraftView: React.FC<DraftViewProps> = ({
   aiIsProcessing,
   handleSlotSelect,
   renderDraftCardArea,
+  onSkip,
 }) => {
   return (
-    <motion.div key="draft" initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }}>
+    <motion.div
+      key="draft"
+      initial={{ opacity: 0, scale: 0.98 }}
+      animate={{ opacity: 1, scale: 1 }}
+      className={isMobileDraft ? "flex min-h-0 w-full h-full flex-col" : "h-full min-h-0"}
+    >
       {isMobileDraft ? (
         isMobileOnlineDraft ? (
           <div className="flex min-h-0 w-full flex-1 flex-col gap-1.5 overflow-hidden touch-none">
@@ -67,6 +118,7 @@ const DraftView: React.FC<DraftViewProps> = ({
                 activeTurn={activeTurn !== ownOnlineSide}
                 layout="compact-horizontal-top"
                 isMobile={true}
+                slotSide={ownOnlineSide === "p2" ? "p1" : "p2"}
               />
             </div>
 
@@ -78,9 +130,19 @@ const DraftView: React.FC<DraftViewProps> = ({
                 </div>
                 <div className="flex h-full min-h-0 flex-col items-center justify-center overflow-hidden">
                   {renderDraftCardArea()}
-                  <div className="mt-1 flex flex-shrink-0 gap-3 rounded-full border border-white/5 bg-black/30 px-2 py-1 text-[7px] font-mono font-black uppercase tracking-wider text-slate-500">
-                    <span>P1 {p1SkipUsed ? "USED" : "SKIP"}</span>
-                    <span>P2 {p2SkipUsed ? "USED" : "SKIP"}</span>
+                  <div className="mt-2 flex flex-shrink-0 gap-2">
+                    {activeTurn === ownOnlineSide && !ownOnlineSkipUsed && (
+                      <button
+                        onClick={onSkip}
+                        className="flex-1 py-2 px-3 rounded-full border-2 border-red-500/30 bg-red-500/10 text-red-400 font-black text-[7px] uppercase tracking-wider flex items-center justify-center gap-1.5 touch-manipulation active:scale-95"
+                      >
+                        <Zap className="w-3 h-3" /> TACTICAL SKIP
+                      </button>
+                    )}
+                    <div className="flex flex-shrink-0 gap-3 rounded-full border border-white/5 bg-black/30 px-2 py-1 text-[7px] font-mono font-black uppercase tracking-wider text-slate-500">
+                      <span>P1 {p1SkipUsed ? "USED" : "SKIP"}</span>
+                      <span>P2 {p2SkipUsed ? "USED" : "SKIP"}</span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -96,6 +158,7 @@ const DraftView: React.FC<DraftViewProps> = ({
                   layout="compact-vertical"
                   isMobile={true}
                   isLarge={true}
+                  slotSide={ownOnlineSide === "p2" ? "p2" : "p1"}
                 />
               </div>
             </div>
@@ -114,6 +177,7 @@ const DraftView: React.FC<DraftViewProps> = ({
                     activeTurn={activeTurn === (onlineSide === "p2" ? "p1" : "p2")}
                     layout="compact-horizontal-top"
                     isMobile={true}
+                    slotSide={onlineSide === "p2" ? "p1" : "p2"}
                   />
                 </div>
               </div>
@@ -131,6 +195,7 @@ const DraftView: React.FC<DraftViewProps> = ({
                     onSlotSelect={handleSlotSelect}
                     layout="compact-vertical"
                     isMobile={true}
+                    slotSide="p1"
                   />
                 </div>
               )}
@@ -144,8 +209,28 @@ const DraftView: React.FC<DraftViewProps> = ({
                 
                 {renderDraftCardArea()}
 
+                {/* Mobile Skip buttons */}
+                <div className="mt-3 flex flex-wrap gap-2 justify-center">
+                  {activeTurn === "p1" && !p1SkipUsed && (
+                    <button
+                      onClick={onSkip}
+                      className="flex-1 min-w-[140px] py-2 px-3 rounded-full border-2 border-red-500/30 bg-red-500/10 text-red-400 font-black text-[8px] uppercase tracking-wider flex items-center justify-center gap-1.5 touch-manipulation active:scale-95"
+                    >
+                      <Zap className="w-3 h-3" /> TACTICAL SKIP
+                    </button>
+                  )}
+                  {activeTurn === "p2" && !p2SkipUsed && (
+                    <button
+                      onClick={onSkip}
+                      className="flex-1 min-w-[140px] py-2 px-3 rounded-full border-2 border-red-500/30 bg-red-500/10 text-red-400 font-black text-[8px] uppercase tracking-wider flex items-center justify-center gap-1.5 touch-manipulation active:scale-95"
+                    >
+                      <Zap className="w-3 h-3" /> TACTICAL SKIP
+                    </button>
+                  )}
+                </div>
+
                 {/* Mobile Skip status display */}
-                <div className="flex gap-4 items-center justify-center mt-4 text-[8px] font-mono font-black uppercase tracking-widest text-slate-500 bg-black/20 px-3 py-1 rounded-full border border-white/5">
+                <div className="mt-3 flex gap-4 items-center justify-center text-[8px] font-mono font-black uppercase tracking-widest text-slate-500 bg-black/20 px-3 py-1 rounded-full border border-white/5">
                   <div className="flex items-center gap-1.5">
                     <div className={`w-1.5 h-1.5 rounded-full ${p1SkipUsed ? 'bg-red-500' : 'bg-nexus-purple animate-pulse'}`} />
                     <span>P1: {p1SkipUsed ? "USED" : "SKIP"}</span>
@@ -170,15 +255,16 @@ const DraftView: React.FC<DraftViewProps> = ({
                   }
                   layout="compact-vertical"
                   isMobile={true}
+                  slotSide={gameMode === "local-2p" ? "p2" : (onlineSide === "p2" ? "p2" : "p1")}
                 />
               </div>
             </div>
           </div>
         )
       ) : (
-        <div className="grid lg:grid-cols-12 gap-6 items-stretch">
+        <div className="grid lg:grid-cols-12 gap-5 lg:gap-6 items-center h-full min-h-0">
           {/* Left: P1 Roster */}
-          <div className="lg:col-span-3 flex flex-col justify-self-stretch">
+          <div className="lg:col-span-3 flex flex-col min-h-0">
             <TeamSlots
               playerName={player1Name}
               slots={p1Slots}
@@ -186,11 +272,19 @@ const DraftView: React.FC<DraftViewProps> = ({
               activeTurn={activeTurn === "p1" && !aiIsProcessing}
               onSlotSelect={(gameMode !== "online-2p" || onlineSide === "p1") ? handleSlotSelect : undefined}
               isDraggingActive={isDraggingActive && (gameMode !== "online-2p" || onlineSide === "p1")}
+              hideSkipIndicator
+              slotSide="p1"
+              slotClass="h-[clamp(96px,13.5vh,128px)]"
+            />
+            <SkipStrip
+              used={p1SkipUsed}
+              interactive={activeTurn === "p1" && !aiIsProcessing && !(gameMode === "online-2p" && onlineSide !== "p1")}
+              onSkip={onSkip}
             />
           </div>
 
           {/* Center: Active Draft Card */}
-          <div className="lg:col-span-6 flex flex-col items-center justify-center min-h-[550px] sm:min-h-[700px] p-4 sm:p-6 relative nexus-glass rounded-3xl border-nexus-blue/10">
+          <div className="lg:col-span-6 flex flex-col items-center justify-center min-h-0 p-4 sm:p-6 relative nexus-glass rounded-3xl border-nexus-blue/10">
             <div className="absolute inset-0 pointer-events-none opacity-10">
               <div className="h-px w-full bg-nexus-cyan absolute top-1/4 animate-pulse" />
               <div className="h-px w-full bg-nexus-blue absolute top-3/4 animate-pulse delay-500" />
@@ -199,7 +293,7 @@ const DraftView: React.FC<DraftViewProps> = ({
           </div>
 
           {/* Right: P2 Roster */}
-          <div className="lg:col-span-3 flex flex-col justify-self-stretch">
+          <div className="lg:col-span-3 flex flex-col min-h-0">
             <TeamSlots
               playerName={player2Name}
               isAI={gameMode === "vs-ai"}
@@ -208,6 +302,14 @@ const DraftView: React.FC<DraftViewProps> = ({
               activeTurn={activeTurn === "p2"}
               onSlotSelect={(gameMode === "local-2p" || (gameMode === "online-2p" && onlineSide === "p2")) ? handleSlotSelect : undefined}
               isDraggingActive={isDraggingActive && (gameMode === "local-2p" || (gameMode === "online-2p" && onlineSide === "p2"))}
+              hideSkipIndicator
+              slotSide="p2"
+              slotClass="h-[clamp(96px,13.5vh,128px)]"
+            />
+            <SkipStrip
+              used={p2SkipUsed}
+              interactive={gameMode !== "vs-ai" && activeTurn === "p2" && !(gameMode === "online-2p" && onlineSide !== "p2")}
+              onSkip={onSkip}
             />
           </div>
         </div>

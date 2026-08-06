@@ -18,6 +18,9 @@ interface TeamSlotsProps {
   isMobile?: boolean;
   selectedCardId?: string | null;
   isLarge?: boolean;
+  hideSkipIndicator?: boolean;
+  slotClass?: string;
+  slotSide?: "p1" | "p2";
 }
 
 
@@ -34,6 +37,9 @@ export default function TeamSlots({
   isMobile = false,
   selectedCardId = null,
   isLarge = false,
+  hideSkipIndicator = false,
+  slotClass = "h-32",
+  slotSide,
 }: TeamSlotsProps) {
   const handleDragOver = (e: React.DragEvent) => {
     if (!activeTurn || isAI || layout === "compact-horizontal" || layout === "compact-horizontal-top") return;
@@ -51,7 +57,7 @@ export default function TeamSlots({
   const showCompactLabels = layout === "compact-vertical" && isMobile && isLarge;
 
   return (
-    <div className={`flex flex-col gap-2.5 h-full ${activeTurn ? 'opacity-100' : 'opacity-60'} transition-all duration-500 ${isMobile && layout === "compact-vertical" ? 'bg-black/40 backdrop-blur-md border border-white/10 rounded-2xl p-2 shadow-2xl' : ''}`}>
+    <div data-slot-side={slotSide} className={`flex flex-col gap-2.5 h-full ${activeTurn ? 'opacity-100' : 'opacity-60'} transition-all duration-500 ${isMobile && layout === "compact-vertical" ? 'bg-black/40 backdrop-blur-md border border-white/10 rounded-2xl p-2 shadow-2xl' : ''}`}>
       {/* Player Identity Header */}
       {!isCompact ? (
         <div className="nexus-glass rounded-xl p-4 border-l-4 border-nexus-blue flex flex-col gap-1 relative overflow-hidden">
@@ -75,10 +81,10 @@ export default function TeamSlots({
                <motion.div 
                  className="h-full bg-nexus-blue" 
                  initial={{ width: 0 }}
-                 animate={{ width: `${(Object.values(slots).filter(Boolean).length / 6) * 100}%` }}
+                 animate={{ width: `${(Object.values(slots).filter(Boolean).length / 8) * 100}%` }}
                />
             </div>
-            <span className="text-[9px] font-mono font-bold text-slate-500">{Object.values(slots).filter(Boolean).length}/6</span>
+            <span className="text-[9px] font-mono font-bold text-slate-500">{Object.values(slots).filter(Boolean).length}/8</span>
           </div>
         </div>
       ) : (
@@ -126,10 +132,16 @@ export default function TeamSlots({
                   relative rounded-lg border transition-all duration-300 group touch-manipulation
                   ${layout === "compact-horizontal-top" ? 'w-10 h-10 sm:w-12 sm:h-12' : (isMobile ? (isLarge ? 'w-full h-[12.5vh] max-h-[78px] min-h-[54px]' : 'w-16 h-16 sm:w-20 sm:h-20') : 'w-11 h-11 sm:w-13 sm:h-13')}
                   ${isOccupied 
-                    ? 'border-nexus-blue/40 bg-nexus-blue/10 shadow-[0_0_15px_rgba(30,144,255,0.1)]' 
+                    ? (role.id === "traitor"
+                        ? 'border-red-500/50 bg-red-500/15 shadow-[0_0_15px_rgba(239,68,68,0.3)]' 
+                        : 'border-nexus-blue/40 bg-nexus-blue/10 shadow-[0_0_15px_rgba(30,144,255,0.15)]') 
                     : isInteractive 
-                      ? 'border-white/20 bg-white/10 hover:border-nexus-cyan/40 hover:bg-white/15 cursor-pointer shadow-lg active:scale-95' 
-                      : 'border-white/5 bg-white/5 opacity-50'
+                      ? (role.id === "traitor"
+                          ? 'border-red-500/40 bg-red-500/10 hover:border-red-500 hover:bg-red-500/20 cursor-pointer shadow-[0_0_12px_rgba(239,68,68,0.3)] active:scale-95'
+                          : 'border-nexus-blue/30 bg-nexus-blue/5 hover:border-nexus-cyan/60 hover:bg-nexus-blue/15 cursor-pointer shadow-lg active:scale-95') 
+                      : (role.id === "traitor"
+                          ? 'border-red-500/20 bg-red-500/5 opacity-60'
+                          : 'border-white/5 bg-white/5 opacity-50')
                   }
                 `}
               >
@@ -159,8 +171,8 @@ export default function TeamSlots({
                       </div>
                       
                       {/* Tiny Role Icon Badge */}
-                      <div className="absolute -bottom-1 -right-1 w-3 h-3 rounded bg-black border border-white/10 flex items-center justify-center shadow-md z-20">
-                        <RoleIcon id={role.id} className="w-1.5 h-1.5 text-nexus-cyan" />
+                      <div className={`absolute -bottom-1 -right-1 w-3 h-3 rounded bg-black border flex items-center justify-center shadow-md z-20 ${role.id === "traitor" ? "border-red-500/40" : "border-nexus-blue/30"}`}>
+                        <RoleIcon id={role.id} className={`w-1.5 h-1.5 ${role.id === "traitor" ? "text-red-400" : "text-nexus-cyan"}`} />
                       </div>
                       {showCompactLabels && (
                         <div className="absolute inset-x-0 bottom-0 bg-black/75 px-1 py-0.5 text-center">
@@ -172,14 +184,14 @@ export default function TeamSlots({
                     </motion.div>
                   ) : (
                     <div className="absolute inset-0 flex flex-col items-center justify-center p-0.5 text-center">
-                      <RoleIcon id={role.id} className={`${layout === "compact-horizontal-top" ? 'w-3 h-3' : 'w-5 h-5'} ${canDrop || canTapPlace ? 'text-nexus-cyan' : 'text-slate-600'}`} />
+                      <RoleIcon id={role.id} className={`${layout === "compact-horizontal-top" ? 'w-3 h-3' : 'w-5 h-5'} ${role.id === "traitor" ? "text-red-400" : (canDrop || canTapPlace ? 'text-nexus-cyan' : 'text-slate-600')}`} />
                       {showCompactLabels && (
-                        <span className={`mt-1 max-w-full px-1 text-[7px] font-mono font-black uppercase leading-tight ${canDrop || canTapPlace ? 'text-nexus-cyan' : 'text-slate-400'}`}>
+                        <span className={`mt-1 max-w-full px-1 text-[7px] font-mono font-black uppercase leading-tight ${role.id === "traitor" ? "text-red-400" : (canDrop || canTapPlace ? 'text-nexus-cyan' : 'text-slate-400')}`}>
                           {role.name}
                         </span>
                       )}
                       {canTapPlace && (
-                        <span className="text-[5px] font-mono font-black text-nexus-cyan uppercase tracking-wider mt-0.5 animate-pulse">TAP</span>
+                        <span className={`text-[5px] font-mono font-black uppercase tracking-wider mt-0.5 animate-pulse ${role.id === "traitor" ? "text-red-400" : "text-nexus-cyan"}`}>TAP</span>
                       )}
                     </div>
                   )}
@@ -198,14 +210,22 @@ export default function TeamSlots({
               onDrop={(e) => handleDrop(e, role.id)}
               onClick={() => activeTurn && !isAI && onSlotSelect?.(role.id)}
               className={`
-                relative h-32 rounded-xl border-2 transition-all duration-300 group
+                relative ${slotClass} rounded-xl border-2 transition-all duration-300 group
                 ${isOccupied 
-                  ? 'border-nexus-blue/40 bg-nexus-blue/5 shadow-inner' 
+                  ? (role.id === "traitor"
+                      ? 'border-red-500/50 bg-red-500/10 shadow-[0_0_15px_rgba(239,68,68,0.25)]' 
+                      : 'border-nexus-blue/40 bg-nexus-blue/5 shadow-inner') 
                   : canDrop 
-                    ? 'border-nexus-cyan animate-nexus-pulse bg-nexus-cyan/10 cursor-pointer scale-105 z-20' 
+                    ? (role.id === "traitor"
+                        ? 'border-red-500 animate-pulse bg-red-500/20 cursor-pointer scale-105 z-20 shadow-[0_0_20px_rgba(239,68,68,0.5)]' 
+                        : 'border-nexus-cyan animate-nexus-pulse bg-nexus-cyan/10 cursor-pointer scale-105 z-20') 
                     : activeTurn && !isAI 
-                      ? 'border-white/5 bg-white/5 hover:border-white/20 cursor-pointer' 
-                      : 'border-white/5 bg-white/5 opacity-50'
+                      ? (role.id === "traitor"
+                          ? 'border-red-500/30 bg-red-500/10 hover:border-red-500/80 hover:bg-red-500/20 cursor-pointer shadow-[0_0_15px_rgba(239,68,68,0.25)]' 
+                          : 'border-nexus-blue/20 bg-nexus-blue/5 hover:border-nexus-cyan/50 hover:bg-nexus-blue/10 cursor-pointer') 
+                      : (role.id === "traitor"
+                          ? 'border-red-500/20 bg-red-500/5 opacity-60'
+                          : 'border-white/5 bg-white/5 opacity-50')
                 }
               `}
             >
@@ -278,7 +298,7 @@ export default function TeamSlots({
       </div>
 
       {/* Strategic Skip Indicator */}
-      {!isCompact && (
+      {!isCompact && !hideSkipIndicator && (
         <div className={`nexus-glass rounded-xl p-3 border border-white/5 flex items-center justify-between transition-all ${skipUsed ? 'bg-red-500/5' : 'bg-nexus-purple/5 hover:border-nexus-purple/30'}`}>
           <div className="flex items-center gap-2">
             <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${skipUsed ? 'bg-red-500/10' : 'bg-nexus-purple/10'}`}>

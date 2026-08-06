@@ -3,6 +3,7 @@ import TeamSlots from "./TeamSlots";
 import CharacterImage from "./CharacterImage";
 import { Plus, LogIn, AlertCircle, RefreshCw, Play, ArrowRight, ArrowRight as ArrowR, ArrowRight as Arrow } from "lucide-react";
 import { Flame, Computer, Users, Globe } from "lucide-react";
+import { getSuggestions } from "../utils/draftPool";
 
 /**
  * Game Hub component – renders the setup UI after the landing page.
@@ -225,37 +226,74 @@ export default function GameHub(props: any) {
 
             {/* Anime filter UI */}
             {(gameMode !== "online-2p" || props.onlineAction === "create" || (onlineRoomId && props.onlineSide === "p1")) && (
-              <div className="space-y-2 pt-1 animate-fadeIn">
-                <label className="text-[10px] font-mono text-neutral-400 tracking-widest uppercase">
+              <div className="space-y-3 pt-1 animate-fadeIn">
+                <label className="text-[10px] font-mono text-neutral-400 tracking-widest uppercase flex items-center gap-2">
                   CHARACTER POOL FILTER
-                </label>
-                <div className="grid grid-cols-2 gap-3">
-                  <button
-                    onClick={() => {
-                      setCategory("all");
-                      setSelectedAnimes([]);
-                      setAnimeSearchQuery("");
-                      importStarterAllAnimeCasts();
+                  <input
+                    type="checkbox"
+                    id="chk-all-anime"
+                    checked={props.allAnime}
+                    onChange={(e) => {
+                      props.setAllAnime(e.target.checked);
+                      if (e.target.checked) {
+                        props.setCategory("all");
+                        props.setSelectedAnimes([]);
+                        props.setAnimeSearchQuery("");
+                        props.importStarterAllAnimeCasts();
+                      } else {
+                        props.setCategory("choose");
+                      }
                     }}
-                    className={`py-2.5 px-3 rounded-xl border text-[10px] font-black uppercase tracking-wide transition-all cursor-pointer ${props.category === "all"
-                      ? "border-purple-500 bg-purple-500/10 text-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.25)]"
-                      : "border-neutral-800 bg-neutral-900/30 text-neutral-400 hover:border-neutral-700"
-                    }`}
-                  >
-                    🌐 All Anime
-                  </button>
-                  <button
-                    onClick={() => setCategory("choose")}
-                    className={`py-2.5 px-3 rounded-xl border text-[10px] font-black uppercase tracking-wide transition-all cursor-pointer ${props.category === "choose"
-                      ? "border-purple-500 bg-purple-500/10 text-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.25)]"
-                      : "border-neutral-800 bg-neutral-900/30 text-neutral-400 hover:border-neutral-700"
-                    }`}
-                  >
-                    🎯 Choose Anime
-                  </button>
-                </div>
-                {props.category === "choose" && (
-                  <div className="space-y-1.5 pt-1 relative">
+                    className="w-4 h-4 accent-purple-500 cursor-pointer"
+                  />
+                  <label htmlFor="chk-all-anime" className="text-xs font-mono text-slate-300 cursor-pointer">
+                    All Anime
+                  </label>
+                </label>
+
+                {!props.allAnime && props.category === "choose" && (
+                  <div className="space-y-2">
+                    {/* Draft Quality Indicator */}
+                    <div className="flex items-center justify-between gap-2 px-1">
+                      <div className="flex items-center gap-1.5">
+                        <span className={`text-[10px] font-mono font-bold ${props.draftQuality === "excellent" || props.draftQuality === "good" ? "text-green-400" : props.draftQuality === "recommended" ? "text-yellow-400" : props.draftQuality === "limited" ? "text-orange-400" : "text-red-400"}`}>
+                          {props.getDraftQualityLabel(props.draftQuality)}
+                        </span>
+                        <span className="text-[9px] text-slate-500 font-mono">Pool</span>
+                      </div>
+                      <div className="h-2 flex-1 bg-neutral-800 rounded-full overflow-hidden max-w-[150px]">
+                        <div
+                          className={`h-full rounded-full transition-all ${props.draftQuality === "excellent" || props.draftQuality === "good" ? "bg-green-500" : props.draftQuality === "recommended" ? "bg-yellow-500" : props.draftQuality === "limited" ? "bg-orange-500" : "bg-red-500"}`}
+                          style={{ width: `${Math.min(100, (props.selectedAnimeCharacterCount / 100) * 100)}%` }}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Suggestions when pool < 50 */}
+                    {props.selectedAnimeCharacterCount < props.MIN_RECOMMENDED_POOL && props.selectedAnimes.length > 0 && (
+                      <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-3 text-[9px] font-mono text-amber-300">
+                        <div className="flex items-center gap-1.5 mb-1.5">
+                          <AlertCircle className="w-3 h-3" />
+                          <span>Limited Character Variety ({props.selectedAnimeCharacterCount}/{props.MIN_RECOMMENDED_POOL})</span>
+                        </div>
+                        <p className="text-slate-400 mb-2">Add these anime for better variety:</p>
+                        <div className="flex flex-wrap gap-1.5">
+                          {getSuggestions(props.animeCounts, props.selectedAnimes, 3).map(({ anime, count }) => (
+                              <button
+                                key={anime}
+                                onClick={() => {
+                                  props.setSelectedAnimes((prev: string[]) => [...prev, anime]);
+                                  props.importCastForAnime(anime).catch(console.warn);
+                                }}
+                                className="px-2 py-1 bg-neutral-800 border border-neutral-700 rounded-lg hover:border-amber-500 hover:bg-amber-500/10 transition-colors cursor-pointer text-[9px] font-mono"
+                              >
+                                +{anime}
+                              </button>
+                            ))}
+                        </div>
+                      </div>
+                    )}
+
                     <input
                       id="inp-anime-search"
                       type="text"
@@ -264,14 +302,14 @@ export default function GameHub(props: any) {
                       onBlur={() => {
                         setTimeout(() => props.setIsAnimeDropdownOpen(false), 200);
                       }}
-                      onChange={(e) => props.setAnimeSearchQuery(e.target.value)}
+                        onChange={(e) => props.setAnimeSearchQuery(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') { const query = props.animeSearchQuery.trim(); if (query) { const match = props.animeList.find((a: string) => a.toLowerCase() === query.toLowerCase()); if (match && !props.selectedAnimes.includes(match)) { props.setSelectedAnimes((prev: string[]) => [...prev, match]); props.importCastForAnime(match).catch(console.warn); } props.setAnimeSearchQuery(''); props.setIsAnimeDropdownOpen(false); } } } }
                       placeholder="Select or search anime… e.g. Naruto, Bleach"
                       className="w-full bg-neutral-900/50 border border-neutral-800 rounded-xl py-2.5 px-3.5 text-xs text-white font-mono font-bold focus:border-purple-500 focus:outline-none cursor-pointer"
                     />
-                    {props.isAnimeDropdownOpen && (
+                     {props.isAnimeDropdownOpen && props.animeSearchQuery.trim().length >= 2 && (
                       <div className="absolute z-20 left-0 right-0 top-full mt-1 bg-neutral-900 border border-neutral-700 rounded-xl max-h-40 overflow-y-auto shadow-2xl">
                         {props.animeList
-                          .filter((a: string) => !props.animeSearchQuery.trim() || a.toLowerCase().includes(props.animeSearchQuery.toLowerCase()))
+                          .filter((a: string) => a.toLowerCase().startsWith(props.animeSearchQuery.trim().toLowerCase()))
                           .map((anime: string) => (
                             <button
                               key={anime}
@@ -283,9 +321,12 @@ export default function GameHub(props: any) {
                                 props.setAnimeSearchQuery("");
                                 props.setIsAnimeDropdownOpen(false);
                               }}
-                              className={`w-full text-left px-3.5 py-2 text-xs font-mono hover:bg-purple-500/15 transition-colors cursor-pointer ${props.selectedAnimes.includes(anime) ? "text-purple-400 bg-purple-500/10" : "text-slate-200"}`}
+                              className={`w-full text-left px-3.5 py-2 text-xs font-mono hover:bg-purple-500/15 transition-colors cursor-pointer flex items-center justify-between ${props.selectedAnimes.includes(anime) ? "text-purple-400 bg-purple-500/10" : "text-slate-200"}`}
                             >
-                              {anime}
+                              <span>{anime}</span>
+                              <span className="text-[9px] font-mono text-slate-500 bg-neutral-800 px-1.5 py-0.5 rounded">
+                                
+                              </span>
                             </button>
                           ))}
                         {props.animeList.filter((a: string) => !props.animeSearchQuery.trim() || a.toLowerCase().includes(props.animeSearchQuery.toLowerCase())).length === 0 && (
@@ -300,7 +341,7 @@ export default function GameHub(props: any) {
                             key={anime}
                             className="inline-flex items-center gap-1.5 text-[10px] font-mono font-bold text-purple-400 bg-purple-500/10 border border-purple-500/30 px-2.5 py-1 rounded-lg"
                           >
-                            🎯 {anime}
+                            🎯 {anime} <span className="text-[9px] text-slate-400"></span>
                             <button
                               type="button"
                               onClick={() => props.setSelectedAnimes((prev: string[]) => prev.filter((a) => a !== anime))}
@@ -364,18 +405,16 @@ export default function GameHub(props: any) {
             )}
 
             {/* Validation warnings */}
-            {props.category === "choose" && props.selectedAnimes.length === 0 && (
+            {props.category === "choose" && !props.allAnime && props.selectedAnimes.length === 0 && (
               <div className="flex items-center gap-2 text-rose-400 bg-rose-500/10 border border-rose-500/20 px-4 py-3 rounded-xl font-mono text-[10px] font-bold leading-normal mt-4 shadow-sm animate-pulse">
                 <AlertCircle className="w-4 h-4 shrink-0" />
                 <span>Please select at least one anime before starting the game.</span>
               </div>
             )}
-            {props.category === "choose" && props.selectedAnimes.length > 0 && props.selectedAnimeCharacterCount < props.MIN_CHARACTERS_FOR_FULL_DRAFT && (
-              <div className="flex items-center gap-2 text-amber-300 bg-amber-500/10 border border-amber-500/20 px-4 py-3 rounded-xl font-mono text-[10px] font-bold leading-normal mt-4 shadow-sm">
+            {props.category === "choose" && !props.allAnime && props.selectedAnimes.length > 0 && props.selectedAnimeCharacterCount < props.ABSOLUTE_MIN && (
+              <div className="flex items-center gap-2 text-red-400 bg-red-500/10 border border-red-500/20 px-4 py-3 rounded-xl font-mono text-[10px] font-bold leading-normal mt-4 shadow-sm animate-pulse">
                 <AlertCircle className="w-4 h-4 shrink-0" />
-                <span>
-                  Selected pool has {props.selectedAnimeCharacterCount}/{props.MIN_CHARACTERS_FOR_FULL_DRAFT} unique fighters. Add more anime or recruit more characters to avoid repeats.
-                </span>
+                <span>Need at least {props.ABSOLUTE_MIN} characters to start. Current pool: {props.selectedAnimeCharacterCount}.</span>
               </div>
             )}
 
@@ -385,8 +424,8 @@ export default function GameHub(props: any) {
                 <button
                   id="btn-start-battle-mobile"
                   onClick={() => props.startNewGame(gameMode)}
-                  disabled={!props.hasEnoughSelectedCharacters}
-                  className={`w-full py-4 rounded-xl text-xs uppercase tracking-[0.2em] font-black transition-all flex items-center justify-center gap-2 mt-6 cursor-pointer ${!props.hasEnoughSelectedCharacters
+                  disabled={!props.canStartDraft}
+                  className={`w-full py-4 rounded-xl text-xs uppercase tracking-[0.2em] font-black transition-all flex items-center justify-center gap-2 mt-6 cursor-pointer ${!props.canStartDraft
                     ? "bg-neutral-800 text-neutral-500 border border-neutral-700/50 cursor-not-allowed opacity-50 shadow-none scale-100"
                     : "bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white shadow-[0_0_30px_rgba(139,92,246,0.35)] hover:shadow-[0_0_35px_rgba(139,92,246,0.45)] active:scale-95"
                   }`}
@@ -397,8 +436,8 @@ export default function GameHub(props: any) {
                 <button
                   id="btn-start-battle"
                   onClick={() => props.startNewGame(gameMode)}
-                  disabled={!props.hasEnoughSelectedCharacters}
-                  className={`w-full py-4 rounded-xl text-xs uppercase tracking-[0.2em] font-black transition-all flex items-center justify-center gap-2 mt-6 cursor-pointer ${!props.hasEnoughSelectedCharacters
+                  disabled={!props.canStartDraft}
+                  className={`w-full py-4 rounded-xl text-xs uppercase tracking-[0.2em] font-black transition-all flex items-center justify-center gap-2 mt-6 cursor-pointer ${!props.canStartDraft
                     ? "bg-neutral-800 text-neutral-500 border border-neutral-700/50 cursor-not-allowed opacity-50 shadow-none scale-100"
                     : "bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white shadow-[0_0_30px_rgba(139,92,246,0.35)] hover:shadow-[0_0_35px_rgba(139,92,246,0.45)] active:scale-95"
                   }`}

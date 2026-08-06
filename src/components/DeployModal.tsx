@@ -110,7 +110,9 @@ export default function DeployModal({ character, slots, onSelect, onClose }: Dep
                     w-full relative flex items-center justify-between p-3 rounded-xl border transition-all duration-300 touch-manipulation
                     ${isOccupied
                       ? "border-white/5 bg-white/2 cursor-not-allowed opacity-50"
-                      : "border-white/10 bg-white/5 hover:border-nexus-cyan/50 hover:bg-nexus-cyan/5 active:scale-98 cursor-pointer group"
+                      : role.id === "traitor"
+                        ? "border-red-500/40 bg-red-500/10 hover:border-red-500 hover:bg-red-500/20 active:scale-98 cursor-pointer group shadow-[0_0_15px_rgba(239,68,68,0.2)]"
+                        : "border-nexus-blue/30 bg-nexus-blue/5 hover:border-nexus-cyan/60 hover:bg-nexus-cyan/10 active:scale-98 cursor-pointer group shadow-[0_0_15px_rgba(30,144,255,0.1)]"
                     }
                   `}
                 >
@@ -119,14 +121,16 @@ export default function DeployModal({ character, slots, onSelect, onClose }: Dep
                       p-2 rounded-lg flex items-center justify-center flex-shrink-0
                       ${isOccupied 
                         ? "bg-white/5 border border-white/5 text-slate-500" 
-                        : "bg-nexus-blue/15 border border-nexus-blue/20 text-nexus-cyan group-hover:text-nexus-cyan shadow-[0_0_10px_rgba(0,229,255,0.05)]"
+                        : role.id === "traitor"
+                          ? "bg-red-500/20 border border-red-500/30 text-red-400 group-hover:text-red-300 shadow-[0_0_10px_rgba(239,68,68,0.2)]"
+                          : "bg-nexus-blue/15 border border-nexus-blue/20 text-nexus-cyan group-hover:text-nexus-cyan shadow-[0_0_10px_rgba(0,229,255,0.05)]"
                       }
                     `}>
                       <RoleIcon id={role.id} className="w-4 h-4" />
                     </div>
                     <div className="text-left min-w-0">
-                      <p className={`text-xs font-black uppercase tracking-wider ${isOccupied ? "text-slate-500" : "text-white"}`}>
-                        {role.name}
+                      <p className={`text-xs font-black uppercase tracking-wider ${isOccupied ? "text-slate-500" : role.id === "traitor" ? "text-red-300" : "text-white"}`}>
+                        {role.name} {role.id === "traitor" && "(Enemy gets pts)"}
                       </p>
                       {isOccupied ? (
                         <p className="text-[10px] text-slate-500 truncate max-w-[140px]">
@@ -141,7 +145,11 @@ export default function DeployModal({ character, slots, onSelect, onClose }: Dep
                   </div>
 
                   {!isOccupied && (
-                    <div className="w-6 h-6 rounded-full bg-nexus-cyan/10 border border-nexus-cyan/20 flex items-center justify-center text-nexus-cyan opacity-40 group-hover:opacity-100 group-hover:bg-nexus-cyan group-hover:text-black transition-all">
+                    <div className={`w-6 h-6 rounded-full flex items-center justify-center opacity-40 group-hover:opacity-100 transition-all ${
+                      role.id === "traitor"
+                        ? "bg-red-500/20 border border-red-500/30 text-red-400 group-hover:bg-red-500 group-hover:text-white"
+                        : "bg-nexus-cyan/10 border border-nexus-cyan/20 text-nexus-cyan group-hover:bg-nexus-cyan group-hover:text-black"
+                    }`}>
                       <Plus className="w-3.5 h-3.5" />
                     </div>
                   )}

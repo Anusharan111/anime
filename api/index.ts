@@ -4,6 +4,9 @@ import { GoogleGenAI } from "@google/genai";
 import Pusher from "pusher";
 import { CHARACTERS } from "../src/data/characters.js";
 import { Character, MatchHistory } from "../src/types.js";
+import { resolveKitsuAnimeId, fetchKitsuCharacters } from "../src/utils/kitsu.js";
+import { fetchJikanCharacters } from "../src/utils/jikan.js";
+import { getMalIdFromAniList } from "../src/utils/malMapper.js";
 
 // Load environment variables
 dotenv.config();
@@ -163,17 +166,19 @@ function buildAniListCastCharacter(edge: any, animeTitle: string, index = 0): Ch
   };
 }
 
-type RoleId = "captain" | "vice_captain" | "tank" | "healer" | "support_1" | "support_2";
+type RoleId = "captain" | "vice_captain" | "strategist" | "defender" | "healer" | "support_speed" | "support_power" | "traitor";
 type BattleSide = "p1" | "p2" | "draw";
 type BattleSlots = Partial<Record<RoleId, Character | null>>;
 
 const ROLE_ORDER: Array<{ id: RoleId; label: string }> = [
   { id: "captain", label: "Captain" },
   { id: "vice_captain", label: "Vice Captain" },
-  { id: "tank", label: "Defender" },
+  { id: "strategist", label: "Strategist" },
+  { id: "defender", label: "Defender" },
   { id: "healer", label: "Healer" },
-  { id: "support_1", label: "Speed Support" },
-  { id: "support_2", label: "Power Support" },
+  { id: "support_speed", label: "Speed Support" },
+  { id: "support_power", label: "Power Support" },
+  { id: "traitor", label: "Traitor" },
 ];
 
 const RARITY_BONUS: Record<Character["rarity"], number> = {
@@ -188,10 +193,12 @@ function getRoleFitScore(character: Character, role: RoleId): number {
   const fitScore = {
     captain: (iq + strength + magic) / 3,
     vice_captain: (iq + speed + magic) / 3,
-    tank: defense,
+    strategist: iq * 1.2 + (iq >= 80 ? 10 : iq <= 40 ? -20 : 0),
+    defender: defense,
     healer: (magic + iq + defense) / 3,
-    support_1: (speed + iq) / 2,
-    support_2: (magic + strength) / 2,
+    support_speed: (speed + iq) / 2,
+    support_power: (magic + strength) / 2,
+    traitor: (strength + speed + magic) / 3,
   }[role];
 
   return Math.round(fitScore);
@@ -220,10 +227,12 @@ function getRoleCombatBreakdown(character: Character, role: RoleId) {
   const roleScore = {
     captain: strength * 0.25 + speed * 0.08 + iq * 0.36 + defense * 0.08 + magic * 0.23,
     vice_captain: strength * 0.14 + speed * 0.22 + iq * 0.36 + defense * 0.08 + magic * 0.2,
-    tank: strength * 0.2 + speed * 0.04 + iq * 0.08 + defense * 0.58 + magic * 0.1,
+    strategist: strength * 0.10 + speed * 0.10 + iq * 0.55 + defense * 0.10 + magic * 0.15,
+    defender: strength * 0.20 + speed * 0.04 + iq * 0.08 + defense * 0.58 + magic * 0.10,
     healer: strength * 0.03 + speed * 0.07 + iq * 0.28 + defense * 0.16 + magic * 0.46,
-    support_1: strength * 0.11 + speed * 0.5 + iq * 0.28 + defense * 0.06 + magic * 0.05,
-    support_2: strength * 0.24 + speed * 0.06 + iq * 0.16 + defense * 0.06 + magic * 0.48,
+    support_speed: strength * 0.11 + speed * 0.50 + iq * 0.28 + defense * 0.06 + magic * 0.05,
+    support_power: strength * 0.24 + speed * 0.06 + iq * 0.16 + defense * 0.06 + magic * 0.48,
+    traitor: strength * 0.25 + speed * 0.20 + iq * 0.15 + defense * 0.15 + magic * 0.25,
   }[role];
   const fitScore = getRoleFitScore(character, role);
   const fitMultiplier = getRoleFitMultiplier(fitScore);
@@ -269,13 +278,18 @@ function calculateRarityBonus(team: Character[]) {
 function calculateRoleSynergyBonuses(roster: Record<RoleId, Character | null>) {
   const captain = roster.captain;
   const viceCaptain = roster.vice_captain;
-  const defender = roster.tank;
+  const strategist = roster.strategist;
+  const defender = roster.defender;
   const healer = roster.healer;
-  const speedSupport = roster.support_1;
-  const powerSupport = roster.support_2;
+  const speedSupport = roster.support_speed;
+  const powerSupport = roster.support_power;
+  const traitor = roster.traitor;
 
   const captainCommand = captain && viceCaptain
     ? Math.round(Math.min(30, Math.max(0, (captain.stats.iq + viceCaptain.stats.iq - 130) * 0.22)))
+    : 0;
+  const masterPlan = captain && strategist
+    ? Math.round(Math.min(28, Math.max(0, (captain.stats.iq + strategist.stats.iq - 140) * 0.25)))
     : 0;
   const guardCore = defender && healer
     ? Math.round(Math.min(32, Math.max(0, (defender.stats.defense + healer.stats.magic - 125) * 0.24)))
@@ -286,12 +300,17 @@ function calculateRoleSynergyBonuses(roster: Record<RoleId, Character | null>) {
   const powerChain = powerSupport && viceCaptain
     ? Math.round(Math.min(24, Math.max(0, (powerSupport.stats.magic + viceCaptain.stats.magic - 130) * 0.18)))
     : 0;
+  const backstab = viceCaptain && roster.traitor
+    ? Math.round(Math.min(20, Math.max(0, (roster.traitor!.stats.speed + viceCaptain.stats.iq - 120) * 0.15)))
+    : 0;
 
   return {
     captainCommand,
+    masterPlan,
     guardCore,
     tempoCombo,
     powerChain,
+    backstab,
   };
 }
 
@@ -367,7 +386,9 @@ function buildBattleReport(
   player1Team: Character[],
   player2Team: Character[],
   player1Slots?: BattleSlots,
-  player2Slots?: BattleSlots
+  player2Slots?: BattleSlots,
+  player1Name?: string,
+  player2Name?: string
 ) {
   const p1Stats = calculateStats(player1Team);
   const p2Stats = calculateStats(player2Team);
@@ -389,18 +410,35 @@ function buildBattleReport(
     const p2Score = p2Breakdown?.score || 0;
     let winner: BattleSide = "draw";
 
-    if (p1Score > p2Score) {
-      winner = "p1";
-      p1DuelWins += 1;
-    } else if (p2Score > p1Score) {
-      winner = "p2";
-      p2DuelWins += 1;
-    } else {
-      drawDuels += 1;
-    }
+    const isTraitor = role.id === "traitor";
 
-    p1DuelTotal += p1Score;
-    p2DuelTotal += p2Score;
+    if (isTraitor) {
+      // Traitor: score goes to ENEMY, winner is INVERTED
+      if (p1Score > p2Score) {
+        winner = "p2";
+        p2DuelWins += 1;
+        p2DuelTotal += p1Score;
+      } else if (p2Score > p1Score) {
+        winner = "p1";
+        p1DuelWins += 1;
+        p1DuelTotal += p2Score;
+      } else {
+        drawDuels += 1;
+      }
+    } else {
+      // Normal logic
+      if (p1Score > p2Score) {
+        winner = "p1";
+        p1DuelWins += 1;
+      } else if (p2Score > p1Score) {
+        winner = "p2";
+        p2DuelWins += 1;
+      } else {
+        drawDuels += 1;
+      }
+      p1DuelTotal += p1Score;
+      p2DuelTotal += p2Score;
+    }
 
     return {
       role: role.id,
@@ -420,9 +458,13 @@ function buildBattleReport(
       p1FitAdjustment: p1Breakdown?.fitAdjustment || 0,
       p2FitAdjustment: p2Breakdown?.fitAdjustment || 0,
       winner,
-      detail: winner === "draw"
-        ? `Even clash. ${p1Character?.name || "P1"} was a ${p1Breakdown?.suitability || "Empty"} (${p1Breakdown?.fitScore || 0}), ${p2Character?.name || "P2"} was a ${p2Breakdown?.suitability || "Empty"} (${p2Breakdown?.fitScore || 0}).`
-        : `${winner === "p1" ? p1Character?.name : p2Character?.name} wins the ${role.label} duel. Role fit changed the score: ${p1Character?.name || "P1"} ${p1Breakdown?.suitability || "Empty"} x${(p1Breakdown?.fitMultiplier || 0).toFixed(2)}, ${p2Character?.name || "P2"} ${p2Breakdown?.suitability || "Empty"} x${(p2Breakdown?.fitMultiplier || 0).toFixed(2)}.`,
+      detail: isTraitor
+        ? (winner === "draw"
+            ? `Traitor Draw! Both traitors contributed equal power to the opposing teams.`
+            : `Traitor Betrayal! ${p1Character?.name || "P1"} (${p1Score} pts) betrayed P1 to give points to P2, while ${p2Character?.name || "P2"} (${p2Score} pts) betrayed P2 to give points to P1. ${winner === "p1" ? player1Name || "P1" : player2Name || "P2"} gained more points (${winner === "p1" ? p2Score : p1Score} vs ${winner === "p1" ? p1Score : p2Score}) and wins!`)
+        : (winner === "draw"
+            ? `Even clash. ${p1Character?.name || "P1"} was a ${p1Breakdown?.suitability || "Empty"} (${p1Breakdown?.fitScore || 0}), ${p2Character?.name || "P2"} was a ${p2Breakdown?.suitability || "Empty"} (${p2Breakdown?.fitScore || 0}).`
+            : `${winner === "p1" ? p1Character?.name : p2Character?.name} wins the ${role.label} duel. Role fit changed the score: ${p1Character?.name || "P1"} ${p1Breakdown?.suitability || "Empty"} x${(p1Breakdown?.fitMultiplier || 0).toFixed(2)}, ${p2Character?.name || "P2"} ${p2Breakdown?.suitability || "Empty"} x${(p2Breakdown?.fitMultiplier || 0).toFixed(2)}.`),
     };
   });
 
@@ -432,7 +474,7 @@ function buildBattleReport(
     duelControl: p1DuelWins * 18,
     rarityEdge: calculateRarityBonus(player1Team),
     balance: calculateBalanceBonus(p1Stats),
-    completeTeam: player1Team.length >= 6 ? 30 : 0,
+    completeTeam: player1Team.length >= 8 ? 30 : 0,
     ...Object.fromEntries(Object.entries(p1Synergy).filter(([, value]) => value > 0)),
   };
   
@@ -442,7 +484,7 @@ function buildBattleReport(
     duelControl: p2DuelWins * 18,
     rarityEdge: calculateRarityBonus(player2Team),
     balance: calculateBalanceBonus(p2Stats),
-    completeTeam: player2Team.length >= 6 ? 30 : 0,
+    completeTeam: player2Team.length >= 8 ? 30 : 0,
     ...Object.fromEntries(Object.entries(p2Synergy).filter(([, value]) => value > 0)),
   };
 
@@ -470,8 +512,9 @@ function buildBattleReport(
       "Each role duels the matching enemy role.",
       "Role suitability now multiplies each card's duel score. Great fits gain extra value, weak fits lose a real chunk of their power.",
       "Raw power and rarity still help, but a powerful card in the wrong slot can score less than a weaker card placed correctly.",
-      "Teams gain synergy bonuses for smart pairings: Captain + Vice Captain IQ, Defender + Healer sustain, Captain + Speed Support tempo, and Vice Captain + Power Support energy.",
-      "Teams also gain bonuses for duel wins, total power, rarity edge, balance, and filling all 6 roles.",
+      "Teams gain synergy bonuses for smart pairings: Captain + Vice Captain IQ, Strategist + Captain master plan, Defender + Healer guard core, Captain + Speed Support tempo, Vice Captain + Power Support chain, and Traitor + Vice Captain sabotage.",
+      "The Traitor role is a double agent: their duel score feeds the enemy team.",
+      "Teams also gain bonuses for duel wins, total power, rarity edge, balance, and filling all 8 roles.",
       "Highest final battle score wins. Exact ties become a draw.",
     ],
   };
@@ -718,7 +761,7 @@ app.post("/api/characters/import", (req, res) => {
   }
 });
 
-// Import Cast from AniList
+// Import Cast – primary Kitsu, fallback Jikan (MAL)
 app.post("/api/anime/import-cast", async (req, res) => {
   try {
     const { animeTitle, limit = 40 } = req.body as { animeTitle?: string; limit?: number };
@@ -727,28 +770,22 @@ app.post("/api/anime/import-cast", async (req, res) => {
       return res.status(400).json({ error: "Missing anime title." });
     }
 
-    const safeLimit = Math.min(75, Math.max(10, Number(limit) || 40));
+    // Allow up to 250 characters per request (higher than the old 75 cap)
+    const safeLimit = Math.min(250, Math.max(10, Number(limit) || 40));
 
-    const graphQLQuery = `
+    // ---------- 1️⃣ AniList (fallback source) ----------
+    const anilistQuery = `
       query ($search: String, $perPage: Int) {
-        Media (search: $search, type: ANIME) {
+        Media(search: $search, type: ANIME) {
           id
-          title {
-            english
-            romaji
-            userPreferred
-          }
-          characters (perPage: $perPage, sort: [ROLE, RELEVANCE]) {
+          title { english romaji userPreferred }
+          characters(perPage: $perPage, sort: [ROLE, RELEVANCE]) {
             edges {
               role
               node {
                 id
-                name {
-                  full
-                }
-                image {
-                  large
-                }
+                name { full }
+                image { large }
                 description
                 favourites
               }
@@ -757,50 +794,65 @@ app.post("/api/anime/import-cast", async (req, res) => {
         }
       }
     `;
-
-    const response = await fetch("https://graphql.anilist.co", {
+    const anilistRes = await fetch("https://graphql.anilist.co", {
       method: "POST",
-      headers: { "Content-Type": "application/json", "Accept": "application/json" },
-      body: JSON.stringify({
-        query: graphQLQuery,
-        variables: { search: title, perPage: safeLimit }
-      })
+      headers: { "Content-Type": "application/json", Accept: "application/json" },
+      body: JSON.stringify({ query: anilistQuery, variables: { search: title, perPage: safeLimit } })
     });
 
-    if (!response.ok) {
-      return res.status(response.status).json({ error: `AniList request failed with status ${response.status}.` });
-    }
-
-    const json = await response.json() as any;
-    const media = json.data?.Media;
-    if (!media) {
-      return res.status(404).json({ error: `No anime found for "${title}".` });
-    }
-
-    const animeTitleString = media.title?.english || media.title?.userPreferred || media.title?.romaji || title;
-    const edges = media.characters?.edges || [];
-
-    const characters = edges
-      .map((edge: any, index: number) => buildAniListCastCharacter(edge, animeTitleString, index))
-      .filter(Boolean) as Character[];
-
-    let imported = 0;
-    let updated = 0;
-
-    for (const character of characters) {
-      const existingIndex = activeCharactersPool.findIndex(c => c.id === character.id);
-      if (existingIndex > -1) {
-        activeCharactersPool[existingIndex] = character;
-        updated += 1;
-      } else {
-        activeCharactersPool.push(character);
-        imported += 1;
+    let allChars: Character[] = [];
+    if (anilistRes.ok) {
+      const json = await anilistRes.json() as any;
+      const media = json?.data?.Media;
+      if (media) {
+        const animeTitleString = media.title?.english || media.title?.userPreferred || media.title?.romaji || title;
+        const edges = media.characters?.edges || [];
+        const anilistChars = edges
+          .map((edge: any, i: number) => buildAniListCastCharacter(edge, animeTitleString, i))
+          .filter(Boolean) as Character[];
+        allChars = anilistChars;
       }
     }
 
+    // ---------- 2️⃣ Kitsu (primary source) ----------
+    const kitsuId = await resolveKitsuAnimeId(title);
+    if (kitsuId) {
+      const kitsuChars = await fetchKitsuCharacters(kitsuId);
+      const existingIds = new Set(allChars.map(c => c.id));
+      for (const c of kitsuChars) {
+        if (!existingIds.has(c.id)) {
+          allChars.push(c);
+        }
+      }
+    }
+
+    // ---------- 3️⃣ Jikan (MAL) – fallback when everything else fails ----------
+    if (allChars.length === 0) {
+      const malId = await getMalIdFromAniList(title);
+      if (malId) {
+        const jikanChars = await fetchJikanCharacters(malId);
+        allChars = jikanChars;
+      }
+    }
+
+    // Insert / update the global pool
+    let imported = 0;
+    let updated = 0;
+    for (const character of allChars) {
+      const idx = activeCharactersPool.findIndex(c => c.id === character.id);
+      if (idx > -1) {
+        activeCharactersPool[idx] = character;
+        updated++;
+      } else {
+        activeCharactersPool.push(character);
+        imported++;
+      }
+    }
+
+    // Respond with a summary
     res.json({
       success: true,
-      anime: animeTitleString,
+      anime: title,
       imported,
       updated,
       totalImported: imported + updated,
@@ -969,7 +1021,7 @@ app.post("/api/draft/calculate", async (req, res) => {
       return res.status(400).json({ error: "Teams must contain characters." });
     }
 
-    const battleReport = buildBattleReport(player1Team, player2Team, player1Slots, player2Slots);
+    const battleReport = buildBattleReport(player1Team, player2Team, player1Slots, player2Slots, player1Name, player2Name);
     const p1Stats = battleReport.p1Stats;
     const p2Stats = battleReport.p2Stats;
 

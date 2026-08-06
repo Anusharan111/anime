@@ -2,22 +2,24 @@ export interface Character {
   id: string;
   name: string;
   anime: string;
-  image: string; // fallback image URL
-  themeColor: string; // HEX color for glowing effects
+  image: string;
+  themeColor: string;
   stats: {
-    strength: number;  // 1-100
-    speed: number;     // 1-100
-    iq: number;        // 1-100
-    defense: number;   // 1-100
-    magic: number;     // 1-100
+    strength: number;
+    speed: number;
+    iq: number;
+    defense: number;
+    magic: number;
   };
-  overallPower: number; // sum of stats
+  overallPower: number;
   rarity: "Common" | "Rare" | "Epic" | "Legendary";
   description: string;
   quote?: string;
   signatureEmoji: string;
   skills?: string[];
-  malFallbackUrl?: string; // Original MAL URL fallback if AI image fails
+  malFallbackUrl?: string;
+  rating?: number;
+  source?: "builtin" | "anilist" | "rating-dataset";
 }
 
 import { API_BASE } from "./config";
@@ -30,7 +32,7 @@ export function getProxyImageUrl(url: string): string {
   return url;
 }
 
-export type RoleId = "captain" | "vice_captain" | "tank" | "healer" | "support_1" | "support_2";
+export type RoleId = "captain" | "vice_captain" | "strategist" | "defender" | "healer" | "support_speed" | "support_power" | "traitor";
 
 export interface RoleCategory {
   id: RoleId;
@@ -65,4 +67,43 @@ export interface MatchHistory {
   mvp: Character;
   commentary: string;
   createdAt: string;
+}
+
+export interface BattleReport {
+  p1Stats: { strength: number; speed: number; iq: number; defense: number; magic: number; overall: number };
+  p2Stats: { strength: number; speed: number; iq: number; defense: number; magic: number; overall: number };
+  p1BattleScore: number;
+  p2BattleScore: number;
+  p1DuelWins: number;
+  p2DuelWins: number;
+  drawDuels: number;
+  duels: Array<{
+    role: string;
+    label: string;
+    p1Name: string;
+    p2Name: string;
+    p1Score: number;
+    p2Score: number;
+    p1FitScore: number;
+    p2FitScore: number;
+    p1BaseScore: number;
+    p2BaseScore: number;
+    p1FitMultiplier: number;
+    p2FitMultiplier: number;
+    p1Suitability: string;
+    p2Suitability: string;
+    p1FitAdjustment: number;
+    p2FitAdjustment: number;
+    winner: "p1" | "p2" | "draw";
+    detail: string;
+    p1IsRating?: boolean;
+    p2IsRating?: boolean;
+    p1Rating?: number;
+    p2Rating?: number;
+  }>;
+  bonuses: {
+    p1: Record<string, number>;
+    p2: Record<string, number>;
+  };
+  rules: string[];
 }

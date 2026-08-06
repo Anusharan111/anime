@@ -1,0 +1,6074 @@
+[
+  {
+    "anime_name": "One Piece",
+    "characters": [
+      {
+        "name": "Luffy Monkey D.",
+        "anime_category": "One Piece",
+        "favorites": 10000,
+        "image_url": "https://cdn.myanimelist.net/images/characters/9/310307.webp",
+        "rating": 500
+      },
+      {
+        "name": "zoro",
+        "anime_category": "One Piece",
+        "favorites": 29591,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/343382.jpg",
+        "rating": 500
+      },
+      {
+        "name": "Robin Nico",
+        "anime_category": "One Piece",
+        "favorites": 22922,
+        "image_url": "https://cdn.myanimelist.net/images/characters/16/363700.webp",
+        "rating": 430
+      },
+      {
+        "name": "Usopp",
+        "anime_category": "One Piece",
+        "favorites": 14532,
+        "image_url": "https://cdn.myanimelist.net/images/characters/16/188076.webp",
+        "rating": 370
+      },
+      {
+        "name": "Ace Portgas D.",
+        "anime_category": "One Piece",
+        "favorites": 11482,
+        "image_url": "https://cdn.myanimelist.net/images/characters/2/72220.webp",
+        "rating": 465
+      },
+      {
+        "name": "Katakuri Charlotte",
+        "anime_category": "One Piece",
+        "favorites": 6805,
+        "image_url": "https://cdn.myanimelist.net/images/characters/8/342776.webp",
+        "rating": 482
+      },
+      {
+        "name": "Tsumugi Kotobuki",
+        "anime_category": "One Piece",
+        "favorites": 6569,
+        "image_url": "https://cdn.myanimelist.net/images/characters/8/51210.webp",
+        "rating": 498
+      },
+      {
+        "name": "Shanks",
+        "anime_category": "One Piece",
+        "favorites": 6521,
+        "image_url": "https://cdn.myanimelist.net/images/characters/9/307639.webp",
+        "rating": 498
+      },
+      {
+        "name": "Newgate Edward",
+        "anime_category": "One Piece",
+        "favorites": 4604,
+        "image_url": "https://cdn.myanimelist.net/images/characters/3/100236.webp",
+        "rating": 499
+      },
+      {
+        "name": "Doflamingo Donquixote",
+        "anime_category": "One Piece",
+        "favorites": 4546,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/349513.webp",
+        "rating": 470
+      },
+      {
+        "name": "Jinbe",
+        "anime_category": "One Piece",
+        "favorites": 4212,
+        "image_url": "https://cdn.myanimelist.net/images/characters/15/307148.webp",
+        "rating": 448
+      },
+      {
+        "name": "Rosinante Donquixote",
+        "anime_category": "One Piece",
+        "favorites": 3396,
+        "image_url": "https://cdn.myanimelist.net/images/characters/13/288038.webp",
+        "rating": 325
+      },
+      {
+        "name": "Mihawk Dracule",
+        "anime_category": "One Piece",
+        "favorites": 1804,
+        "image_url": "https://cdn.myanimelist.net/images/characters/7/69747.webp",
+        "rating": 497
+      },
+      {
+        "name": "Diane",
+        "anime_category": "One Piece",
+        "favorites": 1348,
+        "image_url": "https://cdn.myanimelist.net/images/characters/9/273829.webp",
+        "rating": 496
+      },
+      {
+        "name": "Perona",
+        "anime_category": "One Piece",
+        "favorites": 1334,
+        "image_url": "https://cdn.myanimelist.net/images/characters/15/136777.webp",
+        "rating": 360
+      },
+      {
+        "name": "Garp Monkey D.",
+        "anime_category": "One Piece",
+        "favorites": 833,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/509073.webp",
+        "rating": 495
+      },
+      {
+        "name": "Marco",
+        "anime_category": "One Piece",
+        "favorites": 824,
+        "image_url": "https://cdn.myanimelist.net/images/characters/4/100226.webp",
+        "rating": 470
+      },
+      {
+        "name": "Teach Marshall D.",
+        "anime_category": "One Piece",
+        "favorites": 810,
+        "image_url": "https://cdn.myanimelist.net/images/characters/2/109536.webp",
+        "rating": 499
+      },
+      {
+        "name": "Kuzan",
+        "anime_category": "One Piece",
+        "favorites": 727,
+        "image_url": "https://cdn.myanimelist.net/images/characters/9/96167.webp",
+        "rating": 486
+      },
+      {
+        "name": "Bartolomeo",
+        "anime_category": "One Piece",
+        "favorites": 722,
+        "image_url": "https://cdn.myanimelist.net/images/characters/13/249217.webp",
+        "rating": 494
+      },
+      {
+        "name": "Roger Gol D.",
+        "anime_category": "One Piece",
+        "favorites": 683,
+        "image_url": "https://cdn.myanimelist.net/images/characters/3/51747.webp",
+        "rating": 492
+      },
+      {
+        "name": "Borsalino",
+        "anime_category": "One Piece",
+        "favorites": 666,
+        "image_url": "https://cdn.myanimelist.net/images/characters/12/96168.webp",
+        "rating": 491
+      },
+      {
+        "name": "Kid Eustass",
+        "anime_category": "One Piece",
+        "favorites": 592,
+        "image_url": "https://cdn.myanimelist.net/images/characters/12/146187.webp",
+        "rating": 489
+      },
+      {
+        "name": "Smoker",
+        "anime_category": "One Piece",
+        "favorites": 551,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/235841.webp",
+        "rating": 487
+      },
+      {
+        "name": "Uta",
+        "anime_category": "One Piece",
+        "favorites": 543,
+        "image_url": "https://cdn.myanimelist.net/images/characters/11/506689.webp",
+        "rating": 485
+      },
+      {
+        "name": "Yomiko Readman",
+        "anime_category": "One Piece",
+        "favorites": 508,
+        "image_url": "https://cdn.myanimelist.net/images/characters/14/544067.webp",
+        "rating": 483
+      },
+      {
+        "name": "Isshou",
+        "anime_category": "One Piece",
+        "favorites": 361,
+        "image_url": "https://cdn.myanimelist.net/images/characters/14/235827.webp",
+        "rating": 481
+      },
+      {
+        "name": "Sakazuki",
+        "anime_category": "One Piece",
+        "favorites": 329,
+        "image_url": "https://cdn.myanimelist.net/images/characters/16/306908.webp",
+        "rating": 479
+      },
+      {
+        "name": "Kaidou",
+        "anime_category": "One Piece",
+        "favorites": 304,
+        "image_url": "https://cdn.myanimelist.net/images/characters/4/492819.webp",
+        "rating": 477
+      },
+      {
+        "name": "Tear Grants",
+        "anime_category": "One Piece",
+        "favorites": 282,
+        "image_url": "https://cdn.myanimelist.net/images/characters/9/321645.webp",
+        "rating": 360
+      },
+      {
+        "name": "Senor Pink",
+        "anime_category": "One Piece",
+        "favorites": 244,
+        "image_url": "https://cdn.myanimelist.net/images/characters/16/235809.webp",
+        "rating": 350
+      },
+      {
+        "name": "Fujita",
+        "anime_category": "One Piece",
+        "favorites": 243,
+        "image_url": "https://cdn.myanimelist.net/images/characters/14/196863.webp",
+        "rating": 472
+      },
+      {
+        "name": "Lucci Rob",
+        "anime_category": "One Piece",
+        "favorites": 239,
+        "image_url": "https://cdn.myanimelist.net/images/characters/14/71509.webp",
+        "rating": 470
+      },
+      {
+        "name": "Akira Hattori",
+        "anime_category": "One Piece",
+        "favorites": 233,
+        "image_url": "https://cdn.myanimelist.net/images/characters/13/108051.webp",
+        "rating": 468
+      },
+      {
+        "name": "Ayano Hanesaki",
+        "anime_category": "One Piece",
+        "favorites": 231,
+        "image_url": "https://cdn.myanimelist.net/images/characters/14/359847.webp",
+        "rating": 466
+      },
+      {
+        "name": "Hiluluk",
+        "anime_category": "One Piece",
+        "favorites": 182,
+        "image_url": "https://cdn.myanimelist.net/images/characters/2/61610.webp",
+        "rating": 464
+      },
+      {
+        "name": "Karoo",
+        "anime_category": "One Piece",
+        "favorites": 163,
+        "image_url": "https://cdn.myanimelist.net/images/characters/3/64158.webp",
+        "rating": 462
+      },
+      {
+        "name": "Ivankov Emporio",
+        "anime_category": "One Piece",
+        "favorites": 160,
+        "image_url": "https://cdn.myanimelist.net/images/characters/6/81182.webp",
+        "rating": 460
+      },
+      {
+        "name": "Linlin Charlotte",
+        "anime_category": "One Piece",
+        "favorites": 133,
+        "image_url": "https://cdn.myanimelist.net/images/characters/14/337166.webp",
+        "rating": 458
+      },
+      {
+        "name": "Monet",
+        "anime_category": "One Piece",
+        "favorites": 128,
+        "image_url": "https://cdn.myanimelist.net/images/characters/8/235837.webp",
+        "rating": 456
+      },
+      {
+        "name": "Ulti",
+        "anime_category": "One Piece",
+        "favorites": 126,
+        "image_url": "https://cdn.myanimelist.net/images/characters/8/453421.webp",
+        "rating": 455
+      },
+      {
+        "name": "Tashigi",
+        "anime_category": "One Piece",
+        "favorites": 125,
+        "image_url": "https://cdn.myanimelist.net/images/characters/2/266983.webp",
+        "rating": 453
+      },
+      {
+        "name": "Shirahoshi",
+        "anime_category": "One Piece",
+        "favorites": 120,
+        "image_url": "https://cdn.myanimelist.net/images/characters/14/159079.webp",
+        "rating": 451
+      },
+      {
+        "name": "Pudding Charlotte",
+        "anime_category": "One Piece",
+        "favorites": 96,
+        "image_url": "https://cdn.myanimelist.net/images/characters/9/328672.webp",
+        "rating": 449
+      },
+      {
+        "name": "Koala",
+        "anime_category": "One Piece",
+        "favorites": 92,
+        "image_url": "https://cdn.myanimelist.net/images/characters/16/391323.webp",
+        "rating": 447
+      },
+      {
+        "name": "Pandaman",
+        "anime_category": "One Piece",
+        "favorites": 89,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/190448.webp",
+        "rating": 445
+      },
+      {
+        "name": "Beckman Benn",
+        "anime_category": "One Piece",
+        "favorites": 75,
+        "image_url": "https://cdn.myanimelist.net/images/characters/13/110987.webp",
+        "rating": 443
+      },
+      {
+        "name": "Girl",
+        "anime_category": "One Piece",
+        "favorites": 72,
+        "image_url": "https://cdn.myanimelist.net/images/characters/3/565501.webp",
+        "rating": 441
+      },
+      {
+        "name": "Claire Redfield",
+        "anime_category": "One Piece",
+        "favorites": 64,
+        "image_url": "https://cdn.myanimelist.net/images/characters/11/366498.webp",
+        "rating": 439
+      },
+      {
+        "name": "Kung Fu Dugong",
+        "anime_category": "One Piece",
+        "favorites": 64,
+        "image_url": "https://cdn.myanimelist.net/images/characters/13/155273.webp",
+        "rating": 438
+      },
+      {
+        "name": "Bellemere",
+        "anime_category": "One Piece",
+        "favorites": 64,
+        "image_url": "https://cdn.myanimelist.net/images/characters/10/350916.webp",
+        "rating": 436
+      },
+      {
+        "name": "Cavendish",
+        "anime_category": "One Piece",
+        "favorites": 63,
+        "image_url": "https://cdn.myanimelist.net/images/characters/15/280596.webp",
+        "rating": 434
+      },
+      {
+        "name": "Moriah Gekko",
+        "anime_category": "One Piece",
+        "favorites": 60,
+        "image_url": "https://cdn.myanimelist.net/images/characters/2/61709.webp",
+        "rating": 432
+      },
+      {
+        "name": "Tiger Fisher",
+        "anime_category": "One Piece",
+        "favorites": 58,
+        "image_url": "https://cdn.myanimelist.net/images/characters/8/162743.webp",
+        "rating": 430
+      },
+      {
+        "name": "Ryuuma Shimotsuki",
+        "anime_category": "One Piece",
+        "favorites": 57,
+        "image_url": "https://cdn.myanimelist.net/images/characters/13/530997.webp",
+        "rating": 428
+      },
+      {
+        "name": "Arlong",
+        "anime_category": "One Piece",
+        "favorites": 55,
+        "image_url": "https://cdn.myanimelist.net/images/characters/12/350919.webp",
+        "rating": 426
+      },
+      {
+        "name": "Zephyr ",
+        "anime_category": "One Piece",
+        "favorites": 49,
+        "image_url": "https://cdn.myanimelist.net/images/characters/9/224167.webp",
+        "rating": 424
+      },
+      {
+        "name": "Pedro",
+        "anime_category": "One Piece",
+        "favorites": 45,
+        "image_url": "https://cdn.myanimelist.net/images/characters/16/357448.webp",
+        "rating": 422
+      },
+      {
+        "name": "Kinemon",
+        "anime_category": "One Piece",
+        "favorites": 40,
+        "image_url": "https://cdn.myanimelist.net/images/characters/8/230765.webp",
+        "rating": 420
+      },
+      {
+        "name": "Foxy",
+        "anime_category": "One Piece",
+        "favorites": 40,
+        "image_url": "https://cdn.myanimelist.net/images/characters/4/53320.webp",
+        "rating": 419
+      },
+      {
+        "name": "Paulie",
+        "anime_category": "One Piece",
+        "favorites": 39,
+        "image_url": "https://cdn.myanimelist.net/images/characters/9/51460.webp",
+        "rating": 417
+      },
+      {
+        "name": "Magellan",
+        "anime_category": "One Piece",
+        "favorites": 38,
+        "image_url": "https://cdn.myanimelist.net/images/characters/9/79445.webp",
+        "rating": 415
+      },
+      {
+        "name": "Sengoku",
+        "anime_category": "One Piece",
+        "favorites": 38,
+        "image_url": "https://cdn.myanimelist.net/images/characters/7/88938.webp",
+        "rating": 413
+      },
+      {
+        "name": "Gonbe",
+        "anime_category": "One Piece",
+        "favorites": 38,
+        "image_url": "https://cdn.myanimelist.net/images/characters/15/51552.webp",
+        "rating": 411
+      },
+      {
+        "name": "Izou",
+        "anime_category": "One Piece",
+        "favorites": 31,
+        "image_url": "https://cdn.myanimelist.net/images/characters/10/100243.webp",
+        "rating": 409
+      },
+      {
+        "name": "Morgans",
+        "anime_category": "One Piece",
+        "favorites": 30,
+        "image_url": "https://cdn.myanimelist.net/images/characters/6/401857.webp",
+        "rating": 407
+      },
+      {
+        "name": "Tom",
+        "anime_category": "One Piece",
+        "favorites": 30,
+        "image_url": "https://cdn.myanimelist.net/images/characters/3/61601.webp",
+        "rating": 405
+      },
+      {
+        "name": "Makino",
+        "anime_category": "One Piece",
+        "favorites": 29,
+        "image_url": "https://cdn.myanimelist.net/images/characters/6/49465.webp",
+        "rating": 403
+      },
+      {
+        "name": "Dadan Curly",
+        "anime_category": "One Piece",
+        "favorites": 28,
+        "image_url": "https://cdn.myanimelist.net/images/characters/4/119547.webp",
+        "rating": 402
+      },
+      {
+        "name": "Viola",
+        "anime_category": "One Piece",
+        "favorites": 28,
+        "image_url": "https://cdn.myanimelist.net/images/characters/12/283063.webp",
+        "rating": 400
+      },
+      {
+        "name": "Eiichiro Oda",
+        "anime_category": "One Piece",
+        "favorites": 25,
+        "image_url": "https://cdn.myanimelist.net/images/characters/9/55993.webp",
+        "rating": 398
+      },
+      {
+        "name": "Vegapunk",
+        "anime_category": "One Piece",
+        "favorites": 23,
+        "image_url": "https://cdn.myanimelist.net/images/characters/6/503527.webp",
+        "rating": 396
+      },
+      {
+        "name": "Loki",
+        "anime_category": "One Piece",
+        "favorites": 23,
+        "image_url": "https://cdn.myanimelist.net/images/characters/9/413609.webp",
+        "rating": 394
+      },
+      {
+        "name": "Black Maria",
+        "anime_category": "One Piece",
+        "favorites": 22,
+        "image_url": "https://cdn.myanimelist.net/images/characters/8/453098.webp",
+        "rating": 392
+      },
+      {
+        "name": "Zeus",
+        "anime_category": "One Piece",
+        "favorites": 22,
+        "image_url": "https://cdn.myanimelist.net/images/characters/10/497548.webp",
+        "rating": 390
+      },
+      {
+        "name": "Krieg",
+        "anime_category": "One Piece",
+        "favorites": 21,
+        "image_url": "https://cdn.myanimelist.net/images/characters/3/38642.webp",
+        "rating": 388
+      },
+      {
+        "name": "Hana Asakura",
+        "anime_category": "One Piece",
+        "favorites": 21,
+        "image_url": "https://cdn.myanimelist.net/images/characters/12/239627.webp",
+        "rating": 386
+      },
+      {
+        "name": "Rouge Portgas D.",
+        "anime_category": "One Piece",
+        "favorites": 19,
+        "image_url": "https://cdn.myanimelist.net/images/characters/6/96173.webp",
+        "rating": 384
+      },
+      {
+        "name": "Klabautermann",
+        "anime_category": "One Piece",
+        "favorites": 19,
+        "image_url": "https://cdn.myanimelist.net/images/characters/3/364672.webp",
+        "rating": 383
+      },
+      {
+        "name": "Dellinger",
+        "anime_category": "One Piece",
+        "favorites": 19,
+        "image_url": "https://cdn.myanimelist.net/images/characters/12/260481.webp",
+        "rating": 381
+      },
+      {
+        "name": "Heracles",
+        "anime_category": "One Piece",
+        "favorites": 19,
+        "image_url": "https://cdn.myanimelist.net/images/characters/8/68795.webp",
+        "rating": 379
+      },
+      {
+        "name": "Hina",
+        "anime_category": "One Piece",
+        "favorites": 19,
+        "image_url": "https://cdn.myanimelist.net/images/characters/9/50721.webp",
+        "rating": 377
+      },
+      {
+        "name": "Marianne",
+        "anime_category": "One Piece",
+        "favorites": 19,
+        "image_url": "https://cdn.myanimelist.net/images/characters/13/473998.webp",
+        "rating": 375
+      },
+      {
+        "name": "Woop Slap",
+        "anime_category": "One Piece",
+        "favorites": 18,
+        "image_url": "https://cdn.myanimelist.net/images/characters/11/49467.webp",
+        "rating": 373
+      },
+      {
+        "name": "Iceburg",
+        "anime_category": "One Piece",
+        "favorites": 17,
+        "image_url": "https://cdn.myanimelist.net/images/characters/10/51467.webp",
+        "rating": 371
+      },
+      {
+        "name": "Bogard",
+        "anime_category": "One Piece",
+        "favorites": 16,
+        "image_url": "https://cdn.myanimelist.net/images/characters/15/56243.webp",
+        "rating": 369
+      },
+      {
+        "name": "Otohime",
+        "anime_category": "One Piece",
+        "favorites": 14,
+        "image_url": "https://cdn.myanimelist.net/images/characters/7/162487.webp",
+        "rating": 367
+      },
+      {
+        "name": "Leo",
+        "anime_category": "One Piece",
+        "favorites": 13,
+        "image_url": "https://cdn.myanimelist.net/images/characters/12/250449.webp",
+        "rating": 366
+      },
+      {
+        "name": "Shiki",
+        "anime_category": "One Piece",
+        "favorites": 13,
+        "image_url": "https://cdn.myanimelist.net/images/characters/13/68595.webp",
+        "rating": 364
+      },
+      {
+        "name": "Yokozuna",
+        "anime_category": "One Piece",
+        "favorites": 12,
+        "image_url": "https://cdn.myanimelist.net/images/characters/12/71980.webp",
+        "rating": 362
+      },
+      {
+        "name": "Sandersonia Boa",
+        "anime_category": "One Piece",
+        "favorites": 12,
+        "image_url": "https://cdn.myanimelist.net/images/characters/8/54743.webp",
+        "rating": 360
+      },
+      {
+        "name": "Jonathan",
+        "anime_category": "One Piece",
+        "favorites": 12,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/71030.webp",
+        "rating": 358
+      },
+      {
+        "name": "Penguin",
+        "anime_category": "One Piece",
+        "favorites": 12,
+        "image_url": "https://cdn.myanimelist.net/images/characters/11/323161.webp",
+        "rating": 356
+      },
+      {
+        "name": "Sadi",
+        "anime_category": "One Piece",
+        "favorites": 12,
+        "image_url": "https://cdn.myanimelist.net/images/characters/13/74917.webp",
+        "rating": 354
+      },
+      {
+        "name": "Niji Vinsmoke",
+        "anime_category": "One Piece",
+        "favorites": 11,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/340286.webp",
+        "rating": 352
+      },
+      {
+        "name": "Douglas Bullet",
+        "anime_category": "One Piece",
+        "favorites": 11,
+        "image_url": "https://cdn.myanimelist.net/images/characters/10/398916.webp",
+        "rating": 350
+      },
+      {
+        "name": "Lilith",
+        "anime_category": "One Piece",
+        "favorites": 11,
+        "image_url": "https://cdn.myanimelist.net/images/characters/10/534648.webp",
+        "rating": 348
+      },
+      {
+        "name": "Manjaro",
+        "anime_category": "One Piece",
+        "favorites": 11,
+        "image_url": "https://cdn.myanimelist.net/images/characters/2/137295.webp",
+        "rating": 347
+      },
+      {
+        "name": "Lao G",
+        "anime_category": "One Piece",
+        "favorites": 11,
+        "image_url": "https://cdn.myanimelist.net/images/characters/12/234805.webp",
+        "rating": 345
+      },
+      {
+        "name": "Shuraiya Bascud",
+        "anime_category": "One Piece",
+        "favorites": 11,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/511194.webp",
+        "rating": 343
+      },
+      {
+        "name": "Porche",
+        "anime_category": "One Piece",
+        "favorites": 11,
+        "image_url": "https://cdn.myanimelist.net/images/characters/13/53389.webp",
+        "rating": 341
+      },
+      {
+        "name": "Black Demaro",
+        "anime_category": "One Piece",
+        "favorites": 11,
+        "image_url": "https://cdn.myanimelist.net/images/characters/12/136897.webp",
+        "rating": 339
+      },
+      {
+        "name": "Aramaki ",
+        "anime_category": "One Piece",
+        "favorites": 11,
+        "image_url": "https://cdn.myanimelist.net/images/characters/6/525732.webp",
+        "rating": 337
+      },
+      {
+        "name": "Vergo",
+        "anime_category": "One Piece",
+        "favorites": 11,
+        "image_url": "https://cdn.myanimelist.net/images/characters/7/235831.webp",
+        "rating": 335
+      },
+      {
+        "name": "Inazuma",
+        "anime_category": "One Piece",
+        "favorites": 10,
+        "image_url": "https://cdn.myanimelist.net/images/characters/7/84780.webp",
+        "rating": 333
+      },
+      {
+        "name": "Kokoro",
+        "anime_category": "One Piece",
+        "favorites": 10,
+        "image_url": "https://cdn.myanimelist.net/images/characters/15/51553.webp",
+        "rating": 331
+      },
+      {
+        "name": "Drip",
+        "anime_category": "One Piece",
+        "favorites": 10,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/136991.webp",
+        "rating": 330
+      },
+      {
+        "name": "Shyarly",
+        "anime_category": "One Piece",
+        "favorites": 10,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/147779.webp",
+        "rating": 328
+      },
+      {
+        "name": "Pierre",
+        "anime_category": "One Piece",
+        "favorites": 10,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/369921.webp",
+        "rating": 326
+      },
+      {
+        "name": "Akuji Yamamoto",
+        "anime_category": "One Piece",
+        "favorites": 9,
+        "image_url": "https://cdn.myanimelist.net/images/characters/9/321783.webp",
+        "rating": 324
+      },
+      {
+        "name": "Gin",
+        "anime_category": "One Piece",
+        "favorites": 9,
+        "image_url": "https://cdn.myanimelist.net/images/characters/15/49744.webp",
+        "rating": 322
+      },
+      {
+        "name": "Domino",
+        "anime_category": "One Piece",
+        "favorites": 9,
+        "image_url": "https://cdn.myanimelist.net/images/characters/9/70694.webp",
+        "rating": 320
+      },
+      {
+        "name": "Ishilly",
+        "anime_category": "One Piece",
+        "favorites": 9,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/147761.webp",
+        "rating": 318
+      },
+      {
+        "name": "Crocus",
+        "anime_category": "One Piece",
+        "favorites": 9,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/49770.webp",
+        "rating": 316
+      },
+      {
+        "name": "Jozu",
+        "anime_category": "One Piece",
+        "favorites": 8,
+        "image_url": "https://cdn.myanimelist.net/images/characters/3/50454.webp",
+        "rating": 314
+      },
+      {
+        "name": "Momonga",
+        "anime_category": "One Piece",
+        "favorites": 8,
+        "image_url": "https://cdn.myanimelist.net/images/characters/7/58710.webp",
+        "rating": 312
+      },
+      {
+        "name": "Gan Fall",
+        "anime_category": "One Piece",
+        "favorites": 8,
+        "image_url": "https://cdn.myanimelist.net/images/characters/13/54687.webp",
+        "rating": 311
+      },
+      {
+        "name": "Lafitte",
+        "anime_category": "One Piece",
+        "favorites": 8,
+        "image_url": "https://cdn.myanimelist.net/images/characters/3/110993.webp",
+        "rating": 309
+      },
+      {
+        "name": "Pica",
+        "anime_category": "One Piece",
+        "favorites": 7,
+        "image_url": "https://cdn.myanimelist.net/images/characters/14/280888.webp",
+        "rating": 307
+      },
+      {
+        "name": "Alvida",
+        "anime_category": "One Piece",
+        "favorites": 7,
+        "image_url": "https://cdn.myanimelist.net/images/characters/6/189350.webp",
+        "rating": 305
+      },
+      {
+        "name": "Decken IX Vander",
+        "anime_category": "One Piece",
+        "favorites": 7,
+        "image_url": "https://cdn.myanimelist.net/images/characters/13/159081.webp",
+        "rating": 303
+      },
+      {
+        "name": "Turco",
+        "anime_category": "One Piece",
+        "favorites": 6,
+        "image_url": "https://cdn.myanimelist.net/images/characters/12/137293.webp",
+        "rating": 301
+      },
+      {
+        "name": "Wanze",
+        "anime_category": "One Piece",
+        "favorites": 6,
+        "image_url": "https://cdn.myanimelist.net/images/characters/12/371080.webp",
+        "rating": 299
+      },
+      {
+        "name": "Baccarat",
+        "anime_category": "One Piece",
+        "favorites": 6,
+        "image_url": "https://cdn.myanimelist.net/images/characters/14/542329.webp",
+        "rating": 297
+      },
+      {
+        "name": "Atlas",
+        "anime_category": "One Piece",
+        "favorites": 6,
+        "image_url": "https://cdn.myanimelist.net/images/characters/11/535510.webp",
+        "rating": 295
+      },
+      {
+        "name": "Wadatsumi",
+        "anime_category": "One Piece",
+        "favorites": 6,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/144381.webp",
+        "rating": 294
+      },
+      {
+        "name": "Shiliew",
+        "anime_category": "One Piece",
+        "favorites": 6,
+        "image_url": "https://cdn.myanimelist.net/images/characters/4/110997.webp",
+        "rating": 292
+      },
+      {
+        "name": "Erik",
+        "anime_category": "One Piece",
+        "favorites": 6,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/91494.webp",
+        "rating": 290
+      },
+      {
+        "name": "Hody Jones",
+        "anime_category": "One Piece",
+        "favorites": 5,
+        "image_url": "https://cdn.myanimelist.net/images/characters/4/159077.webp",
+        "rating": 288
+      },
+      {
+        "name": "Brogy",
+        "anime_category": "One Piece",
+        "favorites": 5,
+        "image_url": "https://cdn.myanimelist.net/images/characters/4/62722.webp",
+        "rating": 286
+      },
+      {
+        "name": "Hajrudin",
+        "anime_category": "One Piece",
+        "favorites": 5,
+        "image_url": "https://cdn.myanimelist.net/images/characters/11/250469.webp",
+        "rating": 284
+      },
+      {
+        "name": "Haredas",
+        "anime_category": "One Piece",
+        "favorites": 5,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/96251.webp",
+        "rating": 282
+      },
+      {
+        "name": "Wicca",
+        "anime_category": "One Piece",
+        "favorites": 5,
+        "image_url": "https://cdn.myanimelist.net/images/characters/4/246801.webp",
+        "rating": 280
+      },
+      {
+        "name": "King Baum",
+        "anime_category": "One Piece",
+        "favorites": 5,
+        "image_url": "https://cdn.myanimelist.net/images/characters/10/357717.webp",
+        "rating": 278
+      },
+      {
+        "name": "Trebol",
+        "anime_category": "One Piece",
+        "favorites": 5,
+        "image_url": "https://cdn.myanimelist.net/images/characters/4/237209.webp",
+        "rating": 277
+      },
+      {
+        "name": "Smoothie Charlotte",
+        "anime_category": "One Piece",
+        "favorites": 5,
+        "image_url": "https://cdn.myanimelist.net/images/characters/10/343042.webp",
+        "rating": 275
+      },
+      {
+        "name": "Hibari",
+        "anime_category": "One Piece",
+        "favorites": 5,
+        "image_url": "https://cdn.myanimelist.net/images/characters/7/535681.webp",
+        "rating": 273
+      },
+      {
+        "name": "Masira",
+        "anime_category": "One Piece",
+        "favorites": 5,
+        "image_url": "https://cdn.myanimelist.net/images/characters/13/50398.webp",
+        "rating": 271
+      },
+      {
+        "name": "Pekoms",
+        "anime_category": "One Piece",
+        "favorites": 5,
+        "image_url": "https://cdn.myanimelist.net/images/characters/2/193151.webp",
+        "rating": 269
+      },
+      {
+        "name": "Vasco Shot",
+        "anime_category": "One Piece",
+        "favorites": 5,
+        "image_url": "https://cdn.myanimelist.net/images/characters/11/111000.webp",
+        "rating": 267
+      },
+      {
+        "name": "Tamanegi",
+        "anime_category": "One Piece",
+        "favorites": 5,
+        "image_url": "https://cdn.myanimelist.net/images/characters/3/49476.webp",
+        "rating": 265
+      },
+      {
+        "name": "Patty",
+        "anime_category": "One Piece",
+        "favorites": 5,
+        "image_url": "https://cdn.myanimelist.net/images/characters/10/49473.webp",
+        "rating": 263
+      },
+      {
+        "name": "Hogback",
+        "anime_category": "One Piece",
+        "favorites": 5,
+        "image_url": "https://cdn.myanimelist.net/images/characters/11/50257.webp",
+        "rating": 261
+      },
+      {
+        "name": "York",
+        "anime_category": "One Piece",
+        "favorites": 5,
+        "image_url": "https://cdn.myanimelist.net/images/characters/12/594176.webp",
+        "rating": 259
+      },
+      {
+        "name": "Shoujou",
+        "anime_category": "One Piece",
+        "favorites": 5,
+        "image_url": "https://cdn.myanimelist.net/images/characters/15/50436.webp",
+        "rating": 258
+      },
+      {
+        "name": "Little Oars Jr.",
+        "anime_category": "One Piece",
+        "favorites": 5,
+        "image_url": "https://cdn.myanimelist.net/images/characters/16/100257.webp",
+        "rating": 256
+      },
+      {
+        "name": "Masked Deuce",
+        "anime_category": "One Piece",
+        "favorites": 4,
+        "image_url": "https://cdn.myanimelist.net/images/characters/13/421997.webp",
+        "rating": 254
+      },
+      {
+        "name": "Caribou",
+        "anime_category": "One Piece",
+        "favorites": 4,
+        "image_url": "https://cdn.myanimelist.net/images/characters/11/193145.webp",
+        "rating": 252
+      },
+      {
+        "name": "Diamante",
+        "anime_category": "One Piece",
+        "favorites": 4,
+        "image_url": "https://cdn.myanimelist.net/images/characters/16/265761.webp",
+        "rating": 250
+      }
+    ]
+  },
+  {
+    "anime_name": "Naruto",
+    "characters": [
+      {
+        "name": "Naruto Uzumaki",
+        "anime_category": "Naruto",
+        "favorites": 85904,
+        "image_url": "https://cdn.myanimelist.net/images/characters/12/61330.webp",
+        "rating": 500
+      },
+      {
+        "name": "Itachi Uchiha",
+        "anime_category": "Naruto",
+        "favorites": 66666,
+        "image_url": "https://cdn.myanimelist.net/images/characters/9/284122.webp",
+        "rating": 485
+      },
+      {
+        "name": "Kakashi Hatake",
+        "anime_category": "Naruto",
+        "favorites": 48418,
+        "image_url": "https://cdn.myanimelist.net/images/characters/7/284129.webp",
+        "rating": 470
+      },
+      {
+        "name": "Sasuke Uchiha",
+        "anime_category": "Naruto",
+        "favorites": 29509,
+        "image_url": "https://cdn.myanimelist.net/images/characters/9/131317.webp",
+        "rating": 499
+      },
+      {
+        "name": "Shikamaru Nara",
+        "anime_category": "Naruto",
+        "favorites": 18293,
+        "image_url": "https://cdn.myanimelist.net/images/characters/3/131315.webp",
+        "rating": 430
+      },
+      {
+        "name": "Jiraiya",
+        "anime_category": "Naruto",
+        "favorites": 14694,
+        "image_url": "https://cdn.myanimelist.net/images/characters/15/68618.webp",
+        "rating": 470
+      },
+      {
+        "name": "Madara Uchiha",
+        "anime_category": "Naruto",
+        "favorites": 13323,
+        "image_url": "https://cdn.myanimelist.net/images/characters/12/450359.webp",
+        "rating": 500
+      },
+      {
+        "name": "Hinata Hyuuga",
+        "anime_category": "Naruto",
+        "favorites": 12874,
+        "image_url": "https://cdn.myanimelist.net/images/characters/6/278736.webp",
+        "rating": 395
+      },
+      {
+        "name": "Minato Namikaze",
+        "anime_category": "Naruto",
+        "favorites": 11181,
+        "image_url": "https://cdn.myanimelist.net/images/characters/14/128074.webp",
+        "rating": 490
+      },
+      {
+        "name": "Rock Lee",
+        "anime_category": "Naruto",
+        "favorites": 6286,
+        "image_url": "https://cdn.myanimelist.net/images/characters/13/433353.webp",
+        "rating": 430
+      },
+      {
+        "name": "Sakura Haruno",
+        "anime_category": "Naruto",
+        "favorites": 5490,
+        "image_url": "https://cdn.myanimelist.net/images/characters/9/69275.webp",
+        "rating": 445
+      },
+      {
+        "name": "Neji Hyuuga",
+        "anime_category": "Naruto",
+        "favorites": 3786,
+        "image_url": "https://cdn.myanimelist.net/images/characters/2/105538.webp",
+        "rating": 425
+      },
+      {
+        "name": "Orochimaru",
+        "anime_category": "Naruto",
+        "favorites": 2529,
+        "image_url": "https://cdn.myanimelist.net/images/characters/3/162089.webp",
+        "rating": 480
+      },
+      {
+        "name": "Tobi",
+        "anime_category": "Naruto",
+        "favorites": 2167,
+        "image_url": "https://cdn.myanimelist.net/images/characters/14/73577.webp",
+        "rating": 495
+      },
+      {
+        "name": "Tsunade",
+        "anime_category": "Naruto",
+        "favorites": 2094,
+        "image_url": "https://cdn.myanimelist.net/images/characters/12/523646.webp",
+        "rating": 455
+      },
+      {
+        "name": "Boruto Uzumaki",
+        "anime_category": "Naruto",
+        "favorites": 1992,
+        "image_url": "https://cdn.myanimelist.net/images/characters/2/292447.webp",
+        "rating": 430
+      },
+      {
+        "name": "Shisui Uchiha",
+        "anime_category": "Naruto",
+        "favorites": 1831,
+        "image_url": "https://cdn.myanimelist.net/images/characters/16/292332.webp",
+        "rating": 470
+      },
+      {
+        "name": "Sarada Uchiha",
+        "anime_category": "Naruto",
+        "favorites": 1240,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/292448.webp",
+        "rating": 410
+      },
+      {
+        "name": "Kushina Uzumaki",
+        "anime_category": "Naruto",
+        "favorites": 1006,
+        "image_url": "https://cdn.myanimelist.net/images/characters/14/158761.webp",
+        "rating": 390
+      },
+      {
+        "name": "Mitsuki",
+        "anime_category": "Naruto",
+        "favorites": 989,
+        "image_url": "https://cdn.myanimelist.net/images/characters/13/435397.webp",
+        "rating": 420
+      },
+      {
+        "name": "Sai",
+        "anime_category": "Naruto",
+        "favorites": 972,
+        "image_url": "https://cdn.myanimelist.net/images/characters/3/36032.webp",
+        "rating": 500
+      },
+      {
+        "name": "Kurama",
+        "anime_category": "Naruto",
+        "favorites": 944,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/232183.webp",
+        "rating": 498
+      },
+      {
+        "name": "Haku",
+        "anime_category": "Naruto",
+        "favorites": 853,
+        "image_url": "https://cdn.myanimelist.net/images/characters/10/103707.webp",
+        "rating": 496
+      },
+      {
+        "name": "Hashirama Senju",
+        "anime_category": "Naruto",
+        "favorites": 853,
+        "image_url": "https://cdn.myanimelist.net/images/characters/10/34809.webp",
+        "rating": 494
+      },
+      {
+        "name": "Kisame Hoshigaki",
+        "anime_category": "Naruto",
+        "favorites": 808,
+        "image_url": "https://cdn.myanimelist.net/images/characters/11/433351.webp",
+        "rating": 492
+      },
+      {
+        "name": "Killer Bee",
+        "anime_category": "Naruto",
+        "favorites": 769,
+        "image_url": "https://cdn.myanimelist.net/images/characters/2/128072.webp",
+        "rating": 490
+      },
+      {
+        "name": "Ino Yamanaka",
+        "anime_category": "Naruto",
+        "favorites": 588,
+        "image_url": "https://cdn.myanimelist.net/images/characters/9/60062.webp",
+        "rating": 488
+      },
+      {
+        "name": "Kawaki",
+        "anime_category": "Naruto",
+        "favorites": 586,
+        "image_url": "https://cdn.myanimelist.net/images/characters/8/368951.webp",
+        "rating": 486
+      },
+      {
+        "name": "Kimimaro",
+        "anime_category": "Naruto",
+        "favorites": 499,
+        "image_url": "https://cdn.myanimelist.net/images/characters/13/103598.webp",
+        "rating": 484
+      },
+      {
+        "name": "Kabuto Yakushi",
+        "anime_category": "Naruto",
+        "favorites": 412,
+        "image_url": "https://cdn.myanimelist.net/images/characters/14/82459.webp",
+        "rating": 483
+      },
+      {
+        "name": "Iruka Umino",
+        "anime_category": "Naruto",
+        "favorites": 343,
+        "image_url": "https://cdn.myanimelist.net/images/characters/10/100216.webp",
+        "rating": 481
+      },
+      {
+        "name": "Asuma Sarutobi",
+        "anime_category": "Naruto",
+        "favorites": 330,
+        "image_url": "https://cdn.myanimelist.net/images/characters/13/82538.webp",
+        "rating": 479
+      },
+      {
+        "name": "Konohamaru Sarutobi",
+        "anime_category": "Naruto",
+        "favorites": 250,
+        "image_url": "https://cdn.myanimelist.net/images/characters/7/109419.webp",
+        "rating": 477
+      },
+      {
+        "name": "Akamaru",
+        "anime_category": "Naruto",
+        "favorites": 229,
+        "image_url": "https://cdn.myanimelist.net/images/characters/6/58197.webp",
+        "rating": 475
+      },
+      {
+        "name": "Teuchi",
+        "anime_category": "Naruto",
+        "favorites": 193,
+        "image_url": "https://cdn.myanimelist.net/images/characters/14/62801.webp",
+        "rating": 473
+      },
+      {
+        "name": "Anko Mitarashi",
+        "anime_category": "Naruto",
+        "favorites": 184,
+        "image_url": "https://cdn.myanimelist.net/images/characters/8/66177.webp",
+        "rating": 471
+      },
+      {
+        "name": "Yahiko",
+        "anime_category": "Naruto",
+        "favorites": 160,
+        "image_url": "https://cdn.myanimelist.net/images/characters/4/98447.webp",
+        "rating": 469
+      },
+      {
+        "name": "Kaguya Ootsutsuki",
+        "anime_category": "Naruto",
+        "favorites": 137,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/292976.webp",
+        "rating": 467
+      },
+      {
+        "name": "Kurenai Yuuhi",
+        "anime_category": "Naruto",
+        "favorites": 115,
+        "image_url": "https://cdn.myanimelist.net/images/characters/8/103797.webp",
+        "rating": 465
+      },
+      {
+        "name": "Danzou Shimura",
+        "anime_category": "Naruto",
+        "favorites": 101,
+        "image_url": "https://cdn.myanimelist.net/images/characters/11/292451.webp",
+        "rating": 463
+      },
+      {
+        "name": "Darui",
+        "anime_category": "Naruto",
+        "favorites": 101,
+        "image_url": "https://cdn.myanimelist.net/images/characters/16/293381.webp",
+        "rating": 461
+      },
+      {
+        "name": "Utakata",
+        "anime_category": "Naruto",
+        "favorites": 84,
+        "image_url": "https://cdn.myanimelist.net/images/characters/12/232231.webp",
+        "rating": 459
+      },
+      {
+        "name": "Guren",
+        "anime_category": "Naruto",
+        "favorites": 83,
+        "image_url": "https://cdn.myanimelist.net/images/characters/2/59211.webp",
+        "rating": 457
+      },
+      {
+        "name": "Sumire Kakei",
+        "anime_category": "Naruto",
+        "favorites": 82,
+        "image_url": "https://cdn.myanimelist.net/images/characters/10/334548.webp",
+        "rating": 455
+      },
+      {
+        "name": "Gamabunta",
+        "anime_category": "Naruto",
+        "favorites": 76,
+        "image_url": "https://cdn.myanimelist.net/images/characters/6/70846.webp",
+        "rating": 453
+      },
+      {
+        "name": "Gamatatsu",
+        "anime_category": "Naruto",
+        "favorites": 76,
+        "image_url": "https://cdn.myanimelist.net/images/characters/13/62776.webp",
+        "rating": 452
+      },
+      {
+        "name": "Shikadai Nara",
+        "anime_category": "Naruto",
+        "favorites": 70,
+        "image_url": "https://cdn.myanimelist.net/images/characters/10/297481.webp",
+        "rating": 450
+      },
+      {
+        "name": "Omoi",
+        "anime_category": "Naruto",
+        "favorites": 63,
+        "image_url": "https://cdn.myanimelist.net/images/characters/15/86313.webp",
+        "rating": 448
+      },
+      {
+        "name": "Momoshiki Ootsutsuki",
+        "anime_category": "Naruto",
+        "favorites": 59,
+        "image_url": "https://cdn.myanimelist.net/images/characters/13/443572.webp",
+        "rating": 446
+      },
+      {
+        "name": "Dai Might",
+        "anime_category": "Naruto",
+        "favorites": 57,
+        "image_url": "https://cdn.myanimelist.net/images/characters/2/295201.webp",
+        "rating": 444
+      },
+      {
+        "name": "A",
+        "anime_category": "Naruto",
+        "favorites": 49,
+        "image_url": "https://cdn.myanimelist.net/images/characters/15/112222.webp",
+        "rating": 442
+      },
+      {
+        "name": "Chiyo",
+        "anime_category": "Naruto",
+        "favorites": 49,
+        "image_url": "https://cdn.myanimelist.net/images/characters/12/69008.webp",
+        "rating": 440
+      },
+      {
+        "name": "Hagoromo Ootsutsuki",
+        "anime_category": "Naruto",
+        "favorites": 48,
+        "image_url": "https://cdn.myanimelist.net/images/characters/15/254419.webp",
+        "rating": 438
+      },
+      {
+        "name": "Gamakichi",
+        "anime_category": "Naruto",
+        "favorites": 47,
+        "image_url": "https://cdn.myanimelist.net/images/characters/13/54034.webp",
+        "rating": 436
+      },
+      {
+        "name": "Fuu",
+        "anime_category": "Naruto",
+        "favorites": 43,
+        "image_url": "https://cdn.myanimelist.net/images/characters/2/292434.webp",
+        "rating": 434
+      },
+      {
+        "name": "Michael Gracio",
+        "anime_category": "Naruto",
+        "favorites": 39,
+        "image_url": "https://cdn.myanimelist.net/images/characters/8/432492.webp",
+        "rating": 432
+      },
+      {
+        "name": "Yagura",
+        "anime_category": "Naruto",
+        "favorites": 38,
+        "image_url": "https://cdn.myanimelist.net/images/characters/9/292436.webp",
+        "rating": 430
+      },
+      {
+        "name": "Kumadori",
+        "anime_category": "Naruto",
+        "favorites": 36,
+        "image_url": "https://cdn.myanimelist.net/images/characters/16/71511.webp",
+        "rating": 428
+      },
+      {
+        "name": "Menma",
+        "anime_category": "Naruto",
+        "favorites": 36,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/57869.webp",
+        "rating": 426
+      },
+      {
+        "name": "Dosu Kinuta",
+        "anime_category": "Naruto",
+        "favorites": 33,
+        "image_url": "https://cdn.myanimelist.net/images/characters/14/36354.webp",
+        "rating": 424
+      },
+      {
+        "name": "Samui",
+        "anime_category": "Naruto",
+        "favorites": 33,
+        "image_url": "https://cdn.myanimelist.net/images/characters/14/525869.webp",
+        "rating": 422
+      },
+      {
+        "name": "Son Gokuu",
+        "anime_category": "Naruto",
+        "favorites": 33,
+        "image_url": "https://cdn.myanimelist.net/images/characters/9/160679.webp",
+        "rating": 421
+      },
+      {
+        "name": "Koji Kashin",
+        "anime_category": "Naruto",
+        "favorites": 29,
+        "image_url": "https://cdn.myanimelist.net/images/characters/12/354121.webp",
+        "rating": 419
+      },
+      {
+        "name": "Izumi Uchiha",
+        "anime_category": "Naruto",
+        "favorites": 24,
+        "image_url": "https://cdn.myanimelist.net/images/characters/11/303100.webp",
+        "rating": 417
+      },
+      {
+        "name": "Shinki",
+        "anime_category": "Naruto",
+        "favorites": 22,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/362445.webp",
+        "rating": 415
+      },
+      {
+        "name": "Kagura Karatachi",
+        "anime_category": "Naruto",
+        "favorites": 18,
+        "image_url": "https://cdn.myanimelist.net/images/characters/14/339586.webp",
+        "rating": 413
+      },
+      {
+        "name": "Kiyoshi Date",
+        "anime_category": "Naruto",
+        "favorites": 18,
+        "image_url": "https://cdn.myanimelist.net/images/characters/16/121936.webp",
+        "rating": 411
+      },
+      {
+        "name": "Mito Uzumaki",
+        "anime_category": "Naruto",
+        "favorites": 17,
+        "image_url": "https://cdn.myanimelist.net/images/characters/8/225733.webp",
+        "rating": 409
+      },
+      {
+        "name": "Naori Uchiha",
+        "anime_category": "Naruto",
+        "favorites": 16,
+        "image_url": "https://cdn.myanimelist.net/images/characters/12/292264.webp",
+        "rating": 407
+      },
+      {
+        "name": "Akkun",
+        "anime_category": "Naruto",
+        "favorites": 15,
+        "image_url": "https://cdn.myanimelist.net/images/characters/15/386110.webp",
+        "rating": 405
+      },
+      {
+        "name": "Ebisu",
+        "anime_category": "Naruto",
+        "favorites": 14,
+        "image_url": "https://cdn.myanimelist.net/images/characters/7/104660.webp",
+        "rating": 403
+      },
+      {
+        "name": "Metal Lee",
+        "anime_category": "Naruto",
+        "favorites": 14,
+        "image_url": "https://cdn.myanimelist.net/images/characters/14/328112.webp",
+        "rating": 401
+      },
+      {
+        "name": "Fukasaku",
+        "anime_category": "Naruto",
+        "favorites": 13,
+        "image_url": "https://cdn.myanimelist.net/images/characters/8/65266.webp",
+        "rating": 399
+      },
+      {
+        "name": "Matatabi",
+        "anime_category": "Naruto",
+        "favorites": 13,
+        "image_url": "https://cdn.myanimelist.net/images/characters/3/293368.webp",
+        "rating": 397
+      },
+      {
+        "name": "Yota",
+        "anime_category": "Naruto",
+        "favorites": 12,
+        "image_url": "https://cdn.myanimelist.net/images/characters/12/207091.webp",
+        "rating": 395
+      },
+      {
+        "name": "Ryuuzetsu",
+        "anime_category": "Naruto",
+        "favorites": 12,
+        "image_url": "https://cdn.myanimelist.net/images/characters/7/169505.webp",
+        "rating": 393
+      },
+      {
+        "name": "Baki",
+        "anime_category": "Naruto",
+        "favorites": 12,
+        "image_url": "https://cdn.myanimelist.net/images/characters/3/103833.webp",
+        "rating": 391
+      },
+      {
+        "name": "Gamaken",
+        "anime_category": "Naruto",
+        "favorites": 12,
+        "image_url": "https://cdn.myanimelist.net/images/characters/11/70879.webp",
+        "rating": 390
+      },
+      {
+        "name": "Jigen",
+        "anime_category": "Naruto",
+        "favorites": 11,
+        "image_url": "https://cdn.myanimelist.net/images/characters/6/472207.webp",
+        "rating": 388
+      },
+      {
+        "name": "Sora",
+        "anime_category": "Naruto",
+        "favorites": 11,
+        "image_url": "https://cdn.myanimelist.net/images/characters/10/66269.webp",
+        "rating": 386
+      },
+      {
+        "name": "Gengetsu Hoozuki",
+        "anime_category": "Naruto",
+        "favorites": 10,
+        "image_url": "https://cdn.myanimelist.net/images/characters/12/292443.webp",
+        "rating": 384
+      },
+      {
+        "name": "Matsuri",
+        "anime_category": "Naruto",
+        "favorites": 10,
+        "image_url": "https://cdn.myanimelist.net/images/characters/6/57963.webp",
+        "rating": 382
+      },
+      {
+        "name": "The Masked Man",
+        "anime_category": "Naruto",
+        "favorites": 10,
+        "image_url": "https://cdn.myanimelist.net/images/characters/2/296208.webp",
+        "rating": 380
+      },
+      {
+        "name": "Shion",
+        "anime_category": "Naruto",
+        "favorites": 10,
+        "image_url": "https://cdn.myanimelist.net/images/characters/16/55434.webp",
+        "rating": 378
+      },
+      {
+        "name": "Yukimaru",
+        "anime_category": "Naruto",
+        "favorites": 9,
+        "image_url": "https://cdn.myanimelist.net/images/characters/3/82864.webp",
+        "rating": 376
+      },
+      {
+        "name": "Delta",
+        "anime_category": "Naruto",
+        "favorites": 9,
+        "image_url": "https://cdn.myanimelist.net/images/characters/14/391051.webp",
+        "rating": 374
+      },
+      {
+        "name": "Inari",
+        "anime_category": "Naruto",
+        "favorites": 8,
+        "image_url": "https://cdn.myanimelist.net/images/characters/8/66542.webp",
+        "rating": 372
+      },
+      {
+        "name": "Zaku Abumi",
+        "anime_category": "Naruto",
+        "favorites": 8,
+        "image_url": "https://cdn.myanimelist.net/images/characters/3/36355.webp",
+        "rating": 370
+      },
+      {
+        "name": "Menma Namikaze",
+        "anime_category": "Naruto",
+        "favorites": 8,
+        "image_url": "https://cdn.myanimelist.net/images/characters/9/493307.webp",
+        "rating": 368
+      },
+      {
+        "name": "Choujuurou",
+        "anime_category": "Naruto",
+        "favorites": 8,
+        "image_url": "https://cdn.myanimelist.net/images/characters/6/232239.webp",
+        "rating": 366
+      },
+      {
+        "name": "Katsuyu",
+        "anime_category": "Naruto",
+        "favorites": 8,
+        "image_url": "https://cdn.myanimelist.net/images/characters/11/103624.webp",
+        "rating": 364
+      },
+      {
+        "name": "Mabui",
+        "anime_category": "Naruto",
+        "favorites": 8,
+        "image_url": "https://cdn.myanimelist.net/images/characters/16/91529.webp",
+        "rating": 362
+      },
+      {
+        "name": "Ranmaru",
+        "anime_category": "Naruto",
+        "favorites": 8,
+        "image_url": "https://cdn.myanimelist.net/images/characters/11/55003.webp",
+        "rating": 360
+      },
+      {
+        "name": "A (Third Raikage)",
+        "anime_category": "Naruto",
+        "favorites": 8,
+        "image_url": "https://cdn.myanimelist.net/images/characters/3/171137.webp",
+        "rating": 359
+      },
+      {
+        "name": "Natsuhi",
+        "anime_category": "Naruto",
+        "favorites": 8,
+        "image_url": "https://cdn.myanimelist.net/images/characters/9/193691.webp",
+        "rating": 357
+      },
+      {
+        "name": "Yashamaru",
+        "anime_category": "Naruto",
+        "favorites": 7,
+        "image_url": "https://cdn.myanimelist.net/images/characters/13/103943.webp",
+        "rating": 355
+      },
+      {
+        "name": "Hanzou",
+        "anime_category": "Naruto",
+        "favorites": 7,
+        "image_url": "https://cdn.myanimelist.net/images/characters/12/177251.webp",
+        "rating": 353
+      },
+      {
+        "name": "Houki Taketori",
+        "anime_category": "Naruto",
+        "favorites": 7,
+        "image_url": "https://cdn.myanimelist.net/images/characters/3/566085.webp",
+        "rating": 351
+      },
+      {
+        "name": "Tsume Inuzuka",
+        "anime_category": "Naruto",
+        "favorites": 6,
+        "image_url": "https://cdn.myanimelist.net/images/characters/12/103831.webp",
+        "rating": 349
+      },
+      {
+        "name": "Gyuuki",
+        "anime_category": "Naruto",
+        "favorites": 6,
+        "image_url": "https://cdn.myanimelist.net/images/characters/3/293374.webp",
+        "rating": 347
+      },
+      {
+        "name": "Kushimaru Kuriarare",
+        "anime_category": "Naruto",
+        "favorites": 6,
+        "image_url": "https://cdn.myanimelist.net/images/characters/12/225369.webp",
+        "rating": 345
+      },
+      {
+        "name": "Yukata",
+        "anime_category": "Naruto",
+        "favorites": 6,
+        "image_url": "https://cdn.myanimelist.net/images/characters/11/166503.webp",
+        "rating": 343
+      },
+      {
+        "name": "Denki Kaminarimon",
+        "anime_category": "Naruto",
+        "favorites": 6,
+        "image_url": "https://cdn.myanimelist.net/images/characters/9/326711.webp",
+        "rating": 341
+      },
+      {
+        "name": "Yakumi Uchiha",
+        "anime_category": "Naruto",
+        "favorites": 6,
+        "image_url": "https://cdn.myanimelist.net/images/characters/4/54882.webp",
+        "rating": 339
+      },
+      {
+        "name": "Hamura Ootsutsuki",
+        "anime_category": "Naruto",
+        "favorites": 6,
+        "image_url": "https://cdn.myanimelist.net/images/characters/8/287407.webp",
+        "rating": 337
+      },
+      {
+        "name": "Iwabee Yuino",
+        "anime_category": "Naruto",
+        "favorites": 6,
+        "image_url": "https://cdn.myanimelist.net/images/characters/12/327450.webp",
+        "rating": 335
+      },
+      {
+        "name": "Shin Uchiha",
+        "anime_category": "Naruto",
+        "favorites": 6,
+        "image_url": "https://cdn.myanimelist.net/images/characters/10/337254.webp",
+        "rating": 333
+      },
+      {
+        "name": "Karui",
+        "anime_category": "Naruto",
+        "favorites": 6,
+        "image_url": "https://cdn.myanimelist.net/images/characters/7/85736.webp",
+        "rating": 331
+      },
+      {
+        "name": "Bisuke",
+        "anime_category": "Naruto",
+        "favorites": 6,
+        "image_url": "https://cdn.myanimelist.net/images/characters/16/92486.webp",
+        "rating": 329
+      },
+      {
+        "name": "Amado Sanzu",
+        "anime_category": "Naruto",
+        "favorites": 6,
+        "image_url": "https://cdn.myanimelist.net/images/characters/16/455846.webp",
+        "rating": 328
+      },
+      {
+        "name": "Oboro",
+        "anime_category": "Naruto",
+        "favorites": 5,
+        "image_url": "https://cdn.myanimelist.net/images/characters/3/62795.webp",
+        "rating": 326
+      },
+      {
+        "name": "Naka Uchiha",
+        "anime_category": "Naruto",
+        "favorites": 5,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/225265.webp",
+        "rating": 324
+      },
+      {
+        "name": "Isaribi",
+        "anime_category": "Naruto",
+        "favorites": 5,
+        "image_url": "https://cdn.myanimelist.net/images/characters/16/62784.webp",
+        "rating": 322
+      },
+      {
+        "name": "Ameyuri Ringo",
+        "anime_category": "Naruto",
+        "favorites": 5,
+        "image_url": "https://cdn.myanimelist.net/images/characters/13/225361.webp",
+        "rating": 320
+      },
+      {
+        "name": "Jinin Akebino",
+        "anime_category": "Naruto",
+        "favorites": 5,
+        "image_url": "https://cdn.myanimelist.net/images/characters/6/225373.webp",
+        "rating": 318
+      },
+      {
+        "name": "Hotaru",
+        "anime_category": "Naruto",
+        "favorites": 5,
+        "image_url": "https://cdn.myanimelist.net/images/characters/2/79099.webp",
+        "rating": 316
+      },
+      {
+        "name": "Tekka Uchiha",
+        "anime_category": "Naruto",
+        "favorites": 5,
+        "image_url": "https://cdn.myanimelist.net/images/characters/8/86796.webp",
+        "rating": 314
+      },
+      {
+        "name": "Kaiza",
+        "anime_category": "Naruto",
+        "favorites": 5,
+        "image_url": "https://cdn.myanimelist.net/images/characters/2/66536.webp",
+        "rating": 312
+      },
+      {
+        "name": "Daemon",
+        "anime_category": "Naruto",
+        "favorites": 5,
+        "image_url": "https://cdn.myanimelist.net/images/characters/16/504343.webp",
+        "rating": 310
+      },
+      {
+        "name": "Mangetsu Hoozuki",
+        "anime_category": "Naruto",
+        "favorites": 5,
+        "image_url": "https://cdn.myanimelist.net/images/characters/7/169625.webp",
+        "rating": 308
+      },
+      {
+        "name": "Tajima Uchiha",
+        "anime_category": "Naruto",
+        "favorites": 5,
+        "image_url": "https://cdn.myanimelist.net/images/characters/13/292263.webp",
+        "rating": 306
+      },
+      {
+        "name": "Yashiro Uchiha",
+        "anime_category": "Naruto",
+        "favorites": 4,
+        "image_url": "https://cdn.myanimelist.net/images/characters/3/63710.webp",
+        "rating": 304
+      },
+      {
+        "name": "Baru Uchiha",
+        "anime_category": "Naruto",
+        "favorites": 4,
+        "image_url": "https://cdn.myanimelist.net/images/characters/8/232191.webp",
+        "rating": 302
+      },
+      {
+        "name": "Dan Katou",
+        "anime_category": "Naruto",
+        "favorites": 4,
+        "image_url": "https://cdn.myanimelist.net/images/characters/15/103946.webp",
+        "rating": 300
+      },
+      {
+        "name": "Hako Kuroi",
+        "anime_category": "Naruto",
+        "favorites": 4,
+        "image_url": "https://cdn.myanimelist.net/images/characters/16/346891.webp",
+        "rating": 298
+      },
+      {
+        "name": "Hiruko",
+        "anime_category": "Naruto",
+        "favorites": 4,
+        "image_url": "https://cdn.myanimelist.net/images/characters/8/86693.webp",
+        "rating": 297
+      },
+      {
+        "name": "Shii",
+        "anime_category": "Naruto",
+        "favorites": 4,
+        "image_url": "https://cdn.myanimelist.net/images/characters/14/292439.webp",
+        "rating": 295
+      },
+      {
+        "name": "Amaru",
+        "anime_category": "Naruto",
+        "favorites": 4,
+        "image_url": "https://cdn.myanimelist.net/images/characters/8/68857.webp",
+        "rating": 293
+      },
+      {
+        "name": "Han",
+        "anime_category": "Naruto",
+        "favorites": 4,
+        "image_url": "https://cdn.myanimelist.net/images/characters/15/68519.webp",
+        "rating": 291
+      },
+      {
+        "name": "Rai Uchiha",
+        "anime_category": "Naruto",
+        "favorites": 4,
+        "image_url": "https://cdn.myanimelist.net/images/characters/9/232189.webp",
+        "rating": 289
+      },
+      {
+        "name": "Shizuka",
+        "anime_category": "Naruto",
+        "favorites": 4,
+        "image_url": "https://cdn.myanimelist.net/images/characters/16/142365.webp",
+        "rating": 287
+      },
+      {
+        "name": "Fuuka",
+        "anime_category": "Naruto",
+        "favorites": 4,
+        "image_url": "https://cdn.myanimelist.net/images/characters/10/66060.webp",
+        "rating": 285
+      },
+      {
+        "name": "Yodo",
+        "anime_category": "Naruto",
+        "favorites": 4,
+        "image_url": "https://cdn.myanimelist.net/images/characters/7/357777.webp",
+        "rating": 283
+      },
+      {
+        "name": "Moegi Kazamatsuri",
+        "anime_category": "Naruto",
+        "favorites": 4,
+        "image_url": "https://cdn.myanimelist.net/images/characters/16/110944.webp",
+        "rating": 281
+      },
+      {
+        "name": "Muu",
+        "anime_category": "Naruto",
+        "favorites": 4,
+        "image_url": "https://cdn.myanimelist.net/images/characters/14/292896.webp",
+        "rating": 279
+      },
+      {
+        "name": "Kizashi Haruno",
+        "anime_category": "Naruto",
+        "favorites": 3,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/175239.webp",
+        "rating": 277
+      },
+      {
+        "name": "Saiken",
+        "anime_category": "Naruto",
+        "favorites": 3,
+        "image_url": "https://cdn.myanimelist.net/images/characters/3/160681.webp",
+        "rating": 275
+      },
+      {
+        "name": "Kae Yukiwari",
+        "anime_category": "Naruto",
+        "favorites": 3,
+        "image_url": "https://cdn.myanimelist.net/images/characters/7/484766.webp",
+        "rating": 273
+      },
+      {
+        "name": "Mizuki Touji",
+        "anime_category": "Naruto",
+        "favorites": 3,
+        "image_url": "https://cdn.myanimelist.net/images/characters/9/57467.webp",
+        "rating": 271
+      },
+      {
+        "name": "Gerotora",
+        "anime_category": "Naruto",
+        "favorites": 3,
+        "image_url": "https://cdn.myanimelist.net/images/characters/14/134079.webp",
+        "rating": 269
+      },
+      {
+        "name": "Kosuke Maruboshi",
+        "anime_category": "Naruto",
+        "favorites": 3,
+        "image_url": "https://cdn.myanimelist.net/images/characters/11/108063.webp",
+        "rating": 267
+      },
+      {
+        "name": "Enko Onikuma",
+        "anime_category": "Naruto",
+        "favorites": 3,
+        "image_url": "https://cdn.myanimelist.net/images/characters/6/348458.webp",
+        "rating": 266
+      },
+      {
+        "name": "Ryougi",
+        "anime_category": "Naruto",
+        "favorites": 3,
+        "image_url": "https://cdn.myanimelist.net/images/characters/15/352644.webp",
+        "rating": 264
+      },
+      {
+        "name": "Inabi Uchiha",
+        "anime_category": "Naruto",
+        "favorites": 3,
+        "image_url": "https://cdn.myanimelist.net/images/characters/11/66477.webp",
+        "rating": 262
+      },
+      {
+        "name": "Dock",
+        "anime_category": "Naruto",
+        "favorites": 3,
+        "image_url": "https://cdn.myanimelist.net/images/characters/9/225717.webp",
+        "rating": 260
+      },
+      {
+        "name": "Ameno",
+        "anime_category": "Naruto",
+        "favorites": 3,
+        "image_url": "https://cdn.myanimelist.net/images/characters/10/279852.webp",
+        "rating": 258
+      },
+      {
+        "name": "Pakura",
+        "anime_category": "Naruto",
+        "favorites": 3,
+        "image_url": "https://cdn.myanimelist.net/images/characters/15/168501.webp",
+        "rating": 256
+      },
+      {
+        "name": "Isobu",
+        "anime_category": "Naruto",
+        "favorites": 3,
+        "image_url": "https://cdn.myanimelist.net/images/characters/12/292516.webp",
+        "rating": 254
+      },
+      {
+        "name": "Naho",
+        "anime_category": "Naruto",
+        "favorites": 2,
+        "image_url": "https://cdn.myanimelist.net/images/characters/11/112274.webp",
+        "rating": 252
+      },
+      {
+        "name": "Araya",
+        "anime_category": "Naruto",
+        "favorites": 2,
+        "image_url": "https://cdn.myanimelist.net/images/characters/11/357778.webp",
+        "rating": 250
+      }
+    ]
+  },
+  {
+    "anime_name": "Dragon Ball",
+    "characters": [
+      {
+        "name": "Gohan Son",
+        "anime_category": "Dragon Ball",
+        "favorites": 7233,
+        "image_url": "https://cdn.myanimelist.net/images/characters/2/72715.webp",
+        "rating": 485
+      },
+      {
+        "name": "Piccolo",
+        "anime_category": "Dragon Ball",
+        "favorites": 4640,
+        "image_url": "https://cdn.myanimelist.net/images/characters/8/45628.webp",
+        "rating": 470
+      },
+      {
+        "name": "Future Trunks",
+        "anime_category": "Dragon Ball",
+        "favorites": 4231,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/375125.webp",
+        "rating": 465
+      },
+      {
+        "name": "Broly",
+        "anime_category": "Dragon Ball",
+        "favorites": 1698,
+        "image_url": "https://cdn.myanimelist.net/images/characters/2/275050.webp",
+        "rating": 500
+      },
+      {
+        "name": "Freeza",
+        "anime_category": "Dragon Ball",
+        "favorites": 1691,
+        "image_url": "https://cdn.myanimelist.net/images/characters/7/359258.webp",
+        "rating": 495
+      },
+      {
+        "name": "Gokuu Black",
+        "anime_category": "Dragon Ball",
+        "favorites": 1685,
+        "image_url": "https://cdn.myanimelist.net/images/characters/7/306940.webp",
+        "rating": 490
+      },
+      {
+        "name": "Trunks",
+        "anime_category": "Dragon Ball",
+        "favorites": 1436,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/312402.webp",
+        "rating": 450
+      },
+      {
+        "name": "Bulma",
+        "anime_category": "Dragon Ball",
+        "favorites": 1279,
+        "image_url": "https://cdn.myanimelist.net/images/characters/14/280893.webp",
+        "rating": 260
+      },
+      {
+        "name": "Akito Takagi",
+        "anime_category": "Dragon Ball",
+        "favorites": 1259,
+        "image_url": "https://cdn.myanimelist.net/images/characters/8/142279.webp",
+        "rating": 498
+      },
+      {
+        "name": "Muten-Roushi",
+        "anime_category": "Dragon Ball",
+        "favorites": 1154,
+        "image_url": "https://cdn.myanimelist.net/images/characters/6/359001.webp",
+        "rating": 410
+      },
+      {
+        "name": "Bardock",
+        "anime_category": "Dragon Ball",
+        "favorites": 1026,
+        "image_url": "https://cdn.myanimelist.net/images/characters/6/103847.webp",
+        "rating": 445
+      },
+      {
+        "name": "Cell",
+        "anime_category": "Dragon Ball",
+        "favorites": 899,
+        "image_url": "https://cdn.myanimelist.net/images/characters/9/108594.webp",
+        "rating": 490
+      },
+      {
+        "name": "Gogeta",
+        "anime_category": "Dragon Ball",
+        "favorites": 831,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/400009.webp",
+        "rating": 500
+      },
+      {
+        "name": "Goten Son",
+        "anime_category": "Dragon Ball",
+        "favorites": 639,
+        "image_url": "https://cdn.myanimelist.net/images/characters/11/46985.webp",
+        "rating": 420
+      },
+      {
+        "name": "Majin Buu",
+        "anime_category": "Dragon Ball",
+        "favorites": 597,
+        "image_url": "https://cdn.myanimelist.net/images/characters/6/94545.webp",
+        "rating": 490
+      },
+      {
+        "name": "Jinzouningen 17-gou",
+        "anime_category": "Dragon Ball",
+        "favorites": 534,
+        "image_url": "https://cdn.myanimelist.net/images/characters/16/48582.webp",
+        "rating": 475
+      },
+      {
+        "name": "Vegetto",
+        "anime_category": "Dragon Ball",
+        "favorites": 511,
+        "image_url": "https://cdn.myanimelist.net/images/characters/3/498109.webp",
+        "rating": 500
+      },
+      {
+        "name": "Tenshinhan",
+        "anime_category": "Dragon Ball",
+        "favorites": 348,
+        "image_url": "https://cdn.myanimelist.net/images/characters/8/102021.webp",
+        "rating": 415
+      },
+      {
+        "name": "Videl",
+        "anime_category": "Dragon Ball",
+        "favorites": 240,
+        "image_url": "https://cdn.myanimelist.net/images/characters/12/357962.webp",
+        "rating": 280
+      },
+      {
+        "name": "Mr. Popo",
+        "anime_category": "Dragon Ball",
+        "favorites": 225,
+        "image_url": "https://cdn.myanimelist.net/images/characters/7/535971.webp",
+        "rating": 300
+      },
+      {
+        "name": "Gokuu Jr. Son",
+        "anime_category": "Dragon Ball",
+        "favorites": 166,
+        "image_url": "https://cdn.myanimelist.net/images/characters/15/116675.webp",
+        "rating": 496
+      },
+      {
+        "name": "Pan",
+        "anime_category": "Dragon Ball",
+        "favorites": 131,
+        "image_url": "https://cdn.myanimelist.net/images/characters/3/112948.webp",
+        "rating": 494
+      },
+      {
+        "name": "Prince Hata",
+        "anime_category": "Dragon Ball",
+        "favorites": 126,
+        "image_url": "https://cdn.myanimelist.net/images/characters/4/115537.webp",
+        "rating": 492
+      },
+      {
+        "name": "Cooler",
+        "anime_category": "Dragon Ball",
+        "favorites": 122,
+        "image_url": "https://cdn.myanimelist.net/images/characters/3/331236.webp",
+        "rating": 490
+      },
+      {
+        "name": "Caulifla",
+        "anime_category": "Dragon Ball",
+        "favorites": 105,
+        "image_url": "https://cdn.myanimelist.net/images/characters/13/358997.webp",
+        "rating": 489
+      },
+      {
+        "name": "Chaozu",
+        "anime_category": "Dragon Ball",
+        "favorites": 97,
+        "image_url": "https://cdn.myanimelist.net/images/characters/13/52822.webp",
+        "rating": 487
+      },
+      {
+        "name": "Chi-Chi",
+        "anime_category": "Dragon Ball",
+        "favorites": 94,
+        "image_url": "https://cdn.myanimelist.net/images/characters/14/247963.webp",
+        "rating": 485
+      },
+      {
+        "name": "Gotenks",
+        "anime_category": "Dragon Ball",
+        "favorites": 91,
+        "image_url": "https://cdn.myanimelist.net/images/characters/9/380617.webp",
+        "rating": 483
+      },
+      {
+        "name": "Tapion",
+        "anime_category": "Dragon Ball",
+        "favorites": 77,
+        "image_url": "https://cdn.myanimelist.net/images/characters/2/465438.webp",
+        "rating": 481
+      },
+      {
+        "name": "Yajirobe",
+        "anime_category": "Dragon Ball",
+        "favorites": 73,
+        "image_url": "https://cdn.myanimelist.net/images/characters/12/275086.webp",
+        "rating": 479
+      },
+      {
+        "name": "Nappa",
+        "anime_category": "Dragon Ball",
+        "favorites": 64,
+        "image_url": "https://cdn.myanimelist.net/images/characters/12/393771.webp",
+        "rating": 477
+      },
+      {
+        "name": "Piccolo Daimao",
+        "anime_category": "Dragon Ball",
+        "favorites": 62,
+        "image_url": "https://cdn.myanimelist.net/images/characters/10/79720.webp",
+        "rating": 475
+      },
+      {
+        "name": "Bubbles",
+        "anime_category": "Dragon Ball",
+        "favorites": 59,
+        "image_url": "https://cdn.myanimelist.net/images/characters/7/45234.webp",
+        "rating": 473
+      },
+      {
+        "name": "Janemba",
+        "anime_category": "Dragon Ball",
+        "favorites": 58,
+        "image_url": "https://cdn.myanimelist.net/images/characters/8/113188.webp",
+        "rating": 471
+      },
+      {
+        "name": "Karin",
+        "anime_category": "Dragon Ball",
+        "favorites": 58,
+        "image_url": "https://cdn.myanimelist.net/images/characters/4/358479.webp",
+        "rating": 469
+      },
+      {
+        "name": "Pu'ar",
+        "anime_category": "Dragon Ball",
+        "favorites": 56,
+        "image_url": "https://cdn.myanimelist.net/images/characters/4/358984.webp",
+        "rating": 468
+      },
+      {
+        "name": "Mai",
+        "anime_category": "Dragon Ball",
+        "favorites": 45,
+        "image_url": "https://cdn.myanimelist.net/images/characters/10/358456.webp",
+        "rating": 466
+      },
+      {
+        "name": "Tao Pai Pai",
+        "anime_category": "Dragon Ball",
+        "favorites": 44,
+        "image_url": "https://cdn.myanimelist.net/images/characters/14/111699.webp",
+        "rating": 464
+      },
+      {
+        "name": "Vegeta Jr.",
+        "anime_category": "Dragon Ball",
+        "favorites": 41,
+        "image_url": "https://cdn.myanimelist.net/images/characters/10/127717.webp",
+        "rating": 462
+      },
+      {
+        "name": "Oolong",
+        "anime_category": "Dragon Ball",
+        "favorites": 39,
+        "image_url": "https://cdn.myanimelist.net/images/characters/15/71204.webp",
+        "rating": 460
+      },
+      {
+        "name": "Higashi no Kaioshin",
+        "anime_category": "Dragon Ball",
+        "favorites": 39,
+        "image_url": "https://cdn.myanimelist.net/images/characters/3/32340.webp",
+        "rating": 458
+      },
+      {
+        "name": "Shen Long",
+        "anime_category": "Dragon Ball",
+        "favorites": 36,
+        "image_url": "https://cdn.myanimelist.net/images/characters/7/65049.webp",
+        "rating": 456
+      },
+      {
+        "name": "Tenkaichi Budokai Announcer",
+        "anime_category": "Dragon Ball",
+        "favorites": 36,
+        "image_url": "https://cdn.myanimelist.net/images/characters/10/273719.webp",
+        "rating": 454
+      },
+      {
+        "name": "Dende",
+        "anime_category": "Dragon Ball",
+        "favorites": 35,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/65195.webp",
+        "rating": 452
+      },
+      {
+        "name": "Baby",
+        "anime_category": "Dragon Ball",
+        "favorites": 35,
+        "image_url": "https://cdn.myanimelist.net/images/characters/10/127721.webp",
+        "rating": 450
+      },
+      {
+        "name": "Turles",
+        "anime_category": "Dragon Ball",
+        "favorites": 33,
+        "image_url": "https://cdn.myanimelist.net/images/characters/7/331237.webp",
+        "rating": 448
+      },
+      {
+        "name": "Pilaf",
+        "anime_category": "Dragon Ball",
+        "favorites": 33,
+        "image_url": "https://cdn.myanimelist.net/images/characters/15/71739.webp",
+        "rating": 447
+      },
+      {
+        "name": "Dictator",
+        "anime_category": "Dragon Ball",
+        "favorites": 30,
+        "image_url": "https://cdn.myanimelist.net/images/characters/11/113193.webp",
+        "rating": 445
+      },
+      {
+        "name": "Cheelai",
+        "anime_category": "Dragon Ball",
+        "favorites": 29,
+        "image_url": "https://cdn.myanimelist.net/images/characters/8/535928.webp",
+        "rating": 443
+      },
+      {
+        "name": "Kale",
+        "anime_category": "Dragon Ball",
+        "favorites": 28,
+        "image_url": "https://cdn.myanimelist.net/images/characters/13/359025.webp",
+        "rating": 441
+      },
+      {
+        "name": "Giru",
+        "anime_category": "Dragon Ball",
+        "favorites": 27,
+        "image_url": "https://cdn.myanimelist.net/images/characters/3/111830.webp",
+        "rating": 439
+      },
+      {
+        "name": "Umigame",
+        "anime_category": "Dragon Ball",
+        "favorites": 26,
+        "image_url": "https://cdn.myanimelist.net/images/characters/6/358662.webp",
+        "rating": 437
+      },
+      {
+        "name": "Jinzouningen 8-gou",
+        "anime_category": "Dragon Ball",
+        "favorites": 25,
+        "image_url": "https://cdn.myanimelist.net/images/characters/7/44762.webp",
+        "rating": 435
+      },
+      {
+        "name": "Farmer",
+        "anime_category": "Dragon Ball",
+        "favorites": 23,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/127713.webp",
+        "rating": 433
+      },
+      {
+        "name": "Mirai no Kokui no Senshi",
+        "anime_category": "Dragon Ball",
+        "favorites": 20,
+        "image_url": "https://cdn.myanimelist.net/images/characters/9/478993.webp",
+        "rating": 431
+      },
+      {
+        "name": "Bra",
+        "anime_category": "Dragon Ball",
+        "favorites": 20,
+        "image_url": "https://cdn.myanimelist.net/images/characters/4/380636.webp",
+        "rating": 429
+      },
+      {
+        "name": "General Blue",
+        "anime_category": "Dragon Ball",
+        "favorites": 15,
+        "image_url": "https://cdn.myanimelist.net/images/characters/8/71121.webp",
+        "rating": 427
+      },
+      {
+        "name": "Future Mai",
+        "anime_category": "Dragon Ball",
+        "favorites": 15,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/364659.webp",
+        "rating": 426
+      },
+      {
+        "name": "Shuu",
+        "anime_category": "Dragon Ball",
+        "favorites": 14,
+        "image_url": "https://cdn.myanimelist.net/images/characters/13/358049.webp",
+        "rating": 424
+      },
+      {
+        "name": "Gine",
+        "anime_category": "Dragon Ball",
+        "favorites": 14,
+        "image_url": "https://cdn.myanimelist.net/images/characters/14/380651.webp",
+        "rating": 422
+      },
+      {
+        "name": "Gajira Norimaki",
+        "anime_category": "Dragon Ball",
+        "favorites": 13,
+        "image_url": "https://cdn.myanimelist.net/images/characters/9/144261.webp",
+        "rating": 420
+      },
+      {
+        "name": "Burter",
+        "anime_category": "Dragon Ball",
+        "favorites": 13,
+        "image_url": "https://cdn.myanimelist.net/images/characters/3/65047.webp",
+        "rating": 418
+      },
+      {
+        "name": "Staff Officer Black",
+        "anime_category": "Dragon Ball",
+        "favorites": 13,
+        "image_url": "https://cdn.myanimelist.net/images/characters/12/71057.webp",
+        "rating": 416
+      },
+      {
+        "name": "Zarbon",
+        "anime_category": "Dragon Ball",
+        "favorites": 13,
+        "image_url": "https://cdn.myanimelist.net/images/characters/8/45220.webp",
+        "rating": 414
+      },
+      {
+        "name": "Rou Kaioshin",
+        "anime_category": "Dragon Ball",
+        "favorites": 11,
+        "image_url": "https://cdn.myanimelist.net/images/characters/10/366264.webp",
+        "rating": 412
+      },
+      {
+        "name": "Neko Majin",
+        "anime_category": "Dragon Ball",
+        "favorites": 10,
+        "image_url": "https://cdn.myanimelist.net/images/characters/14/14830.webp",
+        "rating": 410
+      },
+      {
+        "name": "Bojack",
+        "anime_category": "Dragon Ball",
+        "favorites": 10,
+        "image_url": "https://cdn.myanimelist.net/images/characters/16/409246.webp",
+        "rating": 408
+      },
+      {
+        "name": "Vomi",
+        "anime_category": "Dragon Ball",
+        "favorites": 9,
+        "image_url": "https://cdn.myanimelist.net/images/characters/10/491020.webp",
+        "rating": 406
+      },
+      {
+        "name": "Fu",
+        "anime_category": "Dragon Ball",
+        "favorites": 9,
+        "image_url": "https://cdn.myanimelist.net/images/characters/16/364677.webp",
+        "rating": 405
+      },
+      {
+        "name": "Nail",
+        "anime_category": "Dragon Ball",
+        "favorites": 9,
+        "image_url": "https://cdn.myanimelist.net/images/characters/13/52433.webp",
+        "rating": 403
+      },
+      {
+        "name": "Cabba",
+        "anime_category": "Dragon Ball",
+        "favorites": 9,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/358999.webp",
+        "rating": 401
+      },
+      {
+        "name": "Garlic Junior",
+        "anime_category": "Dragon Ball",
+        "favorites": 8,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/73432.webp",
+        "rating": 399
+      },
+      {
+        "name": "Bacterian",
+        "anime_category": "Dragon Ball",
+        "favorites": 8,
+        "image_url": "https://cdn.myanimelist.net/images/characters/11/71097.webp",
+        "rating": 397
+      },
+      {
+        "name": "Suno",
+        "anime_category": "Dragon Ball",
+        "favorites": 8,
+        "image_url": "https://cdn.myanimelist.net/images/characters/16/116397.webp",
+        "rating": 395
+      },
+      {
+        "name": "Yi Xing Long",
+        "anime_category": "Dragon Ball",
+        "favorites": 8,
+        "image_url": "https://cdn.myanimelist.net/images/characters/6/454006.webp",
+        "rating": 393
+      },
+      {
+        "name": "Bulma's Mother",
+        "anime_category": "Dragon Ball",
+        "favorites": 6,
+        "image_url": "https://cdn.myanimelist.net/images/characters/8/357970.webp",
+        "rating": 391
+      },
+      {
+        "name": "Cell Jr.",
+        "anime_category": "Dragon Ball",
+        "favorites": 6,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/45216.webp",
+        "rating": 389
+      },
+      {
+        "name": "Gregory",
+        "anime_category": "Dragon Ball",
+        "favorites": 6,
+        "image_url": "https://cdn.myanimelist.net/images/characters/13/45233.webp",
+        "rating": 387
+      },
+      {
+        "name": "Super Shen Long",
+        "anime_category": "Dragon Ball",
+        "favorites": 5,
+        "image_url": "https://cdn.myanimelist.net/images/characters/12/358436.webp",
+        "rating": 385
+      },
+      {
+        "name": "Konkichi",
+        "anime_category": "Dragon Ball",
+        "favorites": 5,
+        "image_url": "https://cdn.myanimelist.net/images/characters/11/238193.webp",
+        "rating": 384
+      },
+      {
+        "name": "King Cold",
+        "anime_category": "Dragon Ball",
+        "favorites": 5,
+        "image_url": "https://cdn.myanimelist.net/images/characters/7/111486.webp",
+        "rating": 382
+      },
+      {
+        "name": "Upa",
+        "anime_category": "Dragon Ball",
+        "favorites": 5,
+        "image_url": "https://cdn.myanimelist.net/images/characters/7/45211.webp",
+        "rating": 380
+      },
+      {
+        "name": "Moro",
+        "anime_category": "Dragon Ball",
+        "favorites": 5,
+        "image_url": "https://cdn.myanimelist.net/images/characters/10/394581.webp",
+        "rating": 378
+      },
+      {
+        "name": "Marron",
+        "anime_category": "Dragon Ball",
+        "favorites": 5,
+        "image_url": "https://cdn.myanimelist.net/images/characters/11/357959.webp",
+        "rating": 376
+      },
+      {
+        "name": "Dai Kaio",
+        "anime_category": "Dragon Ball",
+        "favorites": 4,
+        "image_url": "https://cdn.myanimelist.net/images/characters/11/113182.webp",
+        "rating": 374
+      },
+      {
+        "name": "Breeza",
+        "anime_category": "Dragon Ball",
+        "favorites": 4,
+        "image_url": "https://cdn.myanimelist.net/images/characters/16/135855.webp",
+        "rating": 372
+      },
+      {
+        "name": "Mutaito",
+        "anime_category": "Dragon Ball",
+        "favorites": 4,
+        "image_url": "https://cdn.myanimelist.net/images/characters/2/45209.webp",
+        "rating": 370
+      },
+      {
+        "name": "Si Xing Long",
+        "anime_category": "Dragon Ball",
+        "favorites": 4,
+        "image_url": "https://cdn.myanimelist.net/images/characters/2/280231.webp",
+        "rating": 368
+      },
+      {
+        "name": "Akkuman",
+        "anime_category": "Dragon Ball",
+        "favorites": 3,
+        "image_url": "https://cdn.myanimelist.net/images/characters/16/112702.webp",
+        "rating": 366
+      },
+      {
+        "name": "Toki no Kaioshin",
+        "anime_category": "Dragon Ball",
+        "favorites": 3,
+        "image_url": "https://cdn.myanimelist.net/images/characters/15/491526.webp",
+        "rating": 365
+      },
+      {
+        "name": "Zangya",
+        "anime_category": "Dragon Ball",
+        "favorites": 3,
+        "image_url": "https://cdn.myanimelist.net/images/characters/11/73088.webp",
+        "rating": 363
+      },
+      {
+        "name": "Vegeta",
+        "anime_category": "One Piece",
+        "favorites": 20902,
+        "image_url": "https://cdn.myanimelist.net/images/characters/14/86185.webp",
+        "rating": 500
+      },
+      {
+        "name": "Bee",
+        "anime_category": "Dragon Ball",
+        "favorites": 3,
+        "image_url": "https://cdn.myanimelist.net/images/characters/7/45213.webp",
+        "rating": 361
+      },
+      {
+        "name": "Cocoa Amaguri",
+        "anime_category": "Dragon Ball",
+        "favorites": 3,
+        "image_url": "https://cdn.myanimelist.net/images/characters/6/358892.webp",
+        "rating": 359
+      },
+      {
+        "name": "Liquiir",
+        "anime_category": "Dragon Ball",
+        "favorites": 2,
+        "image_url": "https://cdn.myanimelist.net/images/characters/12/359278.webp",
+        "rating": 357
+      },
+      {
+        "name": "Liu Xing Long",
+        "anime_category": "Dragon Ball",
+        "favorites": 2,
+        "image_url": "https://cdn.myanimelist.net/images/characters/6/280228.webp",
+        "rating": 355
+      },
+      {
+        "name": "Sanzoku Kuma",
+        "anime_category": "Dragon Ball",
+        "favorites": 2,
+        "image_url": "https://cdn.myanimelist.net/images/characters/13/113205.webp",
+        "rating": 353
+      },
+      {
+        "name": "Delde",
+        "anime_category": "Dragon Ball",
+        "favorites": 2,
+        "image_url": "https://cdn.myanimelist.net/images/characters/2/135965.webp",
+        "rating": 351
+      },
+      {
+        "name": "Otokosuki",
+        "anime_category": "Dragon Ball",
+        "favorites": 2,
+        "image_url": "https://cdn.myanimelist.net/images/characters/12/156643.webp",
+        "rating": 349
+      },
+      {
+        "name": "Poperu",
+        "anime_category": "Dragon Ball",
+        "favorites": 2,
+        "image_url": "https://cdn.myanimelist.net/images/characters/16/161759.webp",
+        "rating": 347
+      },
+      {
+        "name": "Cell Games Announcer",
+        "anime_category": "Dragon Ball",
+        "favorites": 2,
+        "image_url": "https://cdn.myanimelist.net/images/characters/12/280363.webp",
+        "rating": 345
+      },
+      {
+        "name": "Annin",
+        "anime_category": "Dragon Ball",
+        "favorites": 2,
+        "image_url": "https://cdn.myanimelist.net/images/characters/16/238743.webp",
+        "rating": 344
+      },
+      {
+        "name": "Toninjinka",
+        "anime_category": "Dragon Ball",
+        "favorites": 2,
+        "image_url": "https://cdn.myanimelist.net/images/characters/3/283210.webp",
+        "rating": 342
+      },
+      {
+        "name": "Appule",
+        "anime_category": "Dragon Ball",
+        "favorites": 2,
+        "image_url": "https://cdn.myanimelist.net/images/characters/16/117013.webp",
+        "rating": 340
+      },
+      {
+        "name": "Beats",
+        "anime_category": "Dragon Ball",
+        "favorites": 2,
+        "image_url": "https://cdn.myanimelist.net/images/characters/16/423388.webp",
+        "rating": 338
+      },
+      {
+        "name": "Pansy",
+        "anime_category": "Dragon Ball",
+        "favorites": 2,
+        "image_url": "https://cdn.myanimelist.net/images/characters/12/293173.webp",
+        "rating": 336
+      },
+      {
+        "name": "Dodoria",
+        "anime_category": "Dragon Ball",
+        "favorites": 2,
+        "image_url": "https://cdn.myanimelist.net/images/characters/7/45236.webp",
+        "rating": 334
+      },
+      {
+        "name": "Mojito",
+        "anime_category": "Dragon Ball",
+        "favorites": 2,
+        "image_url": "https://cdn.myanimelist.net/images/characters/13/359282.webp",
+        "rating": 332
+      },
+      {
+        "name": "Magenta",
+        "anime_category": "Dragon Ball",
+        "favorites": 2,
+        "image_url": "https://cdn.myanimelist.net/images/characters/13/496534.webp",
+        "rating": 330
+      },
+      {
+        "name": "Porunga",
+        "anime_category": "Dragon Ball",
+        "favorites": 2,
+        "image_url": "https://cdn.myanimelist.net/images/characters/3/45230.webp",
+        "rating": 328
+      },
+      {
+        "name": "Dai Kaioshin",
+        "anime_category": "Dragon Ball",
+        "favorites": 2,
+        "image_url": "https://cdn.myanimelist.net/images/characters/2/113186.webp",
+        "rating": 326
+      },
+      {
+        "name": "Namekku Kokui no Senshi",
+        "anime_category": "Dragon Ball",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/16/478994.webp",
+        "rating": 324
+      },
+      {
+        "name": "Mermaid",
+        "anime_category": "Dragon Ball",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/9/238197.webp",
+        "rating": 323
+      },
+      {
+        "name": "San Xing Long",
+        "anime_category": "Dragon Ball",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/8/280229.webp",
+        "rating": 321
+      },
+      {
+        "name": "Leek",
+        "anime_category": "Dragon Ball",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/14/486002.webp",
+        "rating": 319
+      },
+      {
+        "name": "Commander Red",
+        "anime_category": "Dragon Ball",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/12/45198.webp",
+        "rating": 317
+      },
+      {
+        "name": "Puck",
+        "anime_category": "Dragon Ball",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/127719.webp",
+        "rating": 315
+      },
+      {
+        "name": "Lucifer",
+        "anime_category": "Dragon Ball",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/8/71324.webp",
+        "rating": 313
+      },
+      {
+        "name": "Kuriza",
+        "anime_category": "Dragon Ball",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/6/14832.webp",
+        "rating": 311
+      },
+      {
+        "name": "Cymbal",
+        "anime_category": "Dragon Ball",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/14/45196.webp",
+        "rating": 309
+      },
+      {
+        "name": "Totepo",
+        "anime_category": "Dragon Ball",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/11/97696.webp",
+        "rating": 307
+      },
+      {
+        "name": "Tights",
+        "anime_category": "Dragon Ball",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/16/299020.webp",
+        "rating": 305
+      },
+      {
+        "name": "Giran",
+        "anime_category": "Dragon Ball",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/6/45207.webp",
+        "rating": 303
+      },
+      {
+        "name": "Igor",
+        "anime_category": "Dragon Ball",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/71325.webp",
+        "rating": 302
+      },
+      {
+        "name": "Lime",
+        "anime_category": "Dragon Ball",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/9/398076.webp",
+        "rating": 300
+      },
+      {
+        "name": "Ogma",
+        "anime_category": "Dragon Ball",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/3/361036.webp",
+        "rating": 298
+      },
+      {
+        "name": "Bidou",
+        "anime_category": "Dragon Ball",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/8/111347.webp",
+        "rating": 296
+      },
+      {
+        "name": "Bergamo",
+        "anime_category": "Dragon Ball",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/3/358945.webp",
+        "rating": 294
+      },
+      {
+        "name": "Tagoma",
+        "anime_category": "Dragon Ball",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/6/357858.webp",
+        "rating": 292
+      },
+      {
+        "name": "Grandma Paozu",
+        "anime_category": "Dragon Ball",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/6/238101.webp",
+        "rating": 290
+      },
+      {
+        "name": "Anat",
+        "anime_category": "Dragon Ball",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/9/361030.webp",
+        "rating": 288
+      },
+      {
+        "name": "Kokui no Senshi",
+        "anime_category": "Dragon Ball",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/2/478992.webp",
+        "rating": 286
+      },
+      {
+        "name": "General Rilldo",
+        "anime_category": "Dragon Ball",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/13/127725.webp",
+        "rating": 284
+      },
+      {
+        "name": "Minoshia",
+        "anime_category": "Dragon Ball",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/113191.webp",
+        "rating": 282
+      },
+      {
+        "name": "Pasta",
+        "anime_category": "Dragon Ball",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/7/110182.webp",
+        "rating": 281
+      },
+      {
+        "name": "Olibu",
+        "anime_category": "Dragon Ball",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/6/274559.webp",
+        "rating": 279
+      },
+      {
+        "name": "Tambourine",
+        "anime_category": "Dragon Ball",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/13/126153.webp",
+        "rating": 277
+      },
+      {
+        "name": "Chilled",
+        "anime_category": "Dragon Ball",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/11/147807.webp",
+        "rating": 275
+      },
+      {
+        "name": "Beautiful Woman with Weird Hat",
+        "anime_category": "Dragon Ball",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/14/596000.webp",
+        "rating": 273
+      },
+      {
+        "name": "Yaochun",
+        "anime_category": "Dragon Ball",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/4/238635.webp",
+        "rating": 271
+      },
+      {
+        "name": "Mint",
+        "anime_category": "Dragon Ball",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/7/238733.webp",
+        "rating": 269
+      },
+      {
+        "name": "Paul",
+        "anime_category": "Dragon Ball",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/11/238735.webp",
+        "rating": 267
+      },
+      {
+        "name": "Piiza",
+        "anime_category": "Dragon Ball",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/16/240055.webp",
+        "rating": 265
+      },
+      {
+        "name": "Arack",
+        "anime_category": "Dragon Ball",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/15/357388.webp",
+        "rating": 263
+      },
+      {
+        "name": "Yakon",
+        "anime_category": "Dragon Ball",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/10/111829.webp",
+        "rating": 261
+      },
+      {
+        "name": "Sour",
+        "anime_category": "Dragon Ball",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/14/357374.webp",
+        "rating": 260
+      },
+      {
+        "name": "Rumsshi ",
+        "anime_category": "Dragon Ball",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/359004.webp",
+        "rating": 258
+      },
+      {
+        "name": "Mera",
+        "anime_category": "Dragon Ball",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/12/238185.webp",
+        "rating": 256
+      },
+      {
+        "name": "Jiora",
+        "anime_category": "Dragon Ball",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/13/540231.webp",
+        "rating": 254
+      },
+      {
+        "name": "Panput",
+        "anime_category": "Dragon Ball",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/10/238489.webp",
+        "rating": 252
+      },
+      {
+        "name": "Chuu Lee's Mother",
+        "anime_category": "Dragon Ball",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/9/238631.webp",
+        "rating": 250
+      }
+    ]
+  },
+  {
+    "anime_name": "Bleach",
+    "characters": [
+      {
+        "name": "Gintoki Sakata",
+        "anime_category": "Bleach",
+        "favorites": 75241,
+        "image_url": "https://cdn.myanimelist.net/images/characters/15/241479.webp",
+        "rating": 500
+      },
+      {
+        "name": "Ulquiorra Cifer",
+        "anime_category": "Bleach",
+        "favorites": 9704,
+        "image_url": "https://cdn.myanimelist.net/images/characters/7/529323.webp",
+        "rating": 490
+      },
+      {
+        "name": "Toushirou Hitsugaya",
+        "anime_category": "Bleach",
+        "favorites": 9478,
+        "image_url": "https://cdn.myanimelist.net/images/characters/11/36579.webp",
+        "rating": 470
+      },
+      {
+        "name": "Byakuya Kuchiki",
+        "anime_category": "Bleach",
+        "favorites": 6840,
+        "image_url": "https://cdn.myanimelist.net/images/characters/7/100098.webp",
+        "rating": 472
+      },
+      {
+        "name": "Grimmjow Jaegerjaquez",
+        "anime_category": "Bleach",
+        "favorites": 6601,
+        "image_url": "https://cdn.myanimelist.net/images/characters/10/529459.webp",
+        "rating": 468
+      },
+      {
+        "name": "Youichi Hiruma",
+        "anime_category": "Bleach",
+        "favorites": 4228,
+        "image_url": "https://cdn.myanimelist.net/images/characters/4/61939.webp",
+        "rating": 498
+      },
+      {
+        "name": "Shunsui Jirou Sakuranosuke Kyouraku",
+        "anime_category": "Bleach",
+        "favorites": 3613,
+        "image_url": "https://cdn.myanimelist.net/images/characters/14/33242.webp",
+        "rating": 495
+      },
+      {
+        "name": "Renji Abarai",
+        "anime_category": "Bleach",
+        "favorites": 2994,
+        "image_url": "https://cdn.myanimelist.net/images/characters/10/171877.webp",
+        "rating": 450
+      },
+      {
+        "name": "Shinji Hirako",
+        "anime_category": "Bleach",
+        "favorites": 2115,
+        "image_url": "https://cdn.myanimelist.net/images/characters/3/72979.webp",
+        "rating": 455
+      },
+      {
+        "name": "Rangiku Matsumoto",
+        "anime_category": "Bleach",
+        "favorites": 1104,
+        "image_url": "https://cdn.myanimelist.net/images/characters/14/520193.webp",
+        "rating": 380
+      },
+      {
+        "name": "Kon",
+        "anime_category": "Bleach",
+        "favorites": 1062,
+        "image_url": "https://cdn.myanimelist.net/images/characters/8/102740.webp",
+        "rating": 270
+      },
+      {
+        "name": "Michiru Matsushima",
+        "anime_category": "Bleach",
+        "favorites": 873,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/277996.webp",
+        "rating": 496
+      },
+      {
+        "name": "Shuuhei Hisagi",
+        "anime_category": "Bleach",
+        "favorites": 854,
+        "image_url": "https://cdn.myanimelist.net/images/characters/13/76390.webp",
+        "rating": 430
+      },
+      {
+        "name": "Kanji Tatsumi",
+        "anime_category": "Bleach",
+        "favorites": 640,
+        "image_url": "https://cdn.myanimelist.net/images/characters/13/138017.webp",
+        "rating": 494
+      },
+      {
+        "name": "Izana Kurokawa",
+        "anime_category": "Bleach",
+        "favorites": 601,
+        "image_url": "https://cdn.myanimelist.net/images/characters/10/442828.webp",
+        "rating": 493
+      },
+      {
+        "name": "Tier Harribel",
+        "anime_category": "Bleach",
+        "favorites": 579,
+        "image_url": "https://cdn.myanimelist.net/images/characters/9/529316.webp",
+        "rating": 470
+      },
+      {
+        "name": "Shigekuni Yamamoto-Genryuusai",
+        "anime_category": "Bleach",
+        "favorites": 565,
+        "image_url": "https://cdn.myanimelist.net/images/characters/7/33294.webp",
+        "rating": 500
+      },
+      {
+        "name": "Noel Niihashi",
+        "anime_category": "Bleach",
+        "favorites": 393,
+        "image_url": "https://cdn.myanimelist.net/images/characters/4/518474.webp",
+        "rating": 491
+      },
+      {
+        "name": "Isshin Kurosaki",
+        "anime_category": "Bleach",
+        "favorites": 373,
+        "image_url": "https://cdn.myanimelist.net/images/characters/16/97168.webp",
+        "rating": 465
+      },
+      {
+        "name": "Bambietta Basterbine",
+        "anime_category": "Bleach",
+        "favorites": 240,
+        "image_url": "https://cdn.myanimelist.net/images/characters/13/482240.webp",
+        "rating": 445
+      },
+      {
+        "name": "Yumichika Ayasegawa",
+        "anime_category": "Bleach",
+        "favorites": 236,
+        "image_url": "https://cdn.myanimelist.net/images/characters/4/33228.webp",
+        "rating": 489
+      },
+      {
+        "name": "Szayel Aporro Grantz",
+        "anime_category": "Bleach",
+        "favorites": 221,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/529322.webp",
+        "rating": 487
+      },
+      {
+        "name": "Izuru Kira",
+        "anime_category": "Bleach",
+        "favorites": 212,
+        "image_url": "https://cdn.myanimelist.net/images/characters/11/33234.webp",
+        "rating": 485
+      },
+      {
+        "name": "Jugram Haschwalth",
+        "anime_category": "Bleach",
+        "favorites": 184,
+        "image_url": "https://cdn.myanimelist.net/images/characters/8/290179.webp",
+        "rating": 483
+      },
+      {
+        "name": "Shoutarou Fuwa",
+        "anime_category": "Bleach",
+        "favorites": 182,
+        "image_url": "https://cdn.myanimelist.net/images/characters/13/90780.webp",
+        "rating": 481
+      },
+      {
+        "name": "Sajin Komamura",
+        "anime_category": "Bleach",
+        "favorites": 174,
+        "image_url": "https://cdn.myanimelist.net/images/characters/16/59028.webp",
+        "rating": 480
+      },
+      {
+        "name": "Ninny Spangcole",
+        "anime_category": "Bleach",
+        "favorites": 143,
+        "image_url": "https://cdn.myanimelist.net/images/characters/4/518486.webp",
+        "rating": 478
+      },
+      {
+        "name": "Shuuichi Nakatsu",
+        "anime_category": "Bleach",
+        "favorites": 136,
+        "image_url": "https://cdn.myanimelist.net/images/characters/12/78045.webp",
+        "rating": 476
+      },
+      {
+        "name": "Kensei Muguruma",
+        "anime_category": "Bleach",
+        "favorites": 130,
+        "image_url": "https://cdn.myanimelist.net/images/characters/10/45938.webp",
+        "rating": 474
+      },
+      {
+        "name": "Senjumaru Shutara",
+        "anime_category": "Bleach",
+        "favorites": 116,
+        "image_url": "https://cdn.myanimelist.net/images/characters/4/571129.webp",
+        "rating": 472
+      },
+      {
+        "name": "Äs Nödt",
+        "anime_category": "Bleach",
+        "favorites": 102,
+        "image_url": "https://cdn.myanimelist.net/images/characters/15/493744.webp",
+        "rating": 470
+      },
+      {
+        "name": "Ouetsu Nimaiya",
+        "anime_category": "Bleach",
+        "favorites": 73,
+        "image_url": "https://cdn.myanimelist.net/images/characters/14/396639.webp",
+        "rating": 469
+      },
+      {
+        "name": "Gamma Akutabi",
+        "anime_category": "Bleach",
+        "favorites": 68,
+        "image_url": "https://cdn.myanimelist.net/images/characters/7/555692.webp",
+        "rating": 467
+      },
+      {
+        "name": "Gonzaburou Tashiro",
+        "anime_category": "Bleach",
+        "favorites": 60,
+        "image_url": "https://cdn.myanimelist.net/images/characters/9/453775.webp",
+        "rating": 465
+      },
+      {
+        "name": "Hyakurin",
+        "anime_category": "Bleach",
+        "favorites": 60,
+        "image_url": "https://cdn.myanimelist.net/images/characters/9/54023.webp",
+        "rating": 463
+      },
+      {
+        "name": "Nanao Ise",
+        "anime_category": "Bleach",
+        "favorites": 56,
+        "image_url": "https://cdn.myanimelist.net/images/characters/2/33233.webp",
+        "rating": 461
+      },
+      {
+        "name": "Ken Murata",
+        "anime_category": "Bleach",
+        "favorites": 56,
+        "image_url": "https://cdn.myanimelist.net/images/characters/16/93307.webp",
+        "rating": 459
+      },
+      {
+        "name": "Gremmy Thoumeaux",
+        "anime_category": "Bleach",
+        "favorites": 55,
+        "image_url": "https://cdn.myanimelist.net/images/characters/14/245647.webp",
+        "rating": 457
+      },
+      {
+        "name": "Yuuji Takehisa",
+        "anime_category": "Bleach",
+        "favorites": 55,
+        "image_url": "https://cdn.myanimelist.net/images/characters/11/381323.webp",
+        "rating": 456
+      },
+      {
+        "name": "Angol Mois",
+        "anime_category": "Bleach",
+        "favorites": 48,
+        "image_url": "https://cdn.myanimelist.net/images/characters/8/48841.webp",
+        "rating": 454
+      },
+      {
+        "name": "Bazzard Black",
+        "anime_category": "Bleach",
+        "favorites": 43,
+        "image_url": "https://cdn.myanimelist.net/images/characters/6/290662.webp",
+        "rating": 452
+      },
+      {
+        "name": "Hyourinmaru",
+        "anime_category": "Bleach",
+        "favorites": 39,
+        "image_url": "https://cdn.myanimelist.net/images/characters/7/75118.webp",
+        "rating": 450
+      },
+      {
+        "name": "Kandata",
+        "anime_category": "Bleach",
+        "favorites": 38,
+        "image_url": "https://cdn.myanimelist.net/images/characters/7/75154.webp",
+        "rating": 448
+      },
+      {
+        "name": "Yuu Naruse",
+        "anime_category": "Bleach",
+        "favorites": 36,
+        "image_url": "https://cdn.myanimelist.net/images/characters/12/220875.webp",
+        "rating": 446
+      },
+      {
+        "name": "Luppi Antenor",
+        "anime_category": "Bleach",
+        "favorites": 32,
+        "image_url": "https://cdn.myanimelist.net/images/characters/10/62228.webp",
+        "rating": 444
+      },
+      {
+        "name": "Zazie Rainyday",
+        "anime_category": "Bleach",
+        "favorites": 32,
+        "image_url": "https://cdn.myanimelist.net/images/characters/6/302839.webp",
+        "rating": 443
+      },
+      {
+        "name": "Dondochakka Birstanne",
+        "anime_category": "Bleach",
+        "favorites": 31,
+        "image_url": "https://cdn.myanimelist.net/images/characters/11/79549.webp",
+        "rating": 441
+      },
+      {
+        "name": "Tetsuzaemon Iba",
+        "anime_category": "Bleach",
+        "favorites": 27,
+        "image_url": "https://cdn.myanimelist.net/images/characters/10/51363.webp",
+        "rating": 439
+      },
+      {
+        "name": "Lilynette Gingerback",
+        "anime_category": "Bleach",
+        "favorites": 25,
+        "image_url": "https://cdn.myanimelist.net/images/characters/7/529319.webp",
+        "rating": 437
+      },
+      {
+        "name": "Ashido Kanou",
+        "anime_category": "Bleach",
+        "favorites": 21,
+        "image_url": "https://cdn.myanimelist.net/images/characters/9/524604.webp",
+        "rating": 435
+      },
+      {
+        "name": "Balgo Ywain Parks",
+        "anime_category": "Bleach",
+        "favorites": 20,
+        "image_url": "https://cdn.myanimelist.net/images/characters/9/417312.webp",
+        "rating": 433
+      },
+      {
+        "name": "Kenya Oshitari",
+        "anime_category": "Bleach",
+        "favorites": 20,
+        "image_url": "https://cdn.myanimelist.net/images/characters/8/43004.webp",
+        "rating": 431
+      },
+      {
+        "name": "Candice Catnipp",
+        "anime_category": "Bleach",
+        "favorites": 19,
+        "image_url": "https://cdn.myanimelist.net/images/characters/4/246863.webp",
+        "rating": 430
+      },
+      {
+        "name": "Aaroniero Arruruerie",
+        "anime_category": "Bleach",
+        "favorites": 19,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/40682.webp",
+        "rating": 428
+      },
+      {
+        "name": "Liltotto Lamperd",
+        "anime_category": "Bleach",
+        "favorites": 18,
+        "image_url": "https://cdn.myanimelist.net/images/characters/6/246867.webp",
+        "rating": 426
+      },
+      {
+        "name": "Towa Aikawa",
+        "anime_category": "Bleach",
+        "favorites": 18,
+        "image_url": "https://cdn.myanimelist.net/images/characters/7/440285.webp",
+        "rating": 424
+      },
+      {
+        "name": "Yukio Hans Vorarlberna",
+        "anime_category": "Bleach",
+        "favorites": 18,
+        "image_url": "https://cdn.myanimelist.net/images/characters/3/173579.webp",
+        "rating": 422
+      },
+      {
+        "name": "Julie Heyward",
+        "anime_category": "Bleach",
+        "favorites": 18,
+        "image_url": "https://cdn.myanimelist.net/images/characters/14/427356.webp",
+        "rating": 420
+      },
+      {
+        "name": "You Tobiume",
+        "anime_category": "Bleach",
+        "favorites": 17,
+        "image_url": "https://cdn.myanimelist.net/images/characters/2/303855.webp",
+        "rating": 419
+      },
+      {
+        "name": "Youichirou Tatsumi",
+        "anime_category": "Bleach",
+        "favorites": 13,
+        "image_url": "https://cdn.myanimelist.net/images/characters/9/324344.webp",
+        "rating": 417
+      },
+      {
+        "name": "White",
+        "anime_category": "Bleach",
+        "favorites": 12,
+        "image_url": "https://cdn.myanimelist.net/images/characters/7/547987.webp",
+        "rating": 415
+      },
+      {
+        "name": "Ikumi Unagiya",
+        "anime_category": "Bleach",
+        "favorites": 12,
+        "image_url": "https://cdn.myanimelist.net/images/characters/4/363308.webp",
+        "rating": 413
+      },
+      {
+        "name": "Kazui Kurosaki",
+        "anime_category": "Bleach",
+        "favorites": 11,
+        "image_url": "https://cdn.myanimelist.net/images/characters/13/310612.webp",
+        "rating": 411
+      },
+      {
+        "name": "Kouga Kuchiki",
+        "anime_category": "Bleach",
+        "favorites": 11,
+        "image_url": "https://cdn.myanimelist.net/images/characters/15/73975.webp",
+        "rating": 409
+      },
+      {
+        "name": "Kazuma Ikeda",
+        "anime_category": "Bleach",
+        "favorites": 10,
+        "image_url": "https://cdn.myanimelist.net/images/characters/6/46796.webp",
+        "rating": 407
+      },
+      {
+        "name": "Loly Aivirrne",
+        "anime_category": "Bleach",
+        "favorites": 10,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/56720.webp",
+        "rating": 406
+      },
+      {
+        "name": "Meninas McAllon",
+        "anime_category": "Bleach",
+        "favorites": 10,
+        "image_url": "https://cdn.myanimelist.net/images/characters/8/255565.webp",
+        "rating": 404
+      },
+      {
+        "name": "Zabimaru (Female)",
+        "anime_category": "Bleach",
+        "favorites": 10,
+        "image_url": "https://cdn.myanimelist.net/images/characters/7/61861.webp",
+        "rating": 402
+      },
+      {
+        "name": "Quilge Opie",
+        "anime_category": "Bleach",
+        "favorites": 9,
+        "image_url": "https://cdn.myanimelist.net/images/characters/3/290592.webp",
+        "rating": 400
+      },
+      {
+        "name": "Yuki Himekawa",
+        "anime_category": "Bleach",
+        "favorites": 9,
+        "image_url": "https://cdn.myanimelist.net/images/characters/9/417168.webp",
+        "rating": 398
+      },
+      {
+        "name": "Kyouko",
+        "anime_category": "Bleach",
+        "favorites": 8,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/299300.webp",
+        "rating": 396
+      },
+      {
+        "name": "Miru Kim",
+        "anime_category": "Bleach",
+        "favorites": 8,
+        "image_url": "https://cdn.myanimelist.net/images/characters/2/433910.webp",
+        "rating": 394
+      },
+      {
+        "name": "Ilforte Grantz",
+        "anime_category": "Bleach",
+        "favorites": 7,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/40965.webp",
+        "rating": 393
+      },
+      {
+        "name": "Keiko Tomioka",
+        "anime_category": "Bleach",
+        "favorites": 7,
+        "image_url": "https://cdn.myanimelist.net/images/characters/16/453145.webp",
+        "rating": 391
+      },
+      {
+        "name": "Shizuku",
+        "anime_category": "Bleach",
+        "favorites": 7,
+        "image_url": "https://cdn.myanimelist.net/images/characters/13/65861.webp",
+        "rating": 389
+      },
+      {
+        "name": "Shinji Iijima",
+        "anime_category": "Bleach",
+        "favorites": 7,
+        "image_url": "https://cdn.myanimelist.net/images/characters/15/208149.webp",
+        "rating": 387
+      },
+      {
+        "name": "Shuren",
+        "anime_category": "Bleach",
+        "favorites": 6,
+        "image_url": "https://cdn.myanimelist.net/images/characters/16/146651.webp",
+        "rating": 385
+      },
+      {
+        "name": "Gou Koga",
+        "anime_category": "Bleach",
+        "favorites": 6,
+        "image_url": "https://cdn.myanimelist.net/images/characters/7/41195.webp",
+        "rating": 383
+      },
+      {
+        "name": "Yammy Llargo",
+        "anime_category": "Bleach",
+        "favorites": 6,
+        "image_url": "https://cdn.myanimelist.net/images/characters/15/92015.webp",
+        "rating": 381
+      },
+      {
+        "name": "Ban",
+        "anime_category": "Bleach",
+        "favorites": 5,
+        "image_url": "https://cdn.myanimelist.net/images/characters/10/103124.webp",
+        "rating": 380
+      },
+      {
+        "name": "Furoufushi Saitou",
+        "anime_category": "Bleach",
+        "favorites": 5,
+        "image_url": "https://cdn.myanimelist.net/images/characters/15/522521.webp",
+        "rating": 378
+      },
+      {
+        "name": "Zabimaru (Male)",
+        "anime_category": "Bleach",
+        "favorites": 5,
+        "image_url": "https://cdn.myanimelist.net/images/characters/15/79122.webp",
+        "rating": 376
+      },
+      {
+        "name": "Homura",
+        "anime_category": "Bleach",
+        "favorites": 5,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/456930.webp",
+        "rating": 374
+      },
+      {
+        "name": "Love Aikawa",
+        "anime_category": "Bleach",
+        "favorites": 5,
+        "image_url": "https://cdn.myanimelist.net/images/characters/4/57259.webp",
+        "rating": 372
+      },
+      {
+        "name": "Baishin",
+        "anime_category": "Bleach",
+        "favorites": 4,
+        "image_url": "https://cdn.myanimelist.net/images/characters/2/153267.webp",
+        "rating": 370
+      },
+      {
+        "name": "Tetsuta Koshiba",
+        "anime_category": "Bleach",
+        "favorites": 4,
+        "image_url": "https://cdn.myanimelist.net/images/characters/16/35857.webp",
+        "rating": 369
+      },
+      {
+        "name": "Ichika Abarai",
+        "anime_category": "Bleach",
+        "favorites": 4,
+        "image_url": "https://cdn.myanimelist.net/images/characters/7/310611.webp",
+        "rating": 367
+      },
+      {
+        "name": "Zennosuke Kurumadani",
+        "anime_category": "Bleach",
+        "favorites": 4,
+        "image_url": "https://cdn.myanimelist.net/images/characters/4/55942.webp",
+        "rating": 365
+      },
+      {
+        "name": "Tadaoki Sasakibe Choujirou",
+        "anime_category": "Bleach",
+        "favorites": 4,
+        "image_url": "https://cdn.myanimelist.net/images/characters/14/68554.webp",
+        "rating": 363
+      },
+      {
+        "name": "Akihito Narumi",
+        "anime_category": "Bleach",
+        "favorites": 4,
+        "image_url": "https://cdn.myanimelist.net/images/characters/2/502434.webp",
+        "rating": 361
+      },
+      {
+        "name": "Ryuusei Kenzaki",
+        "anime_category": "Bleach",
+        "favorites": 4,
+        "image_url": "https://cdn.myanimelist.net/images/characters/10/41196.webp",
+        "rating": 359
+      },
+      {
+        "name": "Nami Komatsu",
+        "anime_category": "Bleach",
+        "favorites": 3,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/466046.webp",
+        "rating": 357
+      },
+      {
+        "name": "Makoto Kibune",
+        "anime_category": "Bleach",
+        "favorites": 3,
+        "image_url": "https://cdn.myanimelist.net/images/characters/3/98566.webp",
+        "rating": 356
+      },
+      {
+        "name": "Rin Tsubokura",
+        "anime_category": "Bleach",
+        "favorites": 3,
+        "image_url": "https://cdn.myanimelist.net/images/characters/10/40874.webp",
+        "rating": 354
+      },
+      {
+        "name": "Findorr Calius",
+        "anime_category": "Bleach",
+        "favorites": 3,
+        "image_url": "https://cdn.myanimelist.net/images/characters/10/55313.webp",
+        "rating": 352
+      },
+      {
+        "name": "Adnyeus",
+        "anime_category": "Bleach",
+        "favorites": 3,
+        "image_url": "https://cdn.myanimelist.net/images/characters/14/526006.webp",
+        "rating": 350
+      },
+      {
+        "name": "Asguiaro Ebern",
+        "anime_category": "Bleach",
+        "favorites": 3,
+        "image_url": "https://cdn.myanimelist.net/images/characters/3/493386.webp",
+        "rating": 348
+      },
+      {
+        "name": "Kiyone Kotetsu",
+        "anime_category": "Bleach",
+        "favorites": 3,
+        "image_url": "https://cdn.myanimelist.net/images/characters/13/85347.webp",
+        "rating": 346
+      },
+      {
+        "name": "Yuyu Yayahara",
+        "anime_category": "Bleach",
+        "favorites": 3,
+        "image_url": "https://cdn.myanimelist.net/images/characters/4/483772.webp",
+        "rating": 344
+      },
+      {
+        "name": "Aura Michibane",
+        "anime_category": "Bleach",
+        "favorites": 3,
+        "image_url": "https://cdn.myanimelist.net/images/characters/3/518916.webp",
+        "rating": 343
+      },
+      {
+        "name": "Tessai Tsukabishi",
+        "anime_category": "Bleach",
+        "favorites": 2,
+        "image_url": "https://cdn.myanimelist.net/images/characters/8/40504.webp",
+        "rating": 341
+      },
+      {
+        "name": "Jidanbou Ikkanzaka",
+        "anime_category": "Bleach",
+        "favorites": 2,
+        "image_url": "https://cdn.myanimelist.net/images/characters/3/50724.webp",
+        "rating": 339
+      },
+      {
+        "name": "Ouko Yushima",
+        "anime_category": "Bleach",
+        "favorites": 2,
+        "image_url": "https://cdn.myanimelist.net/images/characters/13/160003.webp",
+        "rating": 337
+      },
+      {
+        "name": "Nayura Amakado",
+        "anime_category": "Bleach",
+        "favorites": 2,
+        "image_url": "https://cdn.myanimelist.net/images/characters/15/526280.webp",
+        "rating": 335
+      },
+      {
+        "name": "Chome",
+        "anime_category": "Bleach",
+        "favorites": 2,
+        "image_url": "https://cdn.myanimelist.net/images/characters/12/478544.webp",
+        "rating": 333
+      },
+      {
+        "name": "Takashi Masaki",
+        "anime_category": "Bleach",
+        "favorites": 2,
+        "image_url": "https://cdn.myanimelist.net/images/characters/6/74162.webp",
+        "rating": 331
+      },
+      {
+        "name": "Hikone Ubuginu",
+        "anime_category": "Bleach",
+        "favorites": 2,
+        "image_url": "https://cdn.myanimelist.net/images/characters/13/522508.webp",
+        "rating": 330
+      },
+      {
+        "name": "Hisagomaru",
+        "anime_category": "Bleach",
+        "favorites": 2,
+        "image_url": "https://cdn.myanimelist.net/images/characters/8/208163.webp",
+        "rating": 328
+      },
+      {
+        "name": "Hubert Alexander Kleich",
+        "anime_category": "Bleach",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/548002.webp",
+        "rating": 326
+      },
+      {
+        "name": "Chika Shihouin",
+        "anime_category": "Bleach",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/13/547990.webp",
+        "rating": 324
+      },
+      {
+        "name": "Kyouko Haida",
+        "anime_category": "Bleach",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/12/83546.webp",
+        "rating": 322
+      },
+      {
+        "name": "Lake Toya",
+        "anime_category": "Bleach",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/12/115829.webp",
+        "rating": 320
+      },
+      {
+        "name": "Mitsuru Ishino",
+        "anime_category": "Bleach",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/14/109081.webp",
+        "rating": 319
+      },
+      {
+        "name": "Unnamed Female Arrancar",
+        "anime_category": "Bleach",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/490990.webp",
+        "rating": 317
+      },
+      {
+        "name": "Ryuunosuke Yuki",
+        "anime_category": "Bleach",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/12/493382.webp",
+        "rating": 315
+      },
+      {
+        "name": "Shino Madarame",
+        "anime_category": "Bleach",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/13/484953.webp",
+        "rating": 313
+      },
+      {
+        "name": "Roka Paramia",
+        "anime_category": "Bleach",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/8/557147.webp",
+        "rating": 311
+      },
+      {
+        "name": "Niko Inuyama",
+        "anime_category": "Bleach",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/2/487851.webp",
+        "rating": 309
+      },
+      {
+        "name": "Torue",
+        "anime_category": "Bleach",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/8/542788.webp",
+        "rating": 307
+      },
+      {
+        "name": "Kanae Katagiri",
+        "anime_category": "Bleach",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/8/497675.webp",
+        "rating": 306
+      },
+      {
+        "name": "Royd Lloyd",
+        "anime_category": "Bleach",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/6/516933.webp",
+        "rating": 304
+      },
+      {
+        "name": "Batsu'unsai Katori",
+        "anime_category": "Bleach",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/9/548431.webp",
+        "rating": 302
+      },
+      {
+        "name": "Luders Friegen",
+        "anime_category": "Bleach",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/12/494648.webp",
+        "rating": 300
+      },
+      {
+        "name": "Rudbornn Chelute",
+        "anime_category": "Bleach",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/15/103019.webp",
+        "rating": 298
+      },
+      {
+        "name": "Wolfgang Slashhaut",
+        "anime_category": "Bleach",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/422129.webp",
+        "rating": 296
+      },
+      {
+        "name": "Berenice Gabrielli",
+        "anime_category": "Bleach",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/14/493388.webp",
+        "rating": 294
+      },
+      {
+        "name": "Hasuka Hashihara",
+        "anime_category": "Bleach",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/10/511906.webp",
+        "rating": 293
+      },
+      {
+        "name": "Danzoumaru",
+        "anime_category": "Bleach",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/54892.webp",
+        "rating": 291
+      },
+      {
+        "name": "Atau Rindou",
+        "anime_category": "Bleach",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/6/471524.webp",
+        "rating": 289
+      },
+      {
+        "name": " Satoda",
+        "anime_category": "Bleach",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/12/348681.webp",
+        "rating": 287
+      },
+      {
+        "name": "Tokie Tonokawa",
+        "anime_category": "Bleach",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/11/547984.webp",
+        "rating": 285
+      },
+      {
+        "name": "Hidetomo Kajoumaru",
+        "anime_category": "Bleach",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/12/493385.webp",
+        "rating": 283
+      },
+      {
+        "name": "Yuusuke Iruma",
+        "anime_category": "Bleach",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/img/sp/icon/apple-touch-icon-256.png",
+        "rating": 281
+      },
+      {
+        "name": "Nayuta Kusanagi",
+        "anime_category": "Bleach",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/2/563089.webp",
+        "rating": 280
+      },
+      {
+        "name": "Niko Kuna",
+        "anime_category": "Bleach",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/513700.webp",
+        "rating": 278
+      },
+      {
+        "name": "Izumi Ishida",
+        "anime_category": "Bleach",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/9/512014.webp",
+        "rating": 276
+      },
+      {
+        "name": "Bulbous G",
+        "anime_category": "Bleach",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/4/103041.webp",
+        "rating": 274
+      },
+      {
+        "name": "Shrieker",
+        "anime_category": "Bleach",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/13/109097.webp",
+        "rating": 272
+      },
+      {
+        "name": "Genga",
+        "anime_category": "Bleach",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/9/103037.webp",
+        "rating": 270
+      },
+      {
+        "name": "Kotono Hanaori",
+        "anime_category": "Bleach",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/7/581972.webp",
+        "rating": 269
+      },
+      {
+        "name": "Souken Ishida",
+        "anime_category": "Bleach",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/3/103056.webp",
+        "rating": 267
+      },
+      {
+        "name": "Hou",
+        "anime_category": "Bleach",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/9/103125.webp",
+        "rating": 265
+      },
+      {
+        "name": "Edrad Liones",
+        "anime_category": "Bleach",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/8/92014.webp",
+        "rating": 263
+      },
+      {
+        "name": "Shin'etsu Kisaragi",
+        "anime_category": "Bleach",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/12/481330.webp",
+        "rating": 261
+      },
+      {
+        "name": "Asuka Katakura",
+        "anime_category": "Bleach",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/13/502513.webp",
+        "rating": 259
+      },
+      {
+        "name": "Genshirou Okikiba",
+        "anime_category": "Bleach",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/12/547339.webp",
+        "rating": 257
+      },
+      {
+        "name": "Jerome Guizbatt",
+        "anime_category": "Bleach",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/14/493387.webp",
+        "rating": 256
+      },
+      {
+        "name": "Taketsuna Gori",
+        "anime_category": "Bleach",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/493383.webp",
+        "rating": 254
+      },
+      {
+        "name": "Rikuu Togakushi",
+        "anime_category": "Bleach",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/9/493384.webp",
+        "rating": 252
+      },
+      {
+        "name": "Kuzuryuu",
+        "anime_category": "Bleach",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/16/103054.webp",
+        "rating": 250
+      }
+    ]
+  },
+  {
+    "anime_name": "Demon Slayer",
+    "characters": [
+      {
+        "name": "Zenitsu Agatsuma",
+        "anime_category": "Demon Slayer",
+        "favorites": 16549,
+        "image_url": "https://cdn.myanimelist.net/images/characters/10/459689.webp",
+        "rating": 430
+      },
+      {
+        "name": "Inosuke Hashibira",
+        "anime_category": "Demon Slayer",
+        "favorites": 15121,
+        "image_url": "https://cdn.myanimelist.net/images/characters/3/329560.webp",
+        "rating": 440
+      },
+      {
+        "name": "Kyoujurou Rengoku",
+        "anime_category": "Demon Slayer",
+        "favorites": 14301,
+        "image_url": "https://cdn.myanimelist.net/images/characters/10/423443.webp",
+        "rating": 480
+      },
+      {
+        "name": "Giyuu Tomioka",
+        "anime_category": "Demon Slayer",
+        "favorites": 11793,
+        "image_url": "https://cdn.myanimelist.net/images/characters/3/423445.webp",
+        "rating": 475
+      },
+      {
+        "name": "Tengen Uzui",
+        "anime_category": "Demon Slayer",
+        "favorites": 5763,
+        "image_url": "https://cdn.myanimelist.net/images/characters/16/387706.webp",
+        "rating": 470
+      },
+      {
+        "name": "Muichirou Tokitou",
+        "anime_category": "Demon Slayer",
+        "favorites": 3805,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/464903.webp",
+        "rating": 485
+      },
+      {
+        "name": "Sanemi Shinazugawa",
+        "anime_category": "Demon Slayer",
+        "favorites": 1299,
+        "image_url": "https://cdn.myanimelist.net/images/characters/11/556642.webp",
+        "rating": 490
+      },
+      {
+        "name": "Gyoumei Himejima",
+        "anime_category": "Demon Slayer",
+        "favorites": 671,
+        "image_url": "https://cdn.myanimelist.net/images/characters/10/550017.webp",
+        "rating": 500
+      },
+      {
+        "name": "Himari Noihara",
+        "anime_category": "Demon Slayer",
+        "favorites": 670,
+        "image_url": "https://cdn.myanimelist.net/images/characters/4/83380.webp",
+        "rating": 500
+      },
+      {
+        "name": "Terminus Est",
+        "anime_category": "Demon Slayer",
+        "favorites": 514,
+        "image_url": "https://cdn.myanimelist.net/images/characters/8/255699.webp",
+        "rating": 488
+      },
+      {
+        "name": "Moroha",
+        "anime_category": "Demon Slayer",
+        "favorites": 223,
+        "image_url": "https://cdn.myanimelist.net/images/characters/11/421484.webp",
+        "rating": 475
+      },
+      {
+        "name": "Kanae Kochou",
+        "anime_category": "Demon Slayer",
+        "favorites": 165,
+        "image_url": "https://cdn.myanimelist.net/images/characters/16/389355.webp",
+        "rating": 445
+      },
+      {
+        "name": "Shizuku",
+        "anime_category": "Demon Slayer",
+        "favorites": 101,
+        "image_url": "https://cdn.myanimelist.net/images/characters/8/79435.webp",
+        "rating": 462
+      },
+      {
+        "name": "Setsuna",
+        "anime_category": "Demon Slayer",
+        "favorites": 75,
+        "image_url": "https://cdn.myanimelist.net/images/characters/16/421479.webp",
+        "rating": 450
+      },
+      {
+        "name": "Aoi Kanzaki",
+        "anime_category": "Demon Slayer",
+        "favorites": 58,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/388816.webp",
+        "rating": 290
+      },
+      {
+        "name": "Kohaku",
+        "anime_category": "Demon Slayer",
+        "favorites": 40,
+        "image_url": "https://cdn.myanimelist.net/images/characters/13/93066.webp",
+        "rating": 438
+      },
+      {
+        "name": "Yuuichirou Tokitou",
+        "anime_category": "Demon Slayer",
+        "favorites": 24,
+        "image_url": "https://cdn.myanimelist.net/images/characters/8/512875.webp",
+        "rating": 425
+      },
+      {
+        "name": "Gotou",
+        "anime_category": "Demon Slayer",
+        "favorites": 20,
+        "image_url": "https://cdn.myanimelist.net/images/characters/10/388820.webp",
+        "rating": 412
+      },
+      {
+        "name": "Kaigaku",
+        "anime_category": "Demon Slayer",
+        "favorites": 18,
+        "image_url": "https://cdn.myanimelist.net/images/characters/7/508549.webp",
+        "rating": 410
+      },
+      {
+        "name": "Yuuto Amakawa",
+        "anime_category": "Demon Slayer",
+        "favorites": 16,
+        "image_url": "https://cdn.myanimelist.net/images/characters/13/79436.webp",
+        "rating": 400
+      },
+      {
+        "name": "Gyokko",
+        "anime_category": "Demon Slayer",
+        "favorites": 14,
+        "image_url": "https://cdn.myanimelist.net/images/characters/10/395961.webp",
+        "rating": 388
+      },
+      {
+        "name": "Older Sister Spider Demon",
+        "anime_category": "Demon Slayer",
+        "favorites": 14,
+        "image_url": "https://cdn.myanimelist.net/images/characters/11/385245.webp",
+        "rating": 375
+      },
+      {
+        "name": "Hantengu",
+        "anime_category": "Demon Slayer",
+        "favorites": 12,
+        "image_url": "https://cdn.myanimelist.net/images/characters/7/514330.webp",
+        "rating": 362
+      },
+      {
+        "name": "Himiko Natsuno",
+        "anime_category": "Demon Slayer",
+        "favorites": 7,
+        "image_url": "https://cdn.myanimelist.net/images/characters/15/296617.webp",
+        "rating": 350
+      },
+      {
+        "name": "Hisui",
+        "anime_category": "Demon Slayer",
+        "favorites": 2,
+        "image_url": "https://cdn.myanimelist.net/images/characters/13/415956.webp",
+        "rating": 338
+      },
+      {
+        "name": "Hyogo Kaburagi",
+        "anime_category": "Demon Slayer",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/4/85003.webp",
+        "rating": 325
+      },
+      {
+        "name": "Izo Capricorn",
+        "anime_category": "Demon Slayer",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/6/224731.webp",
+        "rating": 312
+      },
+      {
+        "name": "Sango and Kohaku's Father",
+        "anime_category": "Demon Slayer",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/575075.webp",
+        "rating": 300
+      },
+      {
+        "name": "Miumi",
+        "anime_category": "Demon Slayer",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/12/507259.webp",
+        "rating": 288
+      },
+      {
+        "name": "Kasuri Kagamimori",
+        "anime_category": "Demon Slayer",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/2/446001.webp",
+        "rating": 275
+      },
+      {
+        "name": "Lazlo Varga",
+        "anime_category": "Demon Slayer",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/89101.webp",
+        "rating": 262
+      },
+      {
+        "name": "Shuten-douji",
+        "anime_category": "Demon Slayer",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/84972.webp",
+        "rating": 250
+      }
+    ]
+  },
+  {
+    "anime_name": "Jujutsu Kaisen",
+    "characters": [
+      {
+        "name": "Satoru Gojou",
+        "anime_category": "Jujutsu Kaisen",
+        "favorites": 62436,
+        "image_url": "https://cdn.myanimelist.net/images/characters/15/422168.webp",
+        "rating": 500
+      },
+      {
+        "name": "Yuuji Itadori",
+        "anime_category": "Jujutsu Kaisen",
+        "favorites": 16786,
+        "image_url": "https://cdn.myanimelist.net/images/characters/6/467646.webp",
+        "rating": 470
+      },
+      {
+        "name": "Kento Nanami",
+        "anime_category": "Jujutsu Kaisen",
+        "favorites": 12908,
+        "image_url": "https://cdn.myanimelist.net/images/characters/16/581424.webp",
+        "rating": 450
+      },
+      {
+        "name": "Megumi Fushiguro",
+        "anime_category": "Jujutsu Kaisen",
+        "favorites": 12802,
+        "image_url": "https://cdn.myanimelist.net/images/characters/2/392689.webp",
+        "rating": 465
+      },
+      {
+        "name": "Nobara Kugisaki",
+        "anime_category": "Jujutsu Kaisen",
+        "favorites": 10570,
+        "image_url": "https://cdn.myanimelist.net/images/characters/12/422313.webp",
+        "rating": 420
+      },
+      {
+        "name": "Maki Zenin",
+        "anime_category": "Jujutsu Kaisen",
+        "favorites": 8784,
+        "image_url": "https://cdn.myanimelist.net/images/characters/3/440469.webp",
+        "rating": 485
+      },
+      {
+        "name": "Toge Inumaki",
+        "anime_category": "Jujutsu Kaisen",
+        "favorites": 7968,
+        "image_url": "https://cdn.myanimelist.net/images/characters/4/521636.webp",
+        "rating": 430
+      },
+      {
+        "name": "Touji Fushiguro",
+        "anime_category": "Jujutsu Kaisen",
+        "favorites": 7245,
+        "image_url": "https://cdn.myanimelist.net/images/characters/2/517123.webp",
+        "rating": 495
+      },
+      {
+        "name": "Yuuta Okkotsu",
+        "anime_category": "Jujutsu Kaisen",
+        "favorites": 7058,
+        "image_url": "https://cdn.myanimelist.net/images/characters/10/461503.webp",
+        "rating": 498
+      },
+      {
+        "name": "Aoi Toudou",
+        "anime_category": "Jujutsu Kaisen",
+        "favorites": 4757,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/427604.webp",
+        "rating": 450
+      },
+      {
+        "name": "Chousou",
+        "anime_category": "Jujutsu Kaisen",
+        "favorites": 2522,
+        "image_url": "https://cdn.myanimelist.net/images/characters/8/524177.webp",
+        "rating": 460
+      },
+      {
+        "name": "Kinji Hakari",
+        "anime_category": "Jujutsu Kaisen",
+        "favorites": 871,
+        "image_url": "https://cdn.myanimelist.net/images/characters/3/559400.webp",
+        "rating": 485
+      },
+      {
+        "name": "Hiromi Higuruma",
+        "anime_category": "Jujutsu Kaisen",
+        "favorites": 375,
+        "image_url": "https://cdn.myanimelist.net/images/characters/13/564914.webp",
+        "rating": 445
+      },
+      {
+        "name": "Shouko Ieiri",
+        "anime_category": "Jujutsu Kaisen",
+        "favorites": 307,
+        "image_url": "https://cdn.myanimelist.net/images/characters/13/423951.webp",
+        "rating": 290
+      },
+      {
+        "name": "Junpei Yoshino",
+        "anime_category": "Jujutsu Kaisen",
+        "favorites": 299,
+        "image_url": "https://cdn.myanimelist.net/images/characters/13/434571.webp",
+        "rating": 300
+      },
+      {
+        "name": "Mai Zenin",
+        "anime_category": "Jujutsu Kaisen",
+        "favorites": 158,
+        "image_url": "https://cdn.myanimelist.net/images/characters/6/430336.webp",
+        "rating": 320
+      },
+      {
+        "name": "Hajime Kashimo",
+        "anime_category": "Jujutsu Kaisen",
+        "favorites": 156,
+        "image_url": "https://cdn.myanimelist.net/images/characters/7/480297.webp",
+        "rating": 492
+      },
+      {
+        "name": "Kenjaku",
+        "anime_category": "Jujutsu Kaisen",
+        "favorites": 136,
+        "image_url": "https://cdn.myanimelist.net/images/characters/10/544427.webp",
+        "rating": 499
+      },
+      {
+        "name": "Jougo",
+        "anime_category": "Jujutsu Kaisen",
+        "favorites": 123,
+        "image_url": "https://cdn.myanimelist.net/images/characters/11/415336.webp",
+        "rating": 475
+      },
+      {
+        "name": "Rika Orimoto",
+        "anime_category": "Jujutsu Kaisen",
+        "favorites": 72,
+        "image_url": "https://cdn.myanimelist.net/images/characters/15/488827.webp",
+        "rating": 495
+      },
+      {
+        "name": "Riko Amanai",
+        "anime_category": "Jujutsu Kaisen",
+        "favorites": 67,
+        "image_url": "https://cdn.myanimelist.net/images/characters/9/505519.webp",
+        "rating": 500
+      },
+      {
+        "name": "Kirara Hoshi",
+        "anime_category": "Jujutsu Kaisen",
+        "favorites": 67,
+        "image_url": "https://cdn.myanimelist.net/images/characters/12/453332.webp",
+        "rating": 494
+      },
+      {
+        "name": "Takuma Ino",
+        "anime_category": "Jujutsu Kaisen",
+        "favorites": 66,
+        "image_url": "https://cdn.myanimelist.net/images/characters/6/436201.webp",
+        "rating": 488
+      },
+      {
+        "name": "Fumihiko Takaba",
+        "anime_category": "Jujutsu Kaisen",
+        "favorites": 61,
+        "image_url": "https://cdn.myanimelist.net/images/characters/15/564913.webp",
+        "rating": 482
+      },
+      {
+        "name": "Noritoshi Kamo",
+        "anime_category": "Jujutsu Kaisen",
+        "favorites": 53,
+        "image_url": "https://cdn.myanimelist.net/images/characters/2/430935.webp",
+        "rating": 476
+      },
+      {
+        "name": "Naoya Zenin",
+        "anime_category": "Jujutsu Kaisen",
+        "favorites": 47,
+        "image_url": "https://cdn.myanimelist.net/images/characters/2/435501.webp",
+        "rating": 470
+      },
+      {
+        "name": "Atsuya Kusakabe",
+        "anime_category": "Jujutsu Kaisen",
+        "favorites": 41,
+        "image_url": "https://cdn.myanimelist.net/images/characters/11/488824.webp",
+        "rating": 463
+      },
+      {
+        "name": "Hanami",
+        "anime_category": "Jujutsu Kaisen",
+        "favorites": 40,
+        "image_url": "https://cdn.myanimelist.net/images/characters/3/414242.webp",
+        "rating": 457
+      },
+      {
+        "name": "Momo Nishimiya",
+        "anime_category": "Jujutsu Kaisen",
+        "favorites": 30,
+        "image_url": "https://cdn.myanimelist.net/images/characters/9/435453.webp",
+        "rating": 451
+      },
+      {
+        "name": "Uraume",
+        "anime_category": "Jujutsu Kaisen",
+        "favorites": 24,
+        "image_url": "https://cdn.myanimelist.net/images/characters/2/436733.webp",
+        "rating": 445
+      },
+      {
+        "name": "Kiyotaka Ijichi",
+        "anime_category": "Jujutsu Kaisen",
+        "favorites": 23,
+        "image_url": "https://cdn.myanimelist.net/images/characters/6/435400.webp",
+        "rating": 439
+      },
+      {
+        "name": "Akari Nitta",
+        "anime_category": "Jujutsu Kaisen",
+        "favorites": 21,
+        "image_url": "https://cdn.myanimelist.net/images/characters/4/436202.webp",
+        "rating": 433
+      },
+      {
+        "name": "Miguel Oduol",
+        "anime_category": "Jujutsu Kaisen",
+        "favorites": 16,
+        "image_url": "https://cdn.myanimelist.net/images/characters/4/488826.webp",
+        "rating": 427
+      },
+      {
+        "name": "Masamichi Yaga",
+        "anime_category": "Jujutsu Kaisen",
+        "favorites": 11,
+        "image_url": "https://cdn.myanimelist.net/images/characters/7/431153.webp",
+        "rating": 421
+      },
+      {
+        "name": "Dagon",
+        "anime_category": "Jujutsu Kaisen",
+        "favorites": 8,
+        "image_url": "https://cdn.myanimelist.net/images/characters/3/564915.webp",
+        "rating": 415
+      },
+      {
+        "name": "Ryu Ishigori",
+        "anime_category": "Jujutsu Kaisen",
+        "favorites": 6,
+        "image_url": "https://cdn.myanimelist.net/images/characters/4/564911.webp",
+        "rating": 409
+      },
+      {
+        "name": "Kou-Guy",
+        "anime_category": "Jujutsu Kaisen",
+        "favorites": 6,
+        "image_url": "https://cdn.myanimelist.net/images/characters/4/527264.webp",
+        "rating": 402
+      },
+      {
+        "name": "Haruta Shigemo",
+        "anime_category": "Jujutsu Kaisen",
+        "favorites": 6,
+        "image_url": "https://cdn.myanimelist.net/images/characters/15/435673.webp",
+        "rating": 396
+      },
+      {
+        "name": "Jiro Awasaka",
+        "anime_category": "Jujutsu Kaisen",
+        "favorites": 5,
+        "image_url": "https://cdn.myanimelist.net/images/characters/15/524512.webp",
+        "rating": 390
+      },
+      {
+        "name": "Naobito Zenin",
+        "anime_category": "Jujutsu Kaisen",
+        "favorites": 5,
+        "image_url": "https://cdn.myanimelist.net/images/characters/16/526907.webp",
+        "rating": 384
+      },
+      {
+        "name": "Setsuko Sasaki",
+        "anime_category": "Jujutsu Kaisen",
+        "favorites": 4,
+        "image_url": "https://cdn.myanimelist.net/images/characters/3/419229.webp",
+        "rating": 378
+      },
+      {
+        "name": "Nanako Hasaba",
+        "anime_category": "Jujutsu Kaisen",
+        "favorites": 3,
+        "image_url": "https://cdn.myanimelist.net/images/characters/4/488823.webp",
+        "rating": 372
+      },
+      {
+        "name": "Arata Nitta",
+        "anime_category": "Jujutsu Kaisen",
+        "favorites": 3,
+        "image_url": "https://cdn.myanimelist.net/images/characters/4/482353.webp",
+        "rating": 366
+      },
+      {
+        "name": "Takeshi Iguchi",
+        "anime_category": "Jujutsu Kaisen",
+        "favorites": 2,
+        "image_url": "https://cdn.myanimelist.net/images/characters/14/419230.webp",
+        "rating": 360
+      },
+      {
+        "name": "Kurourushi",
+        "anime_category": "Jujutsu Kaisen",
+        "favorites": 2,
+        "image_url": "https://cdn.myanimelist.net/images/characters/6/469256.webp",
+        "rating": 354
+      },
+      {
+        "name": "Esou",
+        "anime_category": "Jujutsu Kaisen",
+        "favorites": 2,
+        "image_url": "https://cdn.myanimelist.net/images/characters/7/436204.webp",
+        "rating": 348
+      },
+      {
+        "name": "Kechizu",
+        "anime_category": "Jujutsu Kaisen",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/9/460080.webp",
+        "rating": 341
+      },
+      {
+        "name": "Takako Uro",
+        "anime_category": "Jujutsu Kaisen",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/8/564912.webp",
+        "rating": 335
+      },
+      {
+        "name": "Koukun",
+        "anime_category": "Jujutsu Kaisen",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/8/527262.webp",
+        "rating": 329
+      },
+      {
+        "name": "Bayer",
+        "anime_category": "Jujutsu Kaisen",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/9/525496.webp",
+        "rating": 323
+      },
+      {
+        "name": "Larue",
+        "anime_category": "Jujutsu Kaisen",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/8/488825.webp",
+        "rating": 317
+      },
+      {
+        "name": "Juuzou Kumiya",
+        "anime_category": "Jujutsu Kaisen",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/11/435672.webp",
+        "rating": 311
+      },
+      {
+        "name": "Shigeru Sonoda",
+        "anime_category": "Jujutsu Kaisen",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/15/527261.webp",
+        "rating": 305
+      },
+      {
+        "name": "Mimiko Hasaba",
+        "anime_category": "Jujutsu Kaisen",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/7/524517.webp",
+        "rating": 299
+      },
+      {
+        "name": "Reggie Star",
+        "anime_category": "Jujutsu Kaisen",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/15/483043.webp",
+        "rating": 293
+      },
+      {
+        "name": "Tengen",
+        "anime_category": "Jujutsu Kaisen",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/4/526005.webp",
+        "rating": 287
+      },
+      {
+        "name": "Toshihisa Negi",
+        "anime_category": "Jujutsu Kaisen",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/11/529883.webp",
+        "rating": 280
+      },
+      {
+        "name": "Judgeman",
+        "anime_category": "Jujutsu Kaisen",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/3/542807.webp",
+        "rating": 274
+      },
+      {
+        "name": "Choujurou Zenin",
+        "anime_category": "Jujutsu Kaisen",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/7/549513.webp",
+        "rating": 268
+      },
+      {
+        "name": "Ogi Zenin",
+        "anime_category": "Jujutsu Kaisen",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/15/549116.webp",
+        "rating": 262
+      },
+      {
+        "name": "Finger Bearer",
+        "anime_category": "Jujutsu Kaisen",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/10/548633.webp",
+        "rating": 256
+      },
+      {
+        "name": "Manami Suda",
+        "anime_category": "Jujutsu Kaisen",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/11/479294.webp",
+        "rating": 250
+      }
+    ]
+  },
+  {
+    "anime_name": "Attack on Titan",
+    "characters": [
+      {
+        "name": "Pieck Finger",
+        "anime_category": "Attack on Titan",
+        "favorites": 2187,
+        "image_url": "https://cdn.myanimelist.net/images/characters/4/425880.webp",
+        "rating": 430
+      },
+      {
+        "name": "Gabi Braun",
+        "anime_category": "Attack on Titan",
+        "favorites": 1828,
+        "image_url": "https://cdn.myanimelist.net/images/characters/4/431018.webp",
+        "rating": 340
+      },
+      {
+        "name": "Yelena",
+        "anime_category": "Attack on Titan",
+        "favorites": 474,
+        "image_url": "https://cdn.myanimelist.net/images/characters/13/433243.webp",
+        "rating": 300
+      },
+      {
+        "name": "Falco Grice",
+        "anime_category": "Attack on Titan",
+        "favorites": 474,
+        "image_url": "https://cdn.myanimelist.net/images/characters/12/431391.webp",
+        "rating": 420
+      },
+      {
+        "name": "Petra Ral",
+        "anime_category": "Attack on Titan",
+        "favorites": 474,
+        "image_url": "https://cdn.myanimelist.net/images/characters/8/217555.webp",
+        "rating": 360
+      },
+      {
+        "name": "Porco Galliard",
+        "anime_category": "Attack on Titan",
+        "favorites": 173,
+        "image_url": "https://cdn.myanimelist.net/images/characters/15/431179.webp",
+        "rating": 430
+      },
+      {
+        "name": "Isabel Magnolia",
+        "anime_category": "Attack on Titan",
+        "favorites": 92,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/440868.webp",
+        "rating": 500
+      },
+      {
+        "name": "Beast Titan",
+        "anime_category": "Attack on Titan",
+        "favorites": 78,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/328280.webp",
+        "rating": 490
+      },
+      {
+        "name": "Keith Shadis",
+        "anime_category": "Attack on Titan",
+        "favorites": 68,
+        "image_url": "https://cdn.myanimelist.net/images/characters/13/206467.webp",
+        "rating": 320
+      },
+      {
+        "name": "Onyankopon",
+        "anime_category": "Attack on Titan",
+        "favorites": 67,
+        "image_url": "https://cdn.myanimelist.net/images/characters/6/434579.webp",
+        "rating": 280
+      },
+      {
+        "name": "Moblit Berner",
+        "anime_category": "Attack on Titan",
+        "favorites": 63,
+        "image_url": "https://cdn.myanimelist.net/images/characters/8/215963.webp",
+        "rating": 270
+      },
+      {
+        "name": "Nicolo",
+        "anime_category": "Attack on Titan",
+        "favorites": 50,
+        "image_url": "https://cdn.myanimelist.net/images/characters/4/435401.webp",
+        "rating": 260
+      },
+      {
+        "name": "Farlan Church",
+        "anime_category": "Attack on Titan",
+        "favorites": 50,
+        "image_url": "https://cdn.myanimelist.net/images/characters/15/440869.webp",
+        "rating": 300
+      },
+      {
+        "name": "Ymir Fritz",
+        "anime_category": "Attack on Titan",
+        "favorites": 39,
+        "image_url": "https://cdn.myanimelist.net/images/characters/13/502345.webp",
+        "rating": 500
+      },
+      {
+        "name": "Colt Grice",
+        "anime_category": "Attack on Titan",
+        "favorites": 34,
+        "image_url": "https://cdn.myanimelist.net/images/characters/16/425438.webp",
+        "rating": 310
+      },
+      {
+        "name": "Theo Magath",
+        "anime_category": "Attack on Titan",
+        "favorites": 30,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/434577.webp",
+        "rating": 290
+      },
+      {
+        "name": "Frieda Reiss",
+        "anime_category": "Attack on Titan",
+        "favorites": 26,
+        "image_url": "https://cdn.myanimelist.net/images/characters/15/368841.webp",
+        "rating": 450
+      },
+      {
+        "name": "Willy Tybur",
+        "anime_category": "Attack on Titan",
+        "favorites": 19,
+        "image_url": "https://cdn.myanimelist.net/images/characters/16/429891.webp",
+        "rating": 280
+      },
+      {
+        "name": "Zofia",
+        "anime_category": "Attack on Titan",
+        "favorites": 15,
+        "image_url": "https://cdn.myanimelist.net/images/characters/11/435587.webp",
+        "rating": 250
+      },
+      {
+        "name": "Ian Dietrich",
+        "anime_category": "Attack on Titan",
+        "favorites": 10,
+        "image_url": "https://cdn.myanimelist.net/images/characters/7/206457.webp",
+        "rating": 260
+      },
+      {
+        "name": "Marcel Galliard",
+        "anime_category": "Attack on Titan",
+        "favorites": 9,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/435582.webp",
+        "rating": 495
+      },
+      {
+        "name": "Udo",
+        "anime_category": "Attack on Titan",
+        "favorites": 9,
+        "image_url": "https://cdn.myanimelist.net/images/characters/12/434575.webp",
+        "rating": 491
+      },
+      {
+        "name": "Arthur Blouse",
+        "anime_category": "Attack on Titan",
+        "favorites": 8,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/326958.webp",
+        "rating": 486
+      },
+      {
+        "name": "Nifa",
+        "anime_category": "Attack on Titan",
+        "favorites": 8,
+        "image_url": "https://cdn.myanimelist.net/images/characters/12/331917.webp",
+        "rating": 481
+      },
+      {
+        "name": "Tom Ksaver",
+        "anime_category": "Attack on Titan",
+        "favorites": 8,
+        "image_url": "https://cdn.myanimelist.net/images/characters/15/437406.webp",
+        "rating": 476
+      },
+      {
+        "name": "Gross",
+        "anime_category": "Attack on Titan",
+        "favorites": 7,
+        "image_url": "https://cdn.myanimelist.net/images/characters/9/384701.webp",
+        "rating": 472
+      },
+      {
+        "name": "Dina Fritz",
+        "anime_category": "Attack on Titan",
+        "favorites": 7,
+        "image_url": "https://cdn.myanimelist.net/images/characters/2/384700.webp",
+        "rating": 467
+      },
+      {
+        "name": "Samuel Linke-Jackson",
+        "anime_category": "Attack on Titan",
+        "favorites": 6,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/206493.webp",
+        "rating": 462
+      },
+      {
+        "name": "Dazz",
+        "anime_category": "Attack on Titan",
+        "favorites": 5,
+        "image_url": "https://cdn.myanimelist.net/images/characters/16/206363.webp",
+        "rating": 458
+      },
+      {
+        "name": "Boris Feulner",
+        "anime_category": "Attack on Titan",
+        "favorites": 5,
+        "image_url": "https://cdn.myanimelist.net/images/characters/7/221745.webp",
+        "rating": 453
+      },
+      {
+        "name": "Nick",
+        "anime_category": "Attack on Titan",
+        "favorites": 4,
+        "image_url": "https://cdn.myanimelist.net/images/characters/6/213227.webp",
+        "rating": 448
+      },
+      {
+        "name": "Fay Yeager",
+        "anime_category": "Attack on Titan",
+        "favorites": 4,
+        "image_url": "https://cdn.myanimelist.net/images/characters/2/384697.webp",
+        "rating": 443
+      },
+      {
+        "name": "Hannah Diamant",
+        "anime_category": "Attack on Titan",
+        "favorites": 3,
+        "image_url": "https://cdn.myanimelist.net/images/characters/13/206445.webp",
+        "rating": 439
+      },
+      {
+        "name": "Dieter",
+        "anime_category": "Attack on Titan",
+        "favorites": 3,
+        "image_url": "https://cdn.myanimelist.net/images/characters/11/221751.webp",
+        "rating": 434
+      },
+      {
+        "name": "Lauda",
+        "anime_category": "Attack on Titan",
+        "favorites": 3,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/331215.webp",
+        "rating": 429
+      },
+      {
+        "name": "Louise",
+        "anime_category": "Attack on Titan",
+        "favorites": 3,
+        "image_url": "https://cdn.myanimelist.net/images/characters/14/439658.webp",
+        "rating": 288
+      },
+      {
+        "name": "Ramsey",
+        "anime_category": "Attack on Titan",
+        "favorites": 2,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/480959.webp",
+        "rating": 420
+      },
+      {
+        "name": "Carly Stratmann",
+        "anime_category": "Attack on Titan",
+        "favorites": 2,
+        "image_url": "https://cdn.myanimelist.net/images/characters/7/362439.webp",
+        "rating": 415
+      },
+      {
+        "name": "Franz Kefka",
+        "anime_category": "Attack on Titan",
+        "favorites": 2,
+        "image_url": "https://cdn.myanimelist.net/images/characters/6/206435.webp",
+        "rating": 410
+      },
+      {
+        "name": "Cardina Baumeister",
+        "anime_category": "Attack on Titan",
+        "favorites": 2,
+        "image_url": "https://cdn.myanimelist.net/images/characters/7/296398.webp",
+        "rating": 406
+      },
+      {
+        "name": "Carlo Pikale",
+        "anime_category": "Attack on Titan",
+        "favorites": 2,
+        "image_url": "https://cdn.myanimelist.net/images/characters/13/296393.webp",
+        "rating": 401
+      },
+      {
+        "name": "Kiyomi Azumabito",
+        "anime_category": "Attack on Titan",
+        "favorites": 2,
+        "image_url": "https://cdn.myanimelist.net/images/characters/16/449406.webp",
+        "rating": 396
+      },
+      {
+        "name": "Wald Richter",
+        "anime_category": "Attack on Titan",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/9/364405.webp",
+        "rating": 392
+      },
+      {
+        "name": "Rosa Carlstedt",
+        "anime_category": "Attack on Titan",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/357315.webp",
+        "rating": 387
+      },
+      {
+        "name": "Dennis Eibringer",
+        "anime_category": "Attack on Titan",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/3/221747.webp",
+        "rating": 382
+      },
+      {
+        "name": "Jorge Pikale",
+        "anime_category": "Attack on Titan",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/307175.webp",
+        "rating": 377
+      },
+      {
+        "name": "Xavi Inocencio",
+        "anime_category": "Attack on Titan",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/12/307178.webp",
+        "rating": 373
+      },
+      {
+        "name": "Lisa Blouse",
+        "anime_category": "Attack on Titan",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/14/449405.webp",
+        "rating": 368
+      },
+      {
+        "name": "Halil",
+        "anime_category": "Attack on Titan",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/10/517468.webp",
+        "rating": 363
+      },
+      {
+        "name": "Mitabi Jarnach",
+        "anime_category": "Attack on Titan",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/8/211983.webp",
+        "rating": 358
+      },
+      {
+        "name": "Dimo Reeves",
+        "anime_category": "Attack on Titan",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/8/366877.webp",
+        "rating": 354
+      },
+      {
+        "name": "Abel",
+        "anime_category": "Attack on Titan",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/4/329189.webp",
+        "rating": 349
+      },
+      {
+        "name": "Dario Inocencio",
+        "anime_category": "Attack on Titan",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/7/296395.webp",
+        "rating": 344
+      },
+      {
+        "name": "Gloria Bernhardt",
+        "anime_category": "Attack on Titan",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/2/307179.webp",
+        "rating": 340
+      },
+      {
+        "name": "Elena Munsell",
+        "anime_category": "Attack on Titan",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/15/296394.webp",
+        "rating": 335
+      },
+      {
+        "name": "Heath Munsell",
+        "anime_category": "Attack on Titan",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/img/sp/icon/apple-touch-icon-256.png",
+        "rating": 330
+      },
+      {
+        "name": "Pere",
+        "anime_category": "Attack on Titan",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/2/221757.webp",
+        "rating": 325
+      },
+      {
+        "name": "Greiz",
+        "anime_category": "Attack on Titan",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/6/451464.webp",
+        "rating": 321
+      },
+      {
+        "name": "Jurgen",
+        "anime_category": "Attack on Titan",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/10/221749.webp",
+        "rating": 316
+      },
+      {
+        "name": "Dirk Reiss",
+        "anime_category": "Attack on Titan",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/12/464868.webp",
+        "rating": 311
+      },
+      {
+        "name": "Wayne Eisner",
+        "anime_category": "Attack on Titan",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/8/337667.webp",
+        "rating": 307
+      },
+      {
+        "name": "Xenophon Harkimo",
+        "anime_category": "Attack on Titan",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/4/353394.webp",
+        "rating": 302
+      },
+      {
+        "name": "Elliot Gurnberg Stratmann",
+        "anime_category": "Attack on Titan",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/2/362438.webp",
+        "rating": 297
+      },
+      {
+        "name": "Lou Meade",
+        "anime_category": "Attack on Titan",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/3/364404.webp",
+        "rating": 292
+      },
+      {
+        "name": "Louise",
+        "anime_category": "Attack on Titan",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/12/469514.webp",
+        "rating": 288
+      },
+      {
+        "name": "Sina Fritz",
+        "anime_category": "Attack on Titan",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/16/469518.webp",
+        "rating": 283
+      },
+      {
+        "name": "Rose Fritz",
+        "anime_category": "Attack on Titan",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/4/469517.webp",
+        "rating": 278
+      },
+      {
+        "name": "Maria Fritz",
+        "anime_category": "Attack on Titan",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/7/469516.webp",
+        "rating": 274
+      },
+      {
+        "name": "Fritz",
+        "anime_category": "Attack on Titan",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/3/469515.webp",
+        "rating": 269
+      },
+      {
+        "name": "Koslow",
+        "anime_category": "Attack on Titan",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/13/478141.webp",
+        "rating": 264
+      },
+      {
+        "name": "Kenny's Grandfather",
+        "anime_category": "Attack on Titan",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/15/367296.webp",
+        "rating": 259
+      },
+      {
+        "name": "Connie's Mother",
+        "anime_category": "Attack on Titan",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/6/469659.webp",
+        "rating": 255
+      },
+      {
+        "name": "Calvi",
+        "anime_category": "Attack on Titan",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/12/578579.webp",
+        "rating": 250
+      }
+    ]
+  },
+  {
+    "anime_name": "Fullmetal Alchemist",
+    "characters": [
+      {
+        "name": "Edward Elric",
+        "anime_category": "Fullmetal Alchemist",
+        "favorites": 89229,
+        "image_url": "https://cdn.myanimelist.net/images/characters/9/72533.webp",
+        "rating": 500
+      },
+      {
+        "name": "Greed",
+        "anime_category": "Fullmetal Alchemist",
+        "favorites": 6032,
+        "image_url": "https://cdn.myanimelist.net/images/characters/10/78721.webp",
+        "rating": 470
+      },
+      {
+        "name": "Riza Hawkeye",
+        "anime_category": "Fullmetal Alchemist",
+        "favorites": 5720,
+        "image_url": "https://cdn.myanimelist.net/images/characters/3/451785.webp",
+        "rating": 410
+      },
+      {
+        "name": "Envy",
+        "anime_category": "Fullmetal Alchemist",
+        "favorites": 3133,
+        "image_url": "https://cdn.myanimelist.net/images/characters/14/79027.webp",
+        "rating": 455
+      },
+      {
+        "name": "Van Hohenheim",
+        "anime_category": "Fullmetal Alchemist",
+        "favorites": 2542,
+        "image_url": "https://cdn.myanimelist.net/images/characters/3/80676.webp",
+        "rating": 495
+      },
+      {
+        "name": "King Bradley",
+        "anime_category": "Fullmetal Alchemist",
+        "favorites": 2163,
+        "image_url": "https://cdn.myanimelist.net/images/characters/11/62053.webp",
+        "rating": 490
+      },
+      {
+        "name": "Lust",
+        "anime_category": "Fullmetal Alchemist",
+        "favorites": 853,
+        "image_url": "https://cdn.myanimelist.net/images/characters/13/81112.webp",
+        "rating": 445
+      },
+      {
+        "name": "Chika Ogiue",
+        "anime_category": "Fullmetal Alchemist",
+        "favorites": 453,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/84241.webp",
+        "rating": 500
+      },
+      {
+        "name": "Truth",
+        "anime_category": "Fullmetal Alchemist",
+        "favorites": 282,
+        "image_url": "https://cdn.myanimelist.net/images/characters/14/93929.webp",
+        "rating": 500
+      },
+      {
+        "name": "Gluttony",
+        "anime_category": "Fullmetal Alchemist",
+        "favorites": 204,
+        "image_url": "https://cdn.myanimelist.net/images/characters/2/74580.webp",
+        "rating": 390
+      },
+      {
+        "name": "Sloth",
+        "anime_category": "Fullmetal Alchemist",
+        "favorites": 44,
+        "image_url": "https://cdn.myanimelist.net/images/characters/12/72474.webp",
+        "rating": 470
+      },
+      {
+        "name": "Buccaneer",
+        "anime_category": "Fullmetal Alchemist",
+        "favorites": 12,
+        "image_url": "https://cdn.myanimelist.net/images/characters/7/71767.webp",
+        "rating": 380
+      },
+      {
+        "name": "Lyra",
+        "anime_category": "Fullmetal Alchemist",
+        "favorites": 10,
+        "image_url": "https://cdn.myanimelist.net/images/characters/14/47443.webp",
+        "rating": 493
+      },
+      {
+        "name": "Philip Gargantos Armstrong",
+        "anime_category": "Fullmetal Alchemist",
+        "favorites": 7,
+        "image_url": "https://cdn.myanimelist.net/images/characters/11/177627.webp",
+        "rating": 486
+      },
+      {
+        "name": "Garfiel",
+        "anime_category": "Fullmetal Alchemist",
+        "favorites": 3,
+        "image_url": "https://cdn.myanimelist.net/images/characters/14/95776.webp",
+        "rating": 480
+      },
+      {
+        "name": "Bobby",
+        "anime_category": "Fullmetal Alchemist",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/3/473873.webp",
+        "rating": 473
+      },
+      {
+        "name": "King of Xerxes",
+        "anime_category": "Fullmetal Alchemist",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/12/572856.webp",
+        "rating": 466
+      },
+      {
+        "name": "Gärtner",
+        "anime_category": "Fullmetal Alchemist",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/10/572833.webp",
+        "rating": 459
+      },
+      {
+        "name": "Gold-Toothed Doctor",
+        "anime_category": "Fullmetal Alchemist",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/15/572832.webp",
+        "rating": 453
+      },
+      {
+        "name": "Yakovlev",
+        "anime_category": "Fullmetal Alchemist",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/7/572829.webp",
+        "rating": 446
+      },
+      {
+        "name": "Storch",
+        "anime_category": "Fullmetal Alchemist",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/12/572828.webp",
+        "rating": 439
+      },
+      {
+        "name": "Fessler",
+        "anime_category": "Fullmetal Alchemist",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/4/572827.webp",
+        "rating": 432
+      },
+      {
+        "name": "Gardner",
+        "anime_category": "Fullmetal Alchemist",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/10/572821.webp",
+        "rating": 426
+      },
+      {
+        "name": "Fox",
+        "anime_category": "Fullmetal Alchemist",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/2/572820.webp",
+        "rating": 419
+      },
+      {
+        "name": "Edison",
+        "anime_category": "Fullmetal Alchemist",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/572770.webp",
+        "rating": 412
+      },
+      {
+        "name": "Clemin",
+        "anime_category": "Fullmetal Alchemist",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/4/572644.webp",
+        "rating": 405
+      },
+      {
+        "name": "Arzen",
+        "anime_category": "Fullmetal Alchemist",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/12/571941.webp",
+        "rating": 399
+      },
+      {
+        "name": "Ridel LeCoulte",
+        "anime_category": "Fullmetal Alchemist",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/571940.webp",
+        "rating": 392
+      },
+      {
+        "name": "Henry Douglas",
+        "anime_category": "Fullmetal Alchemist",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/6/571621.webp",
+        "rating": 385
+      },
+      {
+        "name": "Yuriy Rockbell",
+        "anime_category": "Fullmetal Alchemist",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/7/571620.webp",
+        "rating": 378
+      },
+      {
+        "name": "Sarah Rockbell",
+        "anime_category": "Fullmetal Alchemist",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/6/571619.webp",
+        "rating": 372
+      },
+      {
+        "name": "Mick Murray",
+        "anime_category": "Fullmetal Alchemist",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/3/572855.webp",
+        "rating": 365
+      },
+      {
+        "name": "Gamelan",
+        "anime_category": "Fullmetal Alchemist",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/13/572834.webp",
+        "rating": 358
+      },
+      {
+        "name": "Camilla",
+        "anime_category": "Fullmetal Alchemist",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/9/580277.webp",
+        "rating": 351
+      },
+      {
+        "name": "Genz Bresslau",
+        "anime_category": "Fullmetal Alchemist",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/7/580271.webp",
+        "rating": 345
+      },
+      {
+        "name": "Berthold Hawkeye",
+        "anime_category": "Fullmetal Alchemist",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/10/402739.webp",
+        "rating": 338
+      },
+      {
+        "name": "Tetsu",
+        "anime_category": "Fullmetal Alchemist",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/3/573009.webp",
+        "rating": 331
+      },
+      {
+        "name": "Armony Eiselstein",
+        "anime_category": "Fullmetal Alchemist",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/14/574401.webp",
+        "rating": 324
+      },
+      {
+        "name": "Briggs Doctor",
+        "anime_category": "Fullmetal Alchemist",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/15/572984.webp",
+        "rating": 318
+      },
+      {
+        "name": "Mr. Han",
+        "anime_category": "Fullmetal Alchemist",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/7/572988.webp",
+        "rating": 311
+      },
+      {
+        "name": "Kyle Halling",
+        "anime_category": "Fullmetal Alchemist",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/9/573007.webp",
+        "rating": 304
+      },
+      {
+        "name": "Henschel",
+        "anime_category": "Fullmetal Alchemist",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/10/572841.webp",
+        "rating": 297
+      },
+      {
+        "name": "Liam Roach",
+        "anime_category": "Fullmetal Alchemist",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/11/572854.webp",
+        "rating": 291
+      },
+      {
+        "name": "Wilhelm Eiselstein",
+        "anime_category": "Fullmetal Alchemist",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/10/583057.webp",
+        "rating": 284
+      },
+      {
+        "name": "Nash Tringham",
+        "anime_category": "Fullmetal Alchemist",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/img/sp/icon/apple-touch-icon-256.png",
+        "rating": 277
+      },
+      {
+        "name": "Mr. Halling",
+        "anime_category": "Fullmetal Alchemist",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/12/573008.webp",
+        "rating": 270
+      },
+      {
+        "name": "Charlie",
+        "anime_category": "Fullmetal Alchemist",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/3/177589.webp",
+        "rating": 264
+      },
+      {
+        "name": "Satella LeCoulte",
+        "anime_category": "Fullmetal Alchemist",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/4/303014.webp",
+        "rating": 257
+      },
+      {
+        "name": "Giolio Comanche",
+        "anime_category": "Fullmetal Alchemist",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/10/467571.webp",
+        "rating": 250
+      }
+    ]
+  },
+  {
+    "anime_name": "Chainsaw Man",
+    "characters": [
+      {
+        "name": "Power",
+        "anime_category": "Chainsaw Man",
+        "favorites": 21987,
+        "image_url": "https://cdn.myanimelist.net/images/characters/7/494969.webp",
+        "rating": 480
+      },
+      {
+        "name": "Denji",
+        "anime_category": "Chainsaw Man",
+        "favorites": 19817,
+        "image_url": "https://cdn.myanimelist.net/images/characters/3/492407.webp",
+        "rating": 495
+      },
+      {
+        "name": "Makima",
+        "anime_category": "Chainsaw Man",
+        "favorites": 16815,
+        "image_url": "https://cdn.myanimelist.net/images/characters/4/489561.webp",
+        "rating": 500
+      },
+      {
+        "name": "Kobeni Higashiyama",
+        "anime_category": "Chainsaw Man",
+        "favorites": 4359,
+        "image_url": "https://cdn.myanimelist.net/images/characters/3/467961.webp",
+        "rating": 360
+      },
+      {
+        "name": "Asa Mitaka",
+        "anime_category": "Chainsaw Man",
+        "favorites": 4026,
+        "image_url": "https://cdn.myanimelist.net/images/characters/15/589374.webp",
+        "rating": 440
+      },
+      {
+        "name": "Pochita",
+        "anime_category": "Chainsaw Man",
+        "favorites": 3319,
+        "image_url": "https://cdn.myanimelist.net/images/characters/7/391655.webp",
+        "rating": 500
+      },
+      {
+        "name": "Himeno",
+        "anime_category": "Chainsaw Man",
+        "favorites": 2929,
+        "image_url": "https://cdn.myanimelist.net/images/characters/12/386392.webp",
+        "rating": 390
+      },
+      {
+        "name": "Angel Devil",
+        "anime_category": "Chainsaw Man",
+        "favorites": 2305,
+        "image_url": "https://cdn.myanimelist.net/images/characters/13/586726.webp",
+        "rating": 455
+      },
+      {
+        "name": "Kishibe ",
+        "anime_category": "Chainsaw Man",
+        "favorites": 1323,
+        "image_url": "https://cdn.myanimelist.net/images/characters/3/488553.webp",
+        "rating": 500
+      },
+      {
+        "name": "Quanxi",
+        "anime_category": "Chainsaw Man",
+        "favorites": 1078,
+        "image_url": "https://cdn.myanimelist.net/images/characters/4/500501.webp",
+        "rating": 490
+      },
+      {
+        "name": "Yoru",
+        "anime_category": "Chainsaw Man",
+        "favorites": 816,
+        "image_url": "https://cdn.myanimelist.net/images/characters/3/492362.webp",
+        "rating": 495
+      },
+      {
+        "name": "Hirofumi Yoshida",
+        "anime_category": "Chainsaw Man",
+        "favorites": 467,
+        "image_url": "https://cdn.myanimelist.net/images/characters/3/483606.webp",
+        "rating": 465
+      },
+      {
+        "name": "Kiga",
+        "anime_category": "Chainsaw Man",
+        "favorites": 162,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/526427.webp",
+        "rating": 490
+      },
+      {
+        "name": "Nayuta",
+        "anime_category": "Chainsaw Man",
+        "favorites": 159,
+        "image_url": "https://cdn.myanimelist.net/images/characters/4/503183.webp",
+        "rating": 430
+      },
+      {
+        "name": "Cosmo",
+        "anime_category": "Chainsaw Man",
+        "favorites": 136,
+        "image_url": "https://cdn.myanimelist.net/images/characters/8/500210.webp",
+        "rating": 420
+      },
+      {
+        "name": "Galgali",
+        "anime_category": "Chainsaw Man",
+        "favorites": 101,
+        "image_url": "https://cdn.myanimelist.net/images/characters/9/467962.webp",
+        "rating": 390
+      },
+      {
+        "name": "Samurai Sword",
+        "anime_category": "Chainsaw Man",
+        "favorites": 54,
+        "image_url": "https://cdn.myanimelist.net/images/characters/3/495669.webp",
+        "rating": 430
+      },
+      {
+        "name": "Future Devil",
+        "anime_category": "Chainsaw Man",
+        "favorites": 42,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/497487.webp",
+        "rating": 450
+      },
+      {
+        "name": "Darkness Devil",
+        "anime_category": "Chainsaw Man",
+        "favorites": 41,
+        "image_url": "https://cdn.myanimelist.net/images/characters/16/500505.webp",
+        "rating": 500
+      },
+      {
+        "name": "Akane Sawatari",
+        "anime_category": "Chainsaw Man",
+        "favorites": 32,
+        "image_url": "https://cdn.myanimelist.net/images/characters/16/497491.webp",
+        "rating": 370
+      },
+      {
+        "name": "Michiko Tendou",
+        "anime_category": "Chainsaw Man",
+        "favorites": 22,
+        "image_url": "https://cdn.myanimelist.net/images/characters/13/495972.webp",
+        "rating": 490
+      },
+      {
+        "name": "Bucky",
+        "anime_category": "Chainsaw Man",
+        "favorites": 17,
+        "image_url": "https://cdn.myanimelist.net/images/characters/11/483692.webp",
+        "rating": 480
+      },
+      {
+        "name": "Santa Claus",
+        "anime_category": "Chainsaw Man",
+        "favorites": 15,
+        "image_url": "https://cdn.myanimelist.net/images/characters/10/413238.webp",
+        "rating": 470
+      },
+      {
+        "name": "Gun Devil",
+        "anime_category": "Chainsaw Man",
+        "favorites": 9,
+        "image_url": "https://cdn.myanimelist.net/images/characters/7/500506.webp",
+        "rating": 460
+      },
+      {
+        "name": "Yuuko",
+        "anime_category": "Chainsaw Man",
+        "favorites": 9,
+        "image_url": "https://cdn.myanimelist.net/images/characters/9/529566.webp",
+        "rating": 450
+      },
+      {
+        "name": "Hirokazu Arai",
+        "anime_category": "Chainsaw Man",
+        "favorites": 8,
+        "image_url": "https://cdn.myanimelist.net/images/characters/2/492241.webp",
+        "rating": 440
+      },
+      {
+        "name": "Long",
+        "anime_category": "Chainsaw Man",
+        "favorites": 8,
+        "image_url": "https://cdn.myanimelist.net/images/characters/3/500209.webp",
+        "rating": 430
+      },
+      {
+        "name": "Falling Devil",
+        "anime_category": "Chainsaw Man",
+        "favorites": 8,
+        "image_url": "https://cdn.myanimelist.net/images/characters/12/529567.webp",
+        "rating": 420
+      },
+      {
+        "name": "Yuutarou Kurose",
+        "anime_category": "Chainsaw Man",
+        "favorites": 6,
+        "image_url": "https://cdn.myanimelist.net/images/characters/6/495955.webp",
+        "rating": 410
+      },
+      {
+        "name": "Prinz",
+        "anime_category": "Chainsaw Man",
+        "favorites": 5,
+        "image_url": "https://cdn.myanimelist.net/images/characters/14/497501.webp",
+        "rating": 400
+      },
+      {
+        "name": "Pingtsi",
+        "anime_category": "Chainsaw Man",
+        "favorites": 4,
+        "image_url": "https://cdn.myanimelist.net/images/characters/12/500211.webp",
+        "rating": 390
+      },
+      {
+        "name": "Kusakabe",
+        "anime_category": "Chainsaw Man",
+        "favorites": 3,
+        "image_url": "https://cdn.myanimelist.net/images/characters/8/500327.webp",
+        "rating": 380
+      },
+      {
+        "name": "Aldo",
+        "anime_category": "Chainsaw Man",
+        "favorites": 3,
+        "image_url": "https://cdn.myanimelist.net/images/characters/8/500511.webp",
+        "rating": 370
+      },
+      {
+        "name": "Nail Fiend",
+        "anime_category": "Chainsaw Man",
+        "favorites": 3,
+        "image_url": "https://cdn.myanimelist.net/images/characters/3/557185.webp",
+        "rating": 360
+      },
+      {
+        "name": "Tolka",
+        "anime_category": "Chainsaw Man",
+        "favorites": 3,
+        "image_url": "https://cdn.myanimelist.net/images/characters/7/500488.webp",
+        "rating": 350
+      },
+      {
+        "name": "Santa Claus of Germany",
+        "anime_category": "Chainsaw Man",
+        "favorites": 2,
+        "image_url": "https://cdn.myanimelist.net/images/characters/2/500208.webp",
+        "rating": 340
+      },
+      {
+        "name": "Tsugihagi",
+        "anime_category": "Chainsaw Man",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/11/500212.webp",
+        "rating": 330
+      },
+      {
+        "name": "Aging Devil",
+        "anime_category": "Chainsaw Man",
+        "favorites": 1,
+        "image_url": "https://cdn.myanimelist.net/images/characters/15/559753.webp",
+        "rating": 320
+      },
+      {
+        "name": "Nomo",
+        "anime_category": "Chainsaw Man",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/14/500324.webp",
+        "rating": 310
+      },
+      {
+        "name": "Yuuki Tomoda",
+        "anime_category": "Chainsaw Man",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/12/596130.webp",
+        "rating": 300
+      },
+      {
+        "name": "Hadaji Sakagami",
+        "anime_category": "Chainsaw Man",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/7/596129.webp",
+        "rating": 290
+      },
+      {
+        "name": "Shin Toma",
+        "anime_category": "Chainsaw Man",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/6/589761.webp",
+        "rating": 280
+      },
+      {
+        "name": "Kentarou Ishita",
+        "anime_category": "Chainsaw Man",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/587657.webp",
+        "rating": 270
+      },
+      {
+        "name": "Tadashi Hasegawa",
+        "anime_category": "Chainsaw Man",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/10/577755.webp",
+        "rating": 260
+      },
+      {
+        "name": "Miki Takanashi",
+        "anime_category": "Chainsaw Man",
+        "favorites": 0,
+        "image_url": "https://cdn.myanimelist.net/images/characters/7/596131.webp",
+        "rating": 250
+      }
+    ]
+  }
+]

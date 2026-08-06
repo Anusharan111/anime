@@ -251,6 +251,7 @@ export default function App() {
   const [onlineRoomId, setOnlineRoomId] = useState<string | null>(null);
   const [onlineSide, setOnlineSide] = useState<"p1" | "p2" | null>(null);
   const [isWaitingForOpponent, setIsWaitingForOpponent] = useState(false);
+  const [isHostJoined, setIsHostJoined] = useState(true);
   const [joinRoomId, setJoinRoomId] = useState("");
   const [onlineAction, setOnlineAction] = useState<"create" | "join" | null>(null);
 
@@ -714,6 +715,7 @@ export default function App() {
     setOnlineRoomId(null);
     onlineRoomIdRef.current = null;
     setIsWaitingForOpponent(false);
+    setIsHostJoined(true);
     setOnlineSide(null);
     onlineSideRef.current = null;
     resetCinematicClash();
@@ -805,6 +807,8 @@ export default function App() {
         onlineSideRef.current = "p2";
         setIsWaitingForOpponent(false);
         setOnlineAction(null);
+        // Host presence: room is only ready once the admin (p1) is in the channel
+        setIsHostJoined(members.count >= 2);
       }
     });
 
@@ -813,6 +817,9 @@ export default function App() {
       if (side === "p1") {
         const p2Name = member.info?.name || "Player 2";
         triggerGameStart(channel, roomId, playerName, p2Name);
+      } else {
+        // Another member (the room admin) joined — enable the joiner now
+        setIsHostJoined(true);
       }
     });
 
@@ -982,6 +989,8 @@ export default function App() {
     const pusher = await ensurePusher(name);
     if (!pusher) return;
 
+    // Joiner must wait until the room admin (host) is present in the channel
+    setIsHostJoined(false);
     subscribeToChannel(pusher, joinRoomId.toUpperCase(), "p2", name);
   };
 
@@ -1845,12 +1854,13 @@ export default function App() {
                               </label>
                               <div className="grid grid-cols-3 gap-2 sm:gap-3.5">
                                 <button
+                                  disabled={!isHostJoined}
                                   onClick={() => {
                                     setGameMode("vs-ai");
                                     setPlayer2Name("Smart AI");
                                     setOnlineAction(null);
                                   }}
-                                  className={`p-3 sm:p-4 rounded-xl border flex flex-col items-center gap-1.5 sm:gap-2 text-center transition-all cursor-pointer ${gameMode === "vs-ai"
+                                  className={`p-3 sm:p-4 rounded-xl border flex flex-col items-center gap-1.5 sm:gap-2 text-center transition-all cursor-pointer ${!isHostJoined ? "opacity-40 pointer-events-none" : ""} ${gameMode === "vs-ai"
                                       ? "border-violet-500 bg-violet-950/20 text-white shadow-[0_0_15px_rgba(139,92,246,0.2)]"
                                       : "border-neutral-900 bg-neutral-900/20 text-neutral-400 hover:border-neutral-800"
                                     }`}
@@ -1863,12 +1873,13 @@ export default function App() {
                                 </button>
 
                                 <button
+                                  disabled={!isHostJoined}
                                   onClick={() => {
                                     setGameMode("local-2p");
                                     setPlayer2Name("Hype Guest");
                                     setOnlineAction(null);
                                   }}
-                                  className={`p-3 sm:p-4 rounded-xl border flex flex-col items-center gap-1.5 sm:gap-2 text-center transition-all cursor-pointer ${gameMode === "local-2p"
+                                  className={`p-3 sm:p-4 rounded-xl border flex flex-col items-center gap-1.5 sm:gap-2 text-center transition-all cursor-pointer ${!isHostJoined ? "opacity-40 pointer-events-none" : ""} ${gameMode === "local-2p"
                                       ? "border-violet-500 bg-violet-950/20 text-white shadow-[0_0_15px_rgba(139,92,246,0.2)]"
                                       : "border-neutral-900 bg-neutral-900/20 text-neutral-400 hover:border-neutral-800"
                                     }`}
@@ -1881,11 +1892,12 @@ export default function App() {
                                 </button>
 
                                 <button
+                                  disabled={!isHostJoined}
                                   onClick={() => {
                                     setGameMode("online-2p");
                                     setOnlineAction(null);
                                   }}
-                                  className={`p-3 sm:p-4 rounded-xl border flex flex-col items-center gap-1.5 sm:gap-2 text-center transition-all cursor-pointer ${gameMode === "online-2p"
+                                  className={`p-3 sm:p-4 rounded-xl border flex flex-col items-center gap-1.5 sm:gap-2 text-center transition-all cursor-pointer ${!isHostJoined ? "opacity-40 pointer-events-none" : ""} ${gameMode === "online-2p"
                                       ? "border-violet-500 bg-violet-950/20 text-white shadow-[0_0_15px_rgba(139,92,246,0.2)]"
                                       : "border-neutral-900 bg-neutral-900/20 text-neutral-400 hover:border-neutral-800"
                                     }`}
@@ -1948,6 +1960,12 @@ export default function App() {
                                       </div>
                                     )}
 
+                                    {onlineAction === "join" && !isHostJoined && (
+                                      <div className="flex items-center justify-center gap-2 text-[9px] text-amber-400 font-mono uppercase animate-pulse">
+                                        <Loader2 className="w-3 h-3 animate-spin" /> Waiting for room admin to join...
+                                      </div>
+                                    )}
+
                                     {onlineAction === "create" && (
                                       <button
                                         onClick={createOnlineRoom}
@@ -1978,6 +1996,27 @@ export default function App() {
                                 </div>
                                 <div className="flex items-center justify-center gap-2 text-[9px] text-neutral-500 uppercase font-mono animate-pulse">
                                   <Loader2 className="w-3 h-3 animate-spin" /> Waiting for opponent...
+                                </div>
+                                <button 
+                                  onClick={() => {
+                                    if (channelRef.current) {
+                                      channelRef.current.trigger("client-room-cancelled", {});
+                                    }
+                                    resetOnlineLobby();
+                                    setGameMode("vs-ai");
+                                  }}
+                                  className="text-[9px] text-red-400 hover:underline cursor-pointer"
+                                >
+                                  Cancel
+                                </button>
+                              </div>
+                            )}
+
+                            {onlineRoomId && !isWaitingForOpponent && !isHostJoined && (
+                              <div className="p-6 rounded-2xl border border-amber-500/20 bg-amber-500/5 text-center space-y-3">
+                                <p className="text-[10px] font-mono text-amber-400 uppercase tracking-widest">Joined Room {onlineRoomId}</p>
+                                <div className="flex items-center justify-center gap-2 text-[9px] text-neutral-400 uppercase font-mono animate-pulse">
+                                  <Loader2 className="w-3 h-3 animate-spin" /> Waiting for room admin to join...
                                 </div>
                                 <button 
                                   onClick={() => {

@@ -13,7 +13,7 @@ permissions:
 
 concurrency:
   group: "pages"
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   build:
@@ -27,7 +27,7 @@ jobs:
           node-version: '20'
 
       - name: Install dependencies
-        run: npm install --legacy-peer-deps
+        run: npm ci || npm install --legacy-peer-deps
 
       - name: Build
         env:
@@ -36,8 +36,9 @@ jobs:
 
       - name: Verify build output
         run: |
+          echo "Checking build dist folder:"
           ls -la dist
-          test -f dist/index.html && echo "index.html FOUND" || echo "index.html MISSING"
+          test -f dist/index.html && echo "index.html FOUND" || (echo "ERROR: index.html MISSING" && exit 1)
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

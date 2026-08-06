@@ -13,7 +13,7 @@ permissions:
 
 concurrency:
   group: "pages"
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   build:
@@ -30,7 +30,14 @@ jobs:
         run: npm install --legacy-peer-deps
 
       - name: Build
+        env:
+          VITE_BASE_PATH: /anime/
         run: npm run build
+
+      - name: Verify build output
+        run: |
+          ls -la dist
+          test -f dist/index.html && echo "index.html FOUND" || echo "index.html MISSING"
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

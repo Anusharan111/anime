@@ -178,13 +178,6 @@
         "rating": 485
       },
       {
-        "name": "Yomiko Readman",
-        "anime_category": "One Piece",
-        "favorites": 508,
-        "image_url": "https://cdn.myanimelist.net/images/characters/14/544067.webp",
-        "rating": 483
-      },
-      {
         "name": "Isshou",
         "anime_category": "One Piece",
         "favorites": 361,
@@ -210,14 +203,14 @@
         "anime_category": "One Piece",
         "favorites": 282,
         "image_url": "https://cdn.myanimelist.net/images/characters/9/321645.webp",
-        "rating": 360
+        "rating": 475
       },
       {
         "name": "Senor Pink",
         "anime_category": "One Piece",
         "favorites": 244,
         "image_url": "https://cdn.myanimelist.net/images/characters/16/235809.webp",
-        "rating": 350
+        "rating": 473
       },
       {
         "name": "Fujita",
@@ -337,13 +330,6 @@
         "favorites": 72,
         "image_url": "https://cdn.myanimelist.net/images/characters/3/565501.webp",
         "rating": 441
-      },
-      {
-        "name": "Claire Redfield",
-        "anime_category": "One Piece",
-        "favorites": 64,
-        "image_url": "https://cdn.myanimelist.net/images/characters/11/366498.webp",
-        "rating": 439
       },
       {
         "name": "Kung Fu Dugong",
@@ -533,13 +519,6 @@
         "favorites": 21,
         "image_url": "https://cdn.myanimelist.net/images/characters/3/38642.webp",
         "rating": 388
-      },
-      {
-        "name": "Hana Asakura",
-        "anime_category": "One Piece",
-        "favorites": 21,
-        "image_url": "https://cdn.myanimelist.net/images/characters/12/239627.webp",
-        "rating": 386
       },
       {
         "name": "Rouge Portgas D.",
@@ -2162,13 +2141,6 @@
         "rating": 260
       },
       {
-        "name": "Akito Takagi",
-        "anime_category": "Dragon Ball",
-        "favorites": 1259,
-        "image_url": "https://cdn.myanimelist.net/images/characters/8/142279.webp",
-        "rating": 498
-      },
-      {
         "name": "Muten-Roushi",
         "anime_category": "Dragon Ball",
         "favorites": 1154,
@@ -2744,7 +2716,7 @@
       },
       {
         "name": "Vegeta",
-        "anime_category": "One Piece",
+        "anime_category": "Dragon Ball",
         "favorites": 20902,
         "image_url": "https://cdn.myanimelist.net/images/characters/14/86185.webp",
         "rating": 500
@@ -3168,13 +3140,6 @@
     "anime_name": "Bleach",
     "characters": [
       {
-        "name": "Gintoki Sakata",
-        "anime_category": "Bleach",
-        "favorites": 75241,
-        "image_url": "https://cdn.myanimelist.net/images/characters/15/241479.webp",
-        "rating": 500
-      },
-      {
         "name": "Ulquiorra Cifer",
         "anime_category": "Bleach",
         "favorites": 9704,
@@ -3201,13 +3166,6 @@
         "favorites": 6601,
         "image_url": "https://cdn.myanimelist.net/images/characters/10/529459.webp",
         "rating": 468
-      },
-      {
-        "name": "Youichi Hiruma",
-        "anime_category": "Bleach",
-        "favorites": 4228,
-        "image_url": "https://cdn.myanimelist.net/images/characters/4/61939.webp",
-        "rating": 498
       },
       {
         "name": "Shunsui Jirou Sakuranosuke Kyouraku",
@@ -3257,20 +3215,6 @@
         "favorites": 854,
         "image_url": "https://cdn.myanimelist.net/images/characters/13/76390.webp",
         "rating": 430
-      },
-      {
-        "name": "Kanji Tatsumi",
-        "anime_category": "Bleach",
-        "favorites": 640,
-        "image_url": "https://cdn.myanimelist.net/images/characters/13/138017.webp",
-        "rating": 494
-      },
-      {
-        "name": "Izana Kurokawa",
-        "anime_category": "Bleach",
-        "favorites": 601,
-        "image_url": "https://cdn.myanimelist.net/images/characters/10/442828.webp",
-        "rating": 493
       },
       {
         "name": "Tier Harribel",
@@ -3357,13 +3301,6 @@
         "rating": 478
       },
       {
-        "name": "Shuuichi Nakatsu",
-        "anime_category": "Bleach",
-        "favorites": 136,
-        "image_url": "https://cdn.myanimelist.net/images/characters/12/78045.webp",
-        "rating": 476
-      },
-      {
         "name": "Kensei Muguruma",
         "anime_category": "Bleach",
         "favorites": 130,
@@ -3406,13 +3343,6 @@
         "rating": 465
       },
       {
-        "name": "Hyakurin",
-        "anime_category": "Bleach",
-        "favorites": 60,
-        "image_url": "https://cdn.myanimelist.net/images/characters/9/54023.webp",
-        "rating": 463
-      },
-      {
         "name": "Nanao Ise",
         "anime_category": "Bleach",
         "favorites": 56,
@@ -3420,32 +3350,11 @@
         "rating": 461
       },
       {
-        "name": "Ken Murata",
-        "anime_category": "Bleach",
-        "favorites": 56,
-        "image_url": "https://cdn.myanimelist.net/images/characters/16/93307.webp",
-        "rating": 459
-      },
-      {
         "name": "Gremmy Thoumeaux",
         "anime_category": "Bleach",
         "favorites": 55,
         "image_url": "https://cdn.myanimelist.net/images/characters/14/245647.webp",
         "rating": 457
-      },
-      {
-        "name": "Yuuji Takehisa",
-        "anime_category": "Bleach",
-        "favorites": 55,
-        "image_url": "https://cdn.myanimelist.net/images/characters/11/381323.webp",
-        "rating": 456
-      },
-      {
-        "name": "Angol Mois",
-        "anime_category": "Bleach",
-        "favorites": 48,
-        "image_url": "https://cdn.myanimelist.net/images/characters/8/48841.webp",
-        "rating": 454
       },
       {
         "name": "Bazzard Black",
@@ -3467,13 +3376,6 @@
         "favorites": 38,
         "image_url": "https://cdn.myanimelist.net/images/characters/7/75154.webp",
         "rating": 448
-      },
-      {
-        "name": "Yuu Naruse",
-        "anime_category": "Bleach",
-        "favorites": 36,
-        "image_url": "https://cdn.myanimelist.net/images/characters/12/220875.webp",
-        "rating": 446
       },
       {
         "name": "Luppi Antenor",
@@ -3525,13 +3427,6 @@
         "rating": 433
       },
       {
-        "name": "Kenya Oshitari",
-        "anime_category": "Bleach",
-        "favorites": 20,
-        "image_url": "https://cdn.myanimelist.net/images/characters/8/43004.webp",
-        "rating": 431
-      },
-      {
         "name": "Candice Catnipp",
         "anime_category": "Bleach",
         "favorites": 19,
@@ -3572,20 +3467,6 @@
         "favorites": 18,
         "image_url": "https://cdn.myanimelist.net/images/characters/14/427356.webp",
         "rating": 420
-      },
-      {
-        "name": "You Tobiume",
-        "anime_category": "Bleach",
-        "favorites": 17,
-        "image_url": "https://cdn.myanimelist.net/images/characters/2/303855.webp",
-        "rating": 419
-      },
-      {
-        "name": "Youichirou Tatsumi",
-        "anime_category": "Bleach",
-        "favorites": 13,
-        "image_url": "https://cdn.myanimelist.net/images/characters/9/324344.webp",
-        "rating": 417
       },
       {
         "name": "White",
@@ -3651,25 +3532,11 @@
         "rating": 400
       },
       {
-        "name": "Yuki Himekawa",
-        "anime_category": "Bleach",
-        "favorites": 9,
-        "image_url": "https://cdn.myanimelist.net/images/characters/9/417168.webp",
-        "rating": 398
-      },
-      {
         "name": "Kyouko",
         "anime_category": "Bleach",
         "favorites": 8,
         "image_url": "https://cdn.myanimelist.net/images/characters/5/299300.webp",
         "rating": 396
-      },
-      {
-        "name": "Miru Kim",
-        "anime_category": "Bleach",
-        "favorites": 8,
-        "image_url": "https://cdn.myanimelist.net/images/characters/2/433910.webp",
-        "rating": 394
       },
       {
         "name": "Ilforte Grantz",
@@ -3679,39 +3546,11 @@
         "rating": 393
       },
       {
-        "name": "Keiko Tomioka",
-        "anime_category": "Bleach",
-        "favorites": 7,
-        "image_url": "https://cdn.myanimelist.net/images/characters/16/453145.webp",
-        "rating": 391
-      },
-      {
         "name": "Shizuku",
         "anime_category": "Bleach",
         "favorites": 7,
         "image_url": "https://cdn.myanimelist.net/images/characters/13/65861.webp",
         "rating": 389
-      },
-      {
-        "name": "Shinji Iijima",
-        "anime_category": "Bleach",
-        "favorites": 7,
-        "image_url": "https://cdn.myanimelist.net/images/characters/15/208149.webp",
-        "rating": 387
-      },
-      {
-        "name": "Shuren",
-        "anime_category": "Bleach",
-        "favorites": 6,
-        "image_url": "https://cdn.myanimelist.net/images/characters/16/146651.webp",
-        "rating": 385
-      },
-      {
-        "name": "Gou Koga",
-        "anime_category": "Bleach",
-        "favorites": 6,
-        "image_url": "https://cdn.myanimelist.net/images/characters/7/41195.webp",
-        "rating": 383
       },
       {
         "name": "Yammy Llargo",
@@ -3721,20 +3560,6 @@
         "rating": 381
       },
       {
-        "name": "Ban",
-        "anime_category": "Bleach",
-        "favorites": 5,
-        "image_url": "https://cdn.myanimelist.net/images/characters/10/103124.webp",
-        "rating": 380
-      },
-      {
-        "name": "Furoufushi Saitou",
-        "anime_category": "Bleach",
-        "favorites": 5,
-        "image_url": "https://cdn.myanimelist.net/images/characters/15/522521.webp",
-        "rating": 378
-      },
-      {
         "name": "Zabimaru (Male)",
         "anime_category": "Bleach",
         "favorites": 5,
@@ -3742,32 +3567,11 @@
         "rating": 376
       },
       {
-        "name": "Homura",
-        "anime_category": "Bleach",
-        "favorites": 5,
-        "image_url": "https://cdn.myanimelist.net/images/characters/5/456930.webp",
-        "rating": 374
-      },
-      {
         "name": "Love Aikawa",
         "anime_category": "Bleach",
         "favorites": 5,
         "image_url": "https://cdn.myanimelist.net/images/characters/4/57259.webp",
         "rating": 372
-      },
-      {
-        "name": "Baishin",
-        "anime_category": "Bleach",
-        "favorites": 4,
-        "image_url": "https://cdn.myanimelist.net/images/characters/2/153267.webp",
-        "rating": 370
-      },
-      {
-        "name": "Tetsuta Koshiba",
-        "anime_category": "Bleach",
-        "favorites": 4,
-        "image_url": "https://cdn.myanimelist.net/images/characters/16/35857.webp",
-        "rating": 369
       },
       {
         "name": "Ichika Abarai",
@@ -3789,27 +3593,6 @@
         "favorites": 4,
         "image_url": "https://cdn.myanimelist.net/images/characters/14/68554.webp",
         "rating": 363
-      },
-      {
-        "name": "Akihito Narumi",
-        "anime_category": "Bleach",
-        "favorites": 4,
-        "image_url": "https://cdn.myanimelist.net/images/characters/2/502434.webp",
-        "rating": 361
-      },
-      {
-        "name": "Ryuusei Kenzaki",
-        "anime_category": "Bleach",
-        "favorites": 4,
-        "image_url": "https://cdn.myanimelist.net/images/characters/10/41196.webp",
-        "rating": 359
-      },
-      {
-        "name": "Nami Komatsu",
-        "anime_category": "Bleach",
-        "favorites": 3,
-        "image_url": "https://cdn.myanimelist.net/images/characters/5/466046.webp",
-        "rating": 357
       },
       {
         "name": "Makoto Kibune",
@@ -3854,20 +3637,6 @@
         "rating": 346
       },
       {
-        "name": "Yuyu Yayahara",
-        "anime_category": "Bleach",
-        "favorites": 3,
-        "image_url": "https://cdn.myanimelist.net/images/characters/4/483772.webp",
-        "rating": 344
-      },
-      {
-        "name": "Aura Michibane",
-        "anime_category": "Bleach",
-        "favorites": 3,
-        "image_url": "https://cdn.myanimelist.net/images/characters/3/518916.webp",
-        "rating": 343
-      },
-      {
         "name": "Tessai Tsukabishi",
         "anime_category": "Bleach",
         "favorites": 2,
@@ -3880,41 +3649,6 @@
         "favorites": 2,
         "image_url": "https://cdn.myanimelist.net/images/characters/3/50724.webp",
         "rating": 339
-      },
-      {
-        "name": "Ouko Yushima",
-        "anime_category": "Bleach",
-        "favorites": 2,
-        "image_url": "https://cdn.myanimelist.net/images/characters/13/160003.webp",
-        "rating": 337
-      },
-      {
-        "name": "Nayura Amakado",
-        "anime_category": "Bleach",
-        "favorites": 2,
-        "image_url": "https://cdn.myanimelist.net/images/characters/15/526280.webp",
-        "rating": 335
-      },
-      {
-        "name": "Chome",
-        "anime_category": "Bleach",
-        "favorites": 2,
-        "image_url": "https://cdn.myanimelist.net/images/characters/12/478544.webp",
-        "rating": 333
-      },
-      {
-        "name": "Takashi Masaki",
-        "anime_category": "Bleach",
-        "favorites": 2,
-        "image_url": "https://cdn.myanimelist.net/images/characters/6/74162.webp",
-        "rating": 331
-      },
-      {
-        "name": "Hikone Ubuginu",
-        "anime_category": "Bleach",
-        "favorites": 2,
-        "image_url": "https://cdn.myanimelist.net/images/characters/13/522508.webp",
-        "rating": 330
       },
       {
         "name": "Hisagomaru",
@@ -3938,46 +3672,11 @@
         "rating": 324
       },
       {
-        "name": "Kyouko Haida",
-        "anime_category": "Bleach",
-        "favorites": 1,
-        "image_url": "https://cdn.myanimelist.net/images/characters/12/83546.webp",
-        "rating": 322
-      },
-      {
-        "name": "Lake Toya",
-        "anime_category": "Bleach",
-        "favorites": 1,
-        "image_url": "https://cdn.myanimelist.net/images/characters/12/115829.webp",
-        "rating": 320
-      },
-      {
-        "name": "Mitsuru Ishino",
-        "anime_category": "Bleach",
-        "favorites": 1,
-        "image_url": "https://cdn.myanimelist.net/images/characters/14/109081.webp",
-        "rating": 319
-      },
-      {
         "name": "Unnamed Female Arrancar",
         "anime_category": "Bleach",
         "favorites": 1,
         "image_url": "https://cdn.myanimelist.net/images/characters/5/490990.webp",
         "rating": 317
-      },
-      {
-        "name": "Ryuunosuke Yuki",
-        "anime_category": "Bleach",
-        "favorites": 1,
-        "image_url": "https://cdn.myanimelist.net/images/characters/12/493382.webp",
-        "rating": 315
-      },
-      {
-        "name": "Shino Madarame",
-        "anime_category": "Bleach",
-        "favorites": 1,
-        "image_url": "https://cdn.myanimelist.net/images/characters/13/484953.webp",
-        "rating": 313
       },
       {
         "name": "Roka Paramia",
@@ -3987,32 +3686,11 @@
         "rating": 311
       },
       {
-        "name": "Niko Inuyama",
-        "anime_category": "Bleach",
-        "favorites": 1,
-        "image_url": "https://cdn.myanimelist.net/images/characters/2/487851.webp",
-        "rating": 309
-      },
-      {
         "name": "Torue",
         "anime_category": "Bleach",
         "favorites": 1,
         "image_url": "https://cdn.myanimelist.net/images/characters/8/542788.webp",
         "rating": 307
-      },
-      {
-        "name": "Kanae Katagiri",
-        "anime_category": "Bleach",
-        "favorites": 1,
-        "image_url": "https://cdn.myanimelist.net/images/characters/8/497675.webp",
-        "rating": 306
-      },
-      {
-        "name": "Royd Lloyd",
-        "anime_category": "Bleach",
-        "favorites": 1,
-        "image_url": "https://cdn.myanimelist.net/images/characters/6/516933.webp",
-        "rating": 304
       },
       {
         "name": "Batsu'unsai Katori",
@@ -4050,67 +3728,11 @@
         "rating": 294
       },
       {
-        "name": "Hasuka Hashihara",
-        "anime_category": "Bleach",
-        "favorites": 1,
-        "image_url": "https://cdn.myanimelist.net/images/characters/10/511906.webp",
-        "rating": 293
-      },
-      {
         "name": "Danzoumaru",
         "anime_category": "Bleach",
         "favorites": 1,
         "image_url": "https://cdn.myanimelist.net/images/characters/5/54892.webp",
         "rating": 291
-      },
-      {
-        "name": "Atau Rindou",
-        "anime_category": "Bleach",
-        "favorites": 1,
-        "image_url": "https://cdn.myanimelist.net/images/characters/6/471524.webp",
-        "rating": 289
-      },
-      {
-        "name": " Satoda",
-        "anime_category": "Bleach",
-        "favorites": 1,
-        "image_url": "https://cdn.myanimelist.net/images/characters/12/348681.webp",
-        "rating": 287
-      },
-      {
-        "name": "Tokie Tonokawa",
-        "anime_category": "Bleach",
-        "favorites": 1,
-        "image_url": "https://cdn.myanimelist.net/images/characters/11/547984.webp",
-        "rating": 285
-      },
-      {
-        "name": "Hidetomo Kajoumaru",
-        "anime_category": "Bleach",
-        "favorites": 0,
-        "image_url": "https://cdn.myanimelist.net/images/characters/12/493385.webp",
-        "rating": 283
-      },
-      {
-        "name": "Yuusuke Iruma",
-        "anime_category": "Bleach",
-        "favorites": 0,
-        "image_url": "https://cdn.myanimelist.net/img/sp/icon/apple-touch-icon-256.png",
-        "rating": 281
-      },
-      {
-        "name": "Nayuta Kusanagi",
-        "anime_category": "Bleach",
-        "favorites": 0,
-        "image_url": "https://cdn.myanimelist.net/images/characters/2/563089.webp",
-        "rating": 280
-      },
-      {
-        "name": "Niko Kuna",
-        "anime_category": "Bleach",
-        "favorites": 0,
-        "image_url": "https://cdn.myanimelist.net/images/characters/5/513700.webp",
-        "rating": 278
       },
       {
         "name": "Izumi Ishida",
@@ -4141,13 +3763,6 @@
         "rating": 270
       },
       {
-        "name": "Kotono Hanaori",
-        "anime_category": "Bleach",
-        "favorites": 0,
-        "image_url": "https://cdn.myanimelist.net/images/characters/7/581972.webp",
-        "rating": 269
-      },
-      {
         "name": "Souken Ishida",
         "anime_category": "Bleach",
         "favorites": 0,
@@ -4169,46 +3784,11 @@
         "rating": 263
       },
       {
-        "name": "Shin'etsu Kisaragi",
-        "anime_category": "Bleach",
-        "favorites": 0,
-        "image_url": "https://cdn.myanimelist.net/images/characters/12/481330.webp",
-        "rating": 261
-      },
-      {
-        "name": "Asuka Katakura",
-        "anime_category": "Bleach",
-        "favorites": 0,
-        "image_url": "https://cdn.myanimelist.net/images/characters/13/502513.webp",
-        "rating": 259
-      },
-      {
-        "name": "Genshirou Okikiba",
-        "anime_category": "Bleach",
-        "favorites": 0,
-        "image_url": "https://cdn.myanimelist.net/images/characters/12/547339.webp",
-        "rating": 257
-      },
-      {
         "name": "Jerome Guizbatt",
         "anime_category": "Bleach",
         "favorites": 0,
         "image_url": "https://cdn.myanimelist.net/images/characters/14/493387.webp",
         "rating": 256
-      },
-      {
-        "name": "Taketsuna Gori",
-        "anime_category": "Bleach",
-        "favorites": 0,
-        "image_url": "https://cdn.myanimelist.net/images/characters/5/493383.webp",
-        "rating": 254
-      },
-      {
-        "name": "Rikuu Togakushi",
-        "anime_category": "Bleach",
-        "favorites": 0,
-        "image_url": "https://cdn.myanimelist.net/images/characters/9/493384.webp",
-        "rating": 252
       },
       {
         "name": "Kuzuryuu",
@@ -4286,20 +3866,6 @@
         "rating": 500
       },
       {
-        "name": "Terminus Est",
-        "anime_category": "Demon Slayer",
-        "favorites": 514,
-        "image_url": "https://cdn.myanimelist.net/images/characters/8/255699.webp",
-        "rating": 488
-      },
-      {
-        "name": "Moroha",
-        "anime_category": "Demon Slayer",
-        "favorites": 223,
-        "image_url": "https://cdn.myanimelist.net/images/characters/11/421484.webp",
-        "rating": 475
-      },
-      {
         "name": "Kanae Kochou",
         "anime_category": "Demon Slayer",
         "favorites": 165,
@@ -4314,25 +3880,11 @@
         "rating": 462
       },
       {
-        "name": "Setsuna",
-        "anime_category": "Demon Slayer",
-        "favorites": 75,
-        "image_url": "https://cdn.myanimelist.net/images/characters/16/421479.webp",
-        "rating": 450
-      },
-      {
         "name": "Aoi Kanzaki",
         "anime_category": "Demon Slayer",
         "favorites": 58,
         "image_url": "https://cdn.myanimelist.net/images/characters/5/388816.webp",
         "rating": 290
-      },
-      {
-        "name": "Kohaku",
-        "anime_category": "Demon Slayer",
-        "favorites": 40,
-        "image_url": "https://cdn.myanimelist.net/images/characters/13/93066.webp",
-        "rating": 438
       },
       {
         "name": "Yuuichirou Tokitou",
@@ -4410,13 +3962,6 @@
         "favorites": 1,
         "image_url": "https://cdn.myanimelist.net/images/characters/6/224731.webp",
         "rating": 312
-      },
-      {
-        "name": "Sango and Kohaku's Father",
-        "anime_category": "Demon Slayer",
-        "favorites": 0,
-        "image_url": "https://cdn.myanimelist.net/images/characters/5/575075.webp",
-        "rating": 300
       },
       {
         "name": "Miumi",
@@ -5157,13 +4702,6 @@
         "rating": 415
       },
       {
-        "name": "Franz Kefka",
-        "anime_category": "Attack on Titan",
-        "favorites": 2,
-        "image_url": "https://cdn.myanimelist.net/images/characters/6/206435.webp",
-        "rating": 410
-      },
-      {
         "name": "Cardina Baumeister",
         "anime_category": "Attack on Titan",
         "favorites": 2,
@@ -5454,13 +4992,6 @@
         "favorites": 853,
         "image_url": "https://cdn.myanimelist.net/images/characters/13/81112.webp",
         "rating": 445
-      },
-      {
-        "name": "Chika Ogiue",
-        "anime_category": "Fullmetal Alchemist",
-        "favorites": 453,
-        "image_url": "https://cdn.myanimelist.net/images/characters/5/84241.webp",
-        "rating": 500
       },
       {
         "name": "Truth",

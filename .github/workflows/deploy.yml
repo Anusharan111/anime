@@ -21,6 +21,28 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Compress large video files before build
+        run: |
+          echo "=== Video sizes BEFORE compression ==="
+          du -sh public/*.mp4 || echo "No mp4s found in public/"
+          ls -la public/*.mp4 || true
+
+          # ffmpeg is pre-installed on ubuntu-latest GitHub runners
+          if [ -f "public/go.mp4" ]; then
+            echo "Compressing go.mp4..."
+            ffmpeg -i public/go.mp4 -vcodec libx264 -crf 32 -preset ultrafast -vf "scale=1280:-2" -an public/go_compressed.mp4 -y
+            mv public/go_compressed.mp4 public/go.mp4
+          fi
+
+          if [ -f "public/zo.mp4" ]; then
+            echo "Compressing zo.mp4..."
+            ffmpeg -i public/zo.mp4 -vcodec libx264 -crf 32 -preset ultrafast -vf "scale=1280:-2" -an public/zo_compressed.mp4 -y
+            mv public/zo_compressed.mp4 public/zo.mp4
+          fi
+
+          echo "=== Video sizes AFTER compression ==="
+          du -sh public/*.mp4 || true
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -34,18 +56,11 @@ jobs:
           VITE_BASE_PATH: /anime/
         run: npm run build
 
-      - name: Optimize heavy media assets for fast Pages deployment
+      - name: Show final artifact size
         run: |
-          cd dist
-          echo "Original dist folder size:"
-          du -sh .
-          if command -v ffmpeg &> /dev/null; then
-            echo "Compressing background video assets with ffmpeg..."
-            [ -f "go.mp4" ] && ffmpeg -i go.mp4 -vcodec libx264 -crf 28 -preset ultrafast -an go_opt.mp4 -y && mv go_opt.mp4 go.mp4 || true
-            [ -f "zo.mp4" ] && ffmpeg -i zo.mp4 -vcodec libx264 -crf 28 -preset ultrafast -an zo_opt.mp4 -y && mv zo_opt.mp4 zo.mp4 || true
-          fi
-          echo "Optimized dist folder size:"
-          du -sh .
+          echo "=== Final dist size ==="
+          du -sh dist/
+          du -sh dist/*.mp4 || echo "No mp4s at dist root"
 
       - name: Verify build output
         run: |

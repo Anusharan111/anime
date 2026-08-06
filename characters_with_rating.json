@@ -1023,6 +1023,41 @@
         "favorites": 4,
         "image_url": "https://cdn.myanimelist.net/images/characters/16/265761.webp",
         "rating": 250
+      },
+      {
+        "name": "Nami",
+        "anime_category": "One Piece",
+        "favorites": null,
+        "image_url": "https://cdn.myanimelist.net/images/characters/15/91127.jpg",
+        "rating": 310
+      },
+      {
+        "name": "Sanji",
+        "anime_category": "One Piece",
+        "favorites": null,
+        "image_url": "https://cdn.myanimelist.net/images/characters/3/261613.jpg",
+        "rating": 460
+      },
+      {
+        "name": "Chopper",
+        "anime_category": "One Piece",
+        "favorites": null,
+        "image_url": "https://cdn.myanimelist.net/images/characters/2/365928.jpg",
+        "rating": 360
+      },
+      {
+        "name": "Franky",
+        "anime_category": "One Piece",
+        "favorites": null,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/76432.jpg",
+        "rating": 350
+      },
+      {
+        "name": "Brook",
+        "anime_category": "One Piece",
+        "favorites": null,
+        "image_url": "https://cdn.myanimelist.net/images/characters/13/546628.jpg",
+        "rating": 390
       }
     ]
   },
@@ -1033,7 +1068,7 @@
         "name": "Naruto Uzumaki",
         "anime_category": "Naruto",
         "favorites": 85904,
-        "image_url": "https://cdn.myanimelist.net/images/characters/12/61330.webp",
+        "image_url": "https://cdn.myanimelist.net/images/characters/10/406295.jpg",
         "rating": 500
       },
       {
@@ -1047,7 +1082,7 @@
         "name": "Kakashi Hatake",
         "anime_category": "Naruto",
         "favorites": 48418,
-        "image_url": "https://cdn.myanimelist.net/images/characters/7/284129.webp",
+        "image_url": "https://cdn.myanimelist.net/images/characters/8/368251.jpg",
         "rating": 470
       },
       {
@@ -1068,7 +1103,7 @@
         "name": "Jiraiya",
         "anime_category": "Naruto",
         "favorites": 14694,
-        "image_url": "https://cdn.myanimelist.net/images/characters/15/68618.webp",
+        "image_url": "https://cdn.myanimelist.net/images/characters/4/82465.jpg",
         "rating": 470
       },
       {
@@ -3133,6 +3168,27 @@
         "favorites": 1,
         "image_url": "https://cdn.myanimelist.net/images/characters/9/238631.webp",
         "rating": 250
+      },
+      {
+        "name": "Son Goku",
+        "anime_category": "Dragon Ball",
+        "favorites": null,
+        "image_url": "https://cdn.myanimelist.net/images/characters/15/116675.jpg",
+        "rating": 499
+      },
+      {
+        "name": "Krillin",
+        "anime_category": "Dragon Ball",
+        "favorites": null,
+        "image_url": "https://cdn.myanimelist.net/images/characters/2/48517.jpg",
+        "rating": 400
+      },
+      {
+        "name": "Yamcha",
+        "anime_category": "Dragon Ball",
+        "favorites": null,
+        "image_url": "https://cdn.myanimelist.net/images/characters/14/126147.jpg",
+        "rating": 300
       }
     ]
   },
@@ -3796,6 +3852,20 @@
         "favorites": 0,
         "image_url": "https://cdn.myanimelist.net/images/characters/16/103054.webp",
         "rating": 250
+      },
+      {
+        "name": "Ichigo Kurosaki",
+        "anime_category": "Bleach",
+        "favorites": null,
+        "image_url": "https://cdn.myanimelist.net/images/characters/4/531420.jpg",
+        "rating": 499
+      },
+      {
+        "name": "Rukia Kuchiki",
+        "anime_category": "Bleach",
+        "favorites": null,
+        "image_url": "https://cdn.myanimelist.net/images/characters/7/520700.jpg",
+        "rating": 400
       }
     ]
   },
@@ -3990,6 +4060,20 @@
         "favorites": 0,
         "image_url": "https://cdn.myanimelist.net/images/characters/5/84972.webp",
         "rating": 250
+      },
+      {
+        "name": "Tanjirou Kamado",
+        "anime_category": "Demon Slayer",
+        "favorites": null,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/509927.jpg",
+        "rating": 390
+      },
+      {
+        "name": "Nezuko Kamado",
+        "anime_category": "Demon Slayer",
+        "favorites": null,
+        "image_url": "https://cdn.myanimelist.net/images/characters/9/402542.jpg",
+        "rating": 370
       }
     ]
   },
@@ -4938,6 +5022,34 @@
         "favorites": 0,
         "image_url": "https://cdn.myanimelist.net/images/characters/12/578579.webp",
         "rating": 250
+      },
+      {
+        "name": "Eren Yeager",
+        "anime_category": "Attack on Titan",
+        "favorites": null,
+        "image_url": "https://cdn.myanimelist.net/images/characters/14/517098.jpg",
+        "rating": 420
+      },
+      {
+        "name": "Mikasa Ackerman",
+        "anime_category": "Attack on Titan",
+        "favorites": null,
+        "image_url": "",
+        "rating": 320
+      },
+      {
+        "name": "Armin Arlert",
+        "anime_category": "Attack on Titan",
+        "favorites": null,
+        "image_url": "https://cdn.myanimelist.net/images/characters/13/202267.jpg",
+        "rating": 300
+      },
+      {
+        "name": "Levi Ackerman",
+        "anime_category": "Attack on Titan",
+        "favorites": null,
+        "image_url": "https://cdn.myanimelist.net/images/characters/14/208635.jpg",
+        "rating": 350
       }
     ]
   },
@@ -5279,6 +5391,20 @@
         "favorites": 0,
         "image_url": "https://cdn.myanimelist.net/images/characters/10/467571.webp",
         "rating": 250
+      },
+      {
+        "name": "Alphonse Elric",
+        "anime_category": "Fullmetal Alchemist",
+        "favorites": null,
+        "image_url": "TBD",
+        "rating": null
+      },
+      {
+        "name": "Winry Rockbell",
+        "anime_category": "Fullmetal Alchemist",
+        "favorites": null,
+        "image_url": "https://cdn.myanimelist.net/images/characters/5/26120.jpg",
+        "rating": 200
       }
     ]
   },
@@ -5599,6 +5725,13 @@
         "favorites": 0,
         "image_url": "https://cdn.myanimelist.net/images/characters/7/596131.webp",
         "rating": 250
+      },
+      {
+        "name": "Aki Hayakawa",
+        "anime_category": "Chainsaw Man",
+        "favorites": null,
+        "image_url": "https://cdn.myanimelist.net/images/characters/13/395003.jpg",
+        "rating": 360
       }
     ]
   }

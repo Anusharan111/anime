@@ -1,0 +1,16 @@
+# Robots.txt for Anime Battle
+User-agent: *
+Allow: /
+
+# Disallow API routes and admin paths
+Disallow: /api/
+Disallow: /dist/
+Disallow: /server.cjs
+Disallow: /*.json$
+Disallow: /*.map$
+
+# Sitemap
+Sitemap: https://Anusharan111.github.io/anime/sitemap.xml
+
+# Crawl-delay (optional - be nice to servers)
+Crawl-delay: 10

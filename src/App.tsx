@@ -41,6 +41,7 @@ import { getRoleFitScore, getRoleSuitabilityLabel, getRoleFitMultiplier } from "
 import DraftView from "./components/ui/DraftView";
 import { ratingDataset, RATING_ANIME_SET, getCharactersByAnime } from "./utils/ratingDataset";
 import { adaptRatingCharacters } from "./utils/ratingAdapter";
+import { useSEO, routeSEO } from "./hooks/useSEO";
 
 type ViewState = "landing" | "draft" | "results" | "feud" | "guesswho" | "party";
 type GameHubMode = "hub" | "battle";
@@ -350,7 +351,7 @@ export default function App() {
     }
   }, [view, selectedGameHubMode]);
 
-  useEffect(() => {
+useEffect(() => {
     const handlePopState = (e: PopStateEvent) => {
       const state = e.state as AppHistoryState | null;
       if (state?.animeBattleInternal) {
@@ -366,10 +367,19 @@ export default function App() {
         setSelectedGameHubMode("hub");
       }
     };
-
     window.addEventListener("popstate", handlePopState);
     return () => window.removeEventListener("popstate", handlePopState);
   }, []);
+
+  // Dynamic SEO meta tags per route
+  const getCurrentRoute = () => {
+    if (view === "landing" && selectedGameHubMode === "battle") return "battle";
+    if (view === "landing") return "landing";
+    return view; // draft, results, feud, guesswho, party
+  };
+  const currentRoute = getCurrentRoute();
+  const seoConfig = routeSEO[currentRoute as keyof typeof routeSEO] || routeSEO.landing;
+  useSEO(seoConfig);
 
   useEffect(() => {
     const lockDraftScroll = isMobile && view === "draft";
@@ -823,8 +833,8 @@ export default function App() {
       }
     });
 
-    channel.bind("client-game-started", ({ roomId: rid, p1Name, p2Name }: any) => {
-      console.log("client-game-started received:", { rid, p1Name, p2Name });
+    channel.bind("client-game-started", ({ roomId: rid, p1Name, p2Name, activeAnimes, useAll }: any) => {
+      console.log("client-game-started received:", { rid, p1Name, p2Name, activeAnimes, useAll });
       setOnlineRoomId(rid);
       onlineRoomIdRef.current = rid;
       setPlayer1Name(p1Name);
@@ -847,7 +857,7 @@ export default function App() {
 
       if (onlineSideRef.current === "p1") {
         // Build the persistent pool before the first draw (host side)
-        buildDraftPool([], true).then(() => {
+        buildDraftPool(activeAnimes || [], useAll !== false).then(() => {
           requestAnimationFrame(() => {
             pullNewCharacterRef.current([], [], initialSlots);
           });
@@ -896,10 +906,14 @@ export default function App() {
   const triggerGameStart = (channel: any, roomId: string, p1Name: string, p2Name: string) => {
     setTimeout(() => {
       console.log("Triggering client-game-started...");
+      const activeAnimes = categoryRef.current === "choose" ? [...selectedAnimesRef.current] : [];
+      const useAll = allAnimeRef.current || categoryRef.current !== "choose";
       channel.trigger("client-game-started", {
         roomId,
         p1Name,
-        p2Name
+        p2Name,
+        activeAnimes,
+        useAll,
       });
 
       // P1 must apply the game start state locally since Pusher does not echo client events to the sender
@@ -925,7 +939,7 @@ export default function App() {
       importStarterAllAnimeCasts().catch(() => {});
 
       // Build the persistent pool before the first draw
-      buildDraftPool([], true).then(() => {
+      buildDraftPool(activeAnimes, useAll).then(() => {
         requestAnimationFrame(() => {
           pullNewCharacterRef.current([], [], initialSlots);
         });
@@ -1057,6 +1071,8 @@ export default function App() {
       setIsDeployModalOpen(false);
 
       // Sync the initial states and view to P2
+      const activeAnimes = categoryRef.current === "choose" ? [...selectedAnimesRef.current] : [];
+      const useAll = allAnimeRef.current || categoryRef.current !== "choose";
       syncGameState({
         round: 1,
         activeTurn: "p1",
@@ -1073,7 +1089,7 @@ export default function App() {
       });
 
       // Build the persistent pool before the first draw
-      await buildDraftPool([], true);
+      await buildDraftPool(activeAnimes, useAll);
       // Pull first card for P1
       pullNewCharacter([], [], initialSlots);
       return;

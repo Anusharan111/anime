@@ -241,7 +241,7 @@ export default function AnimePartyGames({ onExit }: AnimePartyGamesProps) {
     let pool = [...characterPool];
     if (category === "choose" && selectedAnimes.length > 0) {
       const selectedKeys = selectedAnimes.map((a) => a.trim().toLowerCase());
-      pool = pool.filter((c) => c.anime && selectedKeys.includes(c.anime.trim().toLowerCase()));
+      pool = pool.filter((c) => c.anime && selectedKeys.some(key => c.anime.trim().toLowerCase().includes(key)));
     }
 
     if (selectedMode === "guess-character") {

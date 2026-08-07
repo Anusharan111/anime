@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "motion/react";
-import TeamSlots from "./TeamSlots";
-import { RoleId, SlottedTeam } from "../types";
+import TeamSlots from "../common/TeamSlots";
+import { RoleId, SlottedTeam } from "../../types";
 import { Zap } from "lucide-react";
 
 type DraftViewProps = {

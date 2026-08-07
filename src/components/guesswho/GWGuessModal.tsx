@@ -8,7 +8,7 @@ import {
   ChevronLeft,
 } from "lucide-react";
 import { Character } from "../../types";
-import CharacterImage from "../../components/CharacterImage";
+import CharacterImage from "../../components/common/CharacterImage";
 
 interface GWGuessModalProps {
   characters: Character[];

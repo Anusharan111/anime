@@ -8,7 +8,7 @@ import {
   Trophy,
   Users,
 } from "lucide-react";
-import LeafField from "./components/LeafField";
+import LeafField from "./components/common/LeafField";
 import "./LandingPage.css";
 
 interface LandingPageProps {

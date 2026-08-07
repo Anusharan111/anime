@@ -28,17 +28,17 @@ import {
 import { Character, MatchHistory, RoleId, SlottedTeam, BattleReport } from "./types";
 import { ROLE_CATEGORIES } from "./data/roles";
 import { CHARACTERS } from "./data/characters";
-import CharacterCard from "./components/CharacterCard";
-import TeamSlots from "./components/TeamSlots";
-import DeployModal from "./components/DeployModal";
-import CharacterSearch from "./components/CharacterSearch";
+import CharacterCard from "./components/common/CharacterCard";
+import TeamSlots from "./components/common/TeamSlots";
+import DeployModal from "./components/ui/DeployModal";
+import CharacterSearch from "./components/common/CharacterSearch";
 import AnimeFeudGame from "./pages/AnimeFeudGame";
 import AnimeGuessWhoGame from "./pages/AnimeGuessWhoGame";
 import AnimePartyGames from "./pages/AnimePartyGames";
 import LandingPage from "./LandingPage";
 import { sfx } from "./utils/audio";
 import { getRoleFitScore, getRoleSuitabilityLabel, getRoleFitMultiplier } from "./utils/roleUtils";
-import DraftView from "./components/DraftView";
+import DraftView from "./components/ui/DraftView";
 import { ratingDataset, RATING_ANIME_SET, getCharactersByAnime } from "./utils/ratingDataset";
 import { adaptRatingCharacters } from "./utils/ratingAdapter";
 
@@ -76,7 +76,7 @@ const initialSlots: SlottedTeam = {
   traitor: null,
 };
 
-import CharacterImage from "./components/CharacterImage";
+import CharacterImage from "./components/common/CharacterImage";
 import { API_BASE } from "./config";
 import {
   MIN_RECOMMENDED_POOL,

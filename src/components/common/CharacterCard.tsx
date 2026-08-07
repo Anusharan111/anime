@@ -1,6 +1,6 @@
 import React from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Character } from "../types";
+import { Character } from "../../types";
 import { Swords, Shield, Zap, Sparkles, Brain, Trophy } from "lucide-react";
 import CharacterImage from "./CharacterImage";
 

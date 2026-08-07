@@ -2,7 +2,7 @@ import React from "react";
 import { motion } from "motion/react";
 import { Shield, Star } from "lucide-react";
 import { Character } from "../../types";
-import CharacterImage from "../../components/CharacterImage";
+import CharacterImage from "../../components/common/CharacterImage";
 
 interface GWSecretCardProps {
   character: Character;

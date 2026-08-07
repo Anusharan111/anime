@@ -1,7 +1,7 @@
 import React from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { RoleId, SlottedTeam } from "../types";
-import { ROLE_CATEGORIES } from "../data/roles";
+import { RoleId, SlottedTeam } from "../../types";
+import { ROLE_CATEGORIES } from "../../data/roles";
 import { Zap } from "lucide-react";
 import { RoleIcon } from "./RoleIcon";
 import CharacterImage from "./CharacterImage";

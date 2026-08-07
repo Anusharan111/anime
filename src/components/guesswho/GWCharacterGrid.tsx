@@ -2,7 +2,7 @@ import React from "react";
 import { motion } from "motion/react";
 import { X, Eye } from "lucide-react";
 import { Character } from "../../types";
-import CharacterImage from "../../components/CharacterImage";
+import CharacterImage from "../../components/common/CharacterImage";
 
 interface GWCharacterGridProps {
   characters: Character[];

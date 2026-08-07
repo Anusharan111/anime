@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Loader2, ImageOff } from "lucide-react";
-import { getProxyImageUrl } from "../types";
+import { getProxyImageUrl } from "../../types";
 
 interface CharacterImageProps {
   url: string;

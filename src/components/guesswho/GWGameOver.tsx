@@ -10,7 +10,7 @@ import {
   Star,
 } from "lucide-react";
 import { Character } from "../../types";
-import CharacterImage from "../../components/CharacterImage";
+import CharacterImage from "../../components/common/CharacterImage";
 
 interface GWGameOverProps {
   won: boolean;

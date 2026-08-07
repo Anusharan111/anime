@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Character } from "../../types";
 import { AlertTriangle, CheckCircle, StopCircle, Eye, EyeOff } from "lucide-react";
-import CharacterCard from "../CharacterCard";
+import CharacterCard from "../common/CharacterCard";
 import { sfx } from "../../utils/audio";
 
 interface PlayerInfo {

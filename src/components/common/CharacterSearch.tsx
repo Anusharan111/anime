@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback, useMemo } from "react";
-import { RATING_ANIME_NAMES } from "../utils/ratingDataset";
+import { RATING_ANIME_NAMES } from "../../utils/ratingDataset";
 
 interface AnimeSearchProps {
   onSelectAnime: (animeName: string) => void;

@@ -1,4 +1,4 @@
-import { RoleId } from "../types";
+import { RoleId } from "../../types";
 import { Shield, Swords, Heart, Zap, Crosshair, Sparkles, Trophy, Brain, Sword, UserRoundPen } from "lucide-react";
 
 interface RoleIconProps {

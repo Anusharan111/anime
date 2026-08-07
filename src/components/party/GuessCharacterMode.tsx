@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { motion } from "motion/react";
 import { Character } from "../../types";
 import { EyeOff, StopCircle, Eye } from "lucide-react";
-import CharacterCard from "../CharacterCard";
+import CharacterCard from "../common/CharacterCard";
 
 interface GuessCharacterModeProps {
   myCharacter: Character;

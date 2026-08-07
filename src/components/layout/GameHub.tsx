@@ -1,9 +1,9 @@
 import React from "react";
-import TeamSlots from "./TeamSlots";
-import CharacterImage from "./CharacterImage";
+import TeamSlots from "../common/TeamSlots";
+import CharacterImage from "../common/CharacterImage";
 import { Plus, LogIn, AlertCircle, RefreshCw, Play, ArrowRight, ArrowRight as ArrowR, ArrowRight as Arrow } from "lucide-react";
 import { Flame, Computer, Users, Globe } from "lucide-react";
-import { getSuggestions } from "../utils/draftPool";
+import { getSuggestions } from "../../utils/draftPool";
 
 /**
  * Game Hub component – renders the setup UI after the landing page.

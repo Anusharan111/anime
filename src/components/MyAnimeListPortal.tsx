@@ -6,7 +6,7 @@ import {
 } from "lucide-react";
 import { Character } from "../types";
 import { API_BASE } from "../config";
-import CharacterImage from "./CharacterImage";
+import CharacterImage from "./common/CharacterImage";
 
 interface MALPortalProps {
   onPoolUpdated: () => void;

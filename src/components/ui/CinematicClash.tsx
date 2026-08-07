@@ -1,6 +1,6 @@
 import React from "react";
 import { motion, AnimatePresence } from "motion/react";
-import CharacterImage from "./CharacterImage";
+import CharacterImage from "../common/CharacterImage";
 import { X } from "lucide-react";
 
 /**

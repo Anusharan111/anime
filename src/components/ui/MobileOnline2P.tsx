@@ -1,7 +1,7 @@
 import React from "react";
-import TeamSlots from "./TeamSlots";
-import CharacterCard from "./CharacterCard";
-import { SlottedTeam, RoleId } from "../types";
+import TeamSlots from "../common/TeamSlots";
+import CharacterCard from "../common/CharacterCard";
+import { SlottedTeam, RoleId } from "../../types";
 
 interface MobileOnline2PProps {
   playerName: string;

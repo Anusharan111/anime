@@ -1,11 +1,11 @@
 import React from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Character, RoleId, SlottedTeam } from "../types";
-import { ROLE_CATEGORIES } from "../data/roles";
+import { Character, RoleId, SlottedTeam } from "../../types";
+import { ROLE_CATEGORIES } from "../../data/roles";
 import { X, Plus } from "lucide-react";
-import CharacterImage from "./CharacterImage";
-import { RoleIcon } from "./RoleIcon";
-import { getRoleFitScore } from "../utils/roleUtils";
+import CharacterImage from "../common/CharacterImage";
+import { RoleIcon } from "../common/RoleIcon";
+import { getRoleFitScore } from "../../utils/roleUtils";
 
 interface DeployModalProps {
   character: Character;

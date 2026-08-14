@@ -238,7 +238,7 @@ export default function CharacterCard({
 
   return (
     <div 
-      className={`relative ${sizeClass ?? `${isCompact ? 'w-[130px] h-[230px]' : 'w-[160px] h-[286px]'} sm:w-[260px] sm:h-[460px] md:w-[340px] md:h-[600px]`} perspective-1000 z-10 select-none group transition-transform duration-300 ${isSelected ? 'scale-105' : ''}`}
+      className={`relative ${sizeClass ?? `${isCompact ? 'w-[125px] h-[220px]' : 'w-[145px] h-[260px] xs:w-[165px] xs:h-[290px]'} sm:w-[220px] sm:h-[390px] md:w-[260px] md:h-[460px] lg:w-[290px] lg:h-[510px] max-h-[58vh]`} perspective-1000 z-10 select-none group transition-transform duration-300 ${isSelected ? 'scale-105' : ''}`}
       style={{ touchAction: isMobileDevice && onTouchDrop ? "none" : undefined }}
       onMouseMove={handleMouseMove}
       onClick={handleCardTap}
@@ -273,7 +273,7 @@ export default function CharacterCard({
             if (onDragStart) onDragStart(e);
           }}
           onDragEnd={onDragEnd}
-          className={`absolute inset-0 w-full h-full rounded-2xl bg-gradient-to-b ${config.bg} border-2 ${config.border} ${config.glow} backface-hidden overflow-hidden flex flex-col ${isCompact ? 'p-1.5' : 'p-2 sm:p-4'} ${isFlipped ? "pointer-events-none" : isMobileDevice ? "cursor-default" : "cursor-grab active:cursor-grabbing"}`}
+          className={`absolute inset-0 w-full h-full rounded-2xl bg-gradient-to-b ${config.bg} border-2 ${config.border} ${config.glow} backface-hidden overflow-hidden flex flex-col ${isCompact ? 'p-1.5' : 'p-2 sm:p-3 md:p-3.5'} ${isFlipped ? "pointer-events-none" : isMobileDevice ? "cursor-default" : "cursor-grab active:cursor-grabbing"}`}
         >
           {/* Holographic Shimmer Overlay */}
           <div 
@@ -284,10 +284,10 @@ export default function CharacterCard({
           />
 
           {/* Rarity Tag Header */}
-          <div className={`flex justify-between items-center ${isCompact ? 'mb-1' : 'mb-1.5 sm:mb-2'} z-30`}>
-            <div className={`${isCompact ? 'px-1 py-0' : 'px-1.5 py-0.5 sm:px-2 sm:py-1'} rounded-md border ${config.border} bg-black/60 backdrop-blur-md flex items-center gap-1 sm:gap-1.5`}>
+          <div className={`flex justify-between items-center ${isCompact ? 'mb-1' : 'mb-1 sm:mb-1.5'} z-30`}>
+            <div className={`${isCompact ? 'px-1 py-0' : 'px-1.5 py-0.5 sm:px-2 sm:py-0.5'} rounded-md border ${config.border} bg-black/60 backdrop-blur-md flex items-center gap-1 sm:gap-1.5`}>
               <Sparkles className={`${isCompact ? 'w-2 h-2' : 'w-2 h-2 sm:w-2.5 sm:h-2.5'} ${config.text} animate-pulse`} />
-              <span className={`${isCompact ? 'text-[6px]' : 'text-[7px] sm:text-[9px]'} font-black tracking-[0.2em] uppercase ${config.text}`}>
+              <span className={`${isCompact ? 'text-[6px]' : 'text-[7px] sm:text-[8px] md:text-[9px]'} font-black tracking-[0.2em] uppercase ${config.text}`}>
                 {character.rarity}
               </span>
             </div>
@@ -299,7 +299,7 @@ export default function CharacterCard({
           </div>
 
           {/* Portrait Container */}
-          <div className={`relative w-full ${isCompact ? 'h-[125px]' : 'h-[168px] sm:h-[260px] md:h-[350px]'} rounded-xl border border-white/10 overflow-hidden bg-black/40 group/portrait z-10 flex items-center justify-center ${isCompact ? 'mb-1' : 'mb-1.5 sm:mb-2'}`}>
+          <div className={`relative w-full ${isCompact ? 'h-[110px]' : 'h-[145px] xs:h-[160px] sm:h-[210px] md:h-[250px] lg:h-[280px]'} rounded-xl border border-white/10 overflow-hidden bg-black/40 group/portrait z-10 flex items-center justify-center ${isCompact ? 'mb-1' : 'mb-1 sm:mb-1.5'}`}>
             {/* Digital Scan Line */}
             <div className="absolute inset-0 z-20 pointer-events-none">
               <div

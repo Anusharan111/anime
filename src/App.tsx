@@ -1684,7 +1684,7 @@ useEffect(() => {
   const opponentOnlineName = ownOnlineSide === "p2" ? player1Name : player2Name;
 
   return (
-    <div className={`${view === "draft" ? "h-[100dvh] overflow-hidden" : "min-h-screen overflow-x-clip"} ${view === "landing" ? "bg-black" : "bg-[#050816]"} text-slate-100 flex flex-col justify-between font-sans relative selection:bg-nexus-cyan/30`}>
+    <div className={`min-h-[100dvh] ${view === "draft" ? "lg:h-[100dvh] lg:overflow-hidden overflow-y-auto" : "overflow-x-clip"} ${view === "landing" ? "bg-black" : "bg-[#050816]"} text-slate-100 flex flex-col justify-between font-sans relative selection:bg-nexus-cyan/30 pb-[env(safe-area-inset-bottom,0px)]`}>
       {/* 🌌 Animated Background */}
       {view !== "landing" && (
         <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
@@ -1730,7 +1730,7 @@ useEffect(() => {
       </header>
 
       {/* MAIN CONTENT AREA */}
-      <main className={`flex-1 max-w-7xl w-full mx-auto px-1 py-2 sm:p-6 flex flex-col justify-center relative z-10 ${view === "draft" ? "min-h-0 overflow-hidden" : ""}`}>
+      <main className={`flex-1 max-w-7xl w-full mx-auto px-1 py-2 sm:p-6 flex flex-col justify-center relative z-10 ${view === "draft" ? "min-h-0 lg:overflow-hidden" : ""}`}>
         <AnimatePresence mode="wait">
           {/* 1. LANDING PAGE VIEW */}
           {view === "landing" && (

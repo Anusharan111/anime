@@ -39,7 +39,7 @@ export default function DeployModal({ character, slots, onSelect, onClose }: Dep
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 20 }}
         transition={{ type: "spring", duration: 0.5 }}
-        className="relative w-full max-w-lg overflow-hidden nexus-glass border border-white/10 rounded-2xl p-6 shadow-2xl flex flex-col gap-6"
+        className="relative w-full max-w-lg max-h-[90dvh] overflow-y-auto nexus-glass border border-white/10 rounded-2xl p-4 sm:p-6 shadow-2xl flex flex-col gap-4 sm:gap-6"
       >
         {/* Header / Title */}
         <div className="flex justify-between items-center pb-3 border-b border-white/5">

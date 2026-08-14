@@ -1,13 +1,19 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Character } from "../types";
-import { CHARACTERS } from "../data/characters";
 import { API_BASE } from "../config";
 import Pusher from "pusher-js";
-import { Copy, Check, Users, Play, LogOut, Crown } from "lucide-react";
+import { Copy, Check, Users, Play, LogOut, Crown, Search, Sparkles, AlertCircle } from "lucide-react";
 import { sfx } from "../utils/audio";
 import GuessCharacterMode from "../components/party/GuessCharacterMode";
 import GuessImposterMode from "../components/party/GuessImposterMode";
+import {
+  getAllInitialCharacters,
+  buildAllCharactersMap,
+  getCharactersForAnimeSelection,
+  getAllAvailableAnimeNames,
+} from "../utils/partyCharacterPool";
+import { RATING_ANIME_NAMES } from "../utils/ratingDataset";
 
 interface AnimePartyGamesProps {
   onExit: () => void;
@@ -43,13 +49,13 @@ export default function AnimePartyGames({ onExit }: AnimePartyGamesProps) {
   const [impCharId, setImpCharId] = useState<string | null>(null);
   const [civCharId, setCivCharId] = useState<string | null>(null);
 
-  // Character filter pool
-  const [characterPool, setCharacterPool] = useState<Character[]>(CHARACTERS);
+  // Character filter pool initialized with the complete dataset + builtins
+  const [characterPool, setCharacterPool] = useState<Character[]>(() => getAllInitialCharacters());
   const [category, setCategory] = useState<"all" | "choose">("all");
   const [selectedAnimes, setSelectedAnimes] = useState<string[]>([]);
   const [animeSearchQuery, setAnimeSearchQuery] = useState("");
   const [isAnimeDropdownOpen, setIsAnimeDropdownOpen] = useState(false);
-  const [animeList, setAnimeList] = useState<string[]>([]);
+  const [animeList, setAnimeList] = useState<string[]>(() => getAllAvailableAnimeNames());
 
   const pusherRef = useRef<Pusher | null>(null);
   const channelRef = useRef<any>(null);
@@ -57,24 +63,41 @@ export default function AnimePartyGames({ onExit }: AnimePartyGamesProps) {
   const mySocketIdRef = useRef<string | null>(null);
   const playersRef = useRef<PlayerInfo[]>([]);
 
+  // Fast ID -> Character lookup map that contains all characters
+  const allCharactersMapRef = useRef<Map<string, Character>>(buildAllCharactersMap());
+
   useEffect(() => { isHostRef.current = isHost; }, [isHost]);
   useEffect(() => { playersRef.current = players; }, [players]);
 
+  // Compute active filtered pool count for the lobby UI
+  const activeFilteredPool = useMemo(() => {
+    if (category === "all") return characterPool;
+    return getCharactersForAnimeSelection(selectedAnimes, characterPool);
+  }, [category, selectedAnimes, characterPool]);
+
   useEffect(() => {
-    // Fetch characters pool to build unique anime list
+    // Refresh characters pool and build full anime list (with server additions if available)
     const fetchPool = async () => {
-      let pool = [...CHARACTERS];
+      let pool = getAllInitialCharacters();
       try {
         const res = await fetch(`${API_BASE}/api/characters`);
-        if (res.ok) pool = await res.json();
-      } catch (e) { /* fallback */ }
-      setCharacterPool(pool);
-      
-      const labels = new Set<string>();
-      for (const char of pool) {
-        if (char.anime) labels.add(char.anime);
+        if (res.ok) {
+          const apiChars: Character[] = await res.json();
+          if (Array.isArray(apiChars) && apiChars.length > 0) {
+            const map = new Map<string, Character>();
+            for (const c of pool) map.set(c.id, c);
+            for (const c of apiChars) {
+              if (c?.id && !map.has(c.id)) map.set(c.id, c);
+            }
+            pool = Array.from(map.values());
+          }
+        }
+      } catch (e) {
+        /* fallback to local dataset */
       }
-      setAnimeList(Array.from(labels).sort());
+      setCharacterPool(pool);
+      allCharactersMapRef.current = buildAllCharactersMap(pool);
+      setAnimeList(getAllAvailableAnimeNames(pool));
     };
     fetchPool();
   }, []);
@@ -106,6 +129,50 @@ export default function AnimePartyGames({ onExit }: AnimePartyGamesProps) {
     cleanup();
     onExit();
   }, [cleanup, onExit]);
+
+  const applyGameStart = useCallback((data: any, mySocketId: string) => {
+    const { mode, assignments, civCharId, impCharId, civChar, impChar } = data;
+    const idMap = allCharactersMapRef.current;
+    setMyCardRevealed(false);
+
+    if (mode === "guess-character") {
+      // assignments: [{socketId, charId, character, playerName}]
+      const myAssignment = assignments.find((a: any) => a.socketId === mySocketId);
+      const myChar = myAssignment ? (myAssignment.character || idMap.get(myAssignment.charId) || null) : null;
+      const others = assignments
+        .filter((a: any) => a.socketId !== mySocketId)
+        .map((a: any) => ({
+          name: a.playerName,
+          character: a.character || idMap.get(a.charId)!,
+          socketId: a.socketId,
+        }))
+        .filter((o: any) => o.character);
+
+      setMyCharacter(myChar);
+      setOtherPlayersChars(others);
+      setPhase("playing-gc");
+    } else {
+      // imposter mode
+      const myAssignment = assignments.find((a: any) => a.socketId === mySocketId);
+      const resolvedCivChar = civChar || idMap.get(civCharId) || null;
+      const resolvedImpChar = impChar || idMap.get(impCharId) || null;
+      const myChar = myAssignment?.isImposter ? resolvedImpChar : resolvedCivChar;
+
+      setMyCharacter(myChar);
+      setCivCharId(civCharId);
+      setImpCharId(impCharId);
+      setOtherPlayersChars(
+        assignments
+          .filter((a: any) => a.socketId !== mySocketId)
+          .map((a: any) => ({ name: a.playerName, character: myChar!, socketId: a.socketId }))
+      );
+      setCiviliansCharacter(resolvedCivChar);
+      setRevealedImposter(null);
+      setImposterVotes({});
+      setPhase("playing-imp");
+    }
+    sfx.playCorrect();
+  }, []);
 
   const subscribeToChannel = useCallback((pusher: Pusher, rid: string, side: "host" | "player", name: string) => {
     const channelName = `presence-party-${rid.toUpperCase()}`;
@@ -141,14 +208,14 @@ export default function AnimePartyGames({ onExit }: AnimePartyGamesProps) {
       setImposterVotes(prev => ({ ...prev, [voterId]: accusedName }));
     });
 
-    channel.bind("client-party-reveal", ({ imposterSocketId, civCharId, impCharId }: any) => {
-      const idMap = new Map(CHARACTERS.map(c => [c.id, c]));
+    channel.bind("client-party-reveal", ({ imposterSocketId, civCharId, impCharId, civChar, impChar }: any) => {
+      const idMap = allCharactersMapRef.current;
       const imposterPlayer = playersRef.current.find(p => p.id === imposterSocketId);
-      const impChar = idMap.get(impCharId) || null;
-      const civChar = idMap.get(civCharId) || null;
-      if (imposterPlayer && impChar && civChar) {
-        setCiviliansCharacter(civChar);
-        setRevealedImposter({ name: imposterPlayer.name, character: impChar });
+      const finalImpChar = impChar || idMap.get(impCharId) || null;
+      const finalCivChar = civChar || idMap.get(civCharId) || null;
+      if (imposterPlayer && finalImpChar && finalCivChar) {
+        setCiviliansCharacter(finalCivChar);
+        setRevealedImposter({ name: imposterPlayer.name, character: finalImpChar });
       }
     });
 
@@ -172,46 +239,7 @@ export default function AnimePartyGames({ onExit }: AnimePartyGamesProps) {
         sfx.playCorrect();
       }
     });
-  }, []);
-
-  const applyGameStart = (data: any, mySocketId: string) => {
-    const { mode, assignments, civCharId, impCharId } = data;
-    const idMap = new Map(CHARACTERS.map(c => [c.id, c]));
-    setMyCardRevealed(false);
-
-    if (mode === "guess-character") {
-      // assignments: [{socketId, charId, playerName}]
-      const myAssignment = assignments.find((a: any) => a.socketId === mySocketId);
-      const myChar = myAssignment ? idMap.get(myAssignment.charId) || null : null;
-      const others = assignments
-        .filter((a: any) => a.socketId !== mySocketId)
-        .map((a: any) => ({ name: a.playerName, character: idMap.get(a.charId)!, socketId: a.socketId }))
-        .filter((o: any) => o.character);
-
-      setMyCharacter(myChar);
-      setOtherPlayersChars(others);
-      setPhase("playing-gc");
-    } else {
-      // imposter mode
-      const myAssignment = assignments.find((a: any) => a.socketId === mySocketId);
-      const civChar = idMap.get(civCharId) || null;
-      const impChar = idMap.get(impCharId) || null;
-      const myChar = myAssignment?.isImposter ? impChar : civChar;
-
-      setMyCharacter(myChar);
-      // Store IDs for reveal
-      setCivCharId(civCharId);
-      setImpCharId(impCharId);
-      setOtherPlayersChars(assignments
-        .filter((a: any) => a.socketId !== mySocketId)
-        .map((a: any) => ({ name: a.playerName, character: myChar!, socketId: a.socketId })));
-      setCiviliansCharacter(civChar);
-      setRevealedImposter(null);
-      setImposterVotes({});
-      setPhase("playing-imp");
-    }
-    sfx.playCorrect();
-  };
+  }, [applyGameStart]);
 
   const handleCreateRoom = async () => {
     if (!myName.trim()) { setLobbyError("Please enter your name."); return; }
@@ -238,15 +266,20 @@ export default function AnimePartyGames({ onExit }: AnimePartyGamesProps) {
     const currentPlayers = playersRef.current;
     if (currentPlayers.length < 2) { setLobbyError("Need at least 2 players to start."); return; }
 
-    let pool = [...characterPool];
-    if (category === "choose" && selectedAnimes.length > 0) {
-      const selectedKeys = selectedAnimes.map((a) => a.trim().toLowerCase());
-      pool = pool.filter((c) => c.anime && selectedKeys.some(key => c.anime.trim().toLowerCase().includes(key)));
+    let pool: Character[];
+    if (category === "choose") {
+      if (selectedAnimes.length === 0) {
+        setLobbyError("Please select at least one anime before starting.");
+        return;
+      }
+      pool = getCharactersForAnimeSelection(selectedAnimes, characterPool);
+    } else {
+      pool = [...characterPool];
     }
 
     if (selectedMode === "guess-character") {
       if (pool.length < currentPlayers.length) {
-        setLobbyError(`Not enough characters in selected anime pool (${pool.length} available) for all players (${currentPlayers.length} players).`);
+        setLobbyError(`Not enough characters in selected pool (${pool.length} available) for all players (${currentPlayers.length} players).`);
         return;
       }
     } else {
@@ -260,26 +293,37 @@ export default function AnimePartyGames({ onExit }: AnimePartyGamesProps) {
     const shuffled = [...pool].sort(() => Math.random() - 0.5);
 
     if (selectedMode === "guess-character") {
-      const assignments = currentPlayers.map((p, i) => ({
-        socketId: p.id,
-        playerName: p.name,
-        charId: (shuffled[i] || shuffled[i % shuffled.length]).id,
-      }));
+      const assignments = currentPlayers.map((p, i) => {
+        const assignedChar = shuffled[i] || shuffled[i % shuffled.length];
+        return {
+          socketId: p.id,
+          playerName: p.name,
+          charId: assignedChar.id,
+          character: assignedChar,
+        };
+      });
 
       const payload = { mode: "guess-character", assignments };
       channelRef.current.trigger("client-party-game-started", payload);
       // Host applies locally
       applyGameStart(payload, pusherRef.current!.connection.socket_id);
     } else {
-      const localCivCharId = shuffled[0].id;
-      const localImpCharId = shuffled[1].id;
+      const localCivChar = shuffled[0];
+      const localImpChar = shuffled[1];
       const imposterIdx = Math.floor(Math.random() * currentPlayers.length);
       const assignments = currentPlayers.map((p, i) => ({
         socketId: p.id,
         playerName: p.name,
         isImposter: i === imposterIdx,
       }));
-      const payload = { mode: "guess-imposter", assignments, civCharId: localCivCharId, impCharId: localImpCharId };
+      const payload = {
+        mode: "guess-imposter",
+        assignments,
+        civChar: localCivChar,
+        impChar: localImpChar,
+        civCharId: localCivChar.id,
+        impCharId: localImpChar.id,
+      };
       channelRef.current.trigger("client-party-game-started", payload);
       applyGameStart(payload, pusherRef.current!.connection.socket_id);
     }
@@ -294,12 +338,20 @@ export default function AnimePartyGames({ onExit }: AnimePartyGamesProps) {
 
   const handleRevealImposter = (imposterSocketId: string) => {
     if (!channelRef.current || !civCharId || !impCharId) return;
-    channelRef.current.trigger("client-party-reveal", { imposterSocketId, civCharId, impCharId });
-    // Apply locally for host
-    const idMap = new Map(CHARACTERS.map(c => [c.id, c]));
-    const imposterPlayer = players.find(p => p.id === imposterSocketId);
+    const idMap = allCharactersMapRef.current;
     const impChar = idMap.get(impCharId) || null;
     const civChar = idMap.get(civCharId) || null;
+
+    channelRef.current.trigger("client-party-reveal", {
+      imposterSocketId,
+      civCharId,
+      impCharId,
+      civChar,
+      impChar,
+    });
+
+    // Apply locally for host
+    const imposterPlayer = players.find(p => p.id === imposterSocketId);
     if (imposterPlayer && impChar && civChar) {
       setCiviliansCharacter(civChar);
       setRevealedImposter({ name: imposterPlayer.name, character: impChar });
@@ -481,12 +533,20 @@ export default function AnimePartyGames({ onExit }: AnimePartyGamesProps) {
 
                 {/* Character Pool Filter */}
                 <div className="space-y-2 pt-2 border-t border-white/5">
-                  <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Character Pool Filter</p>
+                  <div className="flex items-center justify-between">
+                    <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Character Pool Filter</p>
+                    <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full flex items-center gap-1">
+                      <Sparkles className="w-3 h-3" />
+                      {activeFilteredPool.length} characters ready
+                    </span>
+                  </div>
+
                   <div className="grid grid-cols-2 gap-3">
                     <button
                       onClick={() => {
                         setCategory("all");
                         setSelectedAnimes([]);
+                        setLobbyError(null);
                       }}
                       className={`py-2.5 px-3 rounded-xl border text-[10px] font-black uppercase tracking-wide transition-all cursor-pointer ${
                         category === "all"
@@ -494,10 +554,13 @@ export default function AnimePartyGames({ onExit }: AnimePartyGamesProps) {
                           : "border-neutral-800 bg-neutral-900/30 text-neutral-400 hover:border-neutral-700"
                       }`}
                     >
-                      🌐 All Anime
+                      🌐 All Anime ({characterPool.length})
                     </button>
                     <button
-                      onClick={() => setCategory("choose")}
+                      onClick={() => {
+                        setCategory("choose");
+                        setLobbyError(null);
+                      }}
                       className={`py-2.5 px-3 rounded-xl border text-[10px] font-black uppercase tracking-wide transition-all cursor-pointer ${
                         category === "choose"
                           ? "border-violet-500 bg-violet-500/10 text-violet-400 shadow-[0_0_15px_rgba(139,92,246,0.25)]"
@@ -510,49 +573,90 @@ export default function AnimePartyGames({ onExit }: AnimePartyGamesProps) {
 
                   {category === "choose" && (
                     <div className="space-y-2 pt-1 relative animate-fadeIn">
-                      <input
-                        type="text"
-                        value={animeSearchQuery}
-                        onFocus={() => setIsAnimeDropdownOpen(true)}
-                        onBlur={() => {
-                          setTimeout(() => setIsAnimeDropdownOpen(false), 200);
-                        }}
-                        onChange={(e) => setAnimeSearchQuery(e.target.value)}
-                        placeholder="Select or search anime…"
-                        className="w-full bg-neutral-900/50 border border-neutral-800 rounded-xl py-2.5 px-3.5 text-xs text-white font-mono font-bold focus:border-violet-500 focus:outline-none cursor-pointer"
-                      />
-                      {isAnimeDropdownOpen && (
-                        <div className="absolute z-20 left-0 right-0 top-full mt-1 bg-neutral-900 border border-neutral-700 rounded-xl max-h-40 overflow-y-auto shadow-2xl">
-                          {animeList
-                            .filter((a) => !animeSearchQuery.trim() || a.toLowerCase().includes(animeSearchQuery.toLowerCase()))
-                            .map((anime) => (
+                      {/* Top Rating Anime Quick Picks */}
+                      <div className="space-y-1">
+                        <p className="text-[9px] font-mono text-slate-500 uppercase">Featured Top Anime Datasets:</p>
+                        <div className="flex flex-wrap gap-1">
+                          {RATING_ANIME_NAMES.map((animeName) => {
+                            const isSelected = selectedAnimes.includes(animeName);
+                            return (
                               <button
-                                key={anime}
-                                onMouseDown={() => {
-                                  if (!selectedAnimes.includes(anime)) {
-                                    setSelectedAnimes((prev) => [...prev, anime]);
+                                key={animeName}
+                                type="button"
+                                onClick={() => {
+                                  if (isSelected) {
+                                    setSelectedAnimes(prev => prev.filter(a => a !== animeName));
+                                  } else {
+                                    setSelectedAnimes(prev => [...prev, animeName]);
                                   }
-                                  setAnimeSearchQuery("");
-                                  setIsAnimeDropdownOpen(false);
+                                  setLobbyError(null);
                                 }}
-                                className={`w-full text-left px-3.5 py-2 text-xs font-mono hover:bg-violet-500/15 transition-colors cursor-pointer ${
-                                  selectedAnimes.includes(anime) ? "text-violet-400 bg-violet-500/10" : "text-slate-200"
+                                className={`px-2 py-1 rounded-lg text-[9px] font-mono font-bold transition-all cursor-pointer border ${
+                                  isSelected
+                                    ? "bg-violet-600 text-white border-violet-400 shadow-sm"
+                                    : "bg-neutral-900/80 text-neutral-400 border-neutral-800 hover:border-violet-500/40 hover:text-neutral-200"
                                 }`}
                               >
-                                {anime}
+                                {isSelected ? "✓ " : "+ "}{animeName}
                               </button>
-                            ))}
-                          {animeList.filter((a) => !animeSearchQuery.trim() || a.toLowerCase().includes(animeSearchQuery.toLowerCase())).length === 0 && (
-                            <p className="px-3.5 py-2 text-[10px] text-neutral-500 font-mono">No anime found matching "{animeSearchQuery}"</p>
-                          )}
+                            );
+                          })}
                         </div>
-                      )}
-                      {selectedAnimes.length > 0 && (
+                      </div>
+
+                      {/* Search and dropdown */}
+                      <div className="relative mt-2">
+                        <input
+                          type="text"
+                          value={animeSearchQuery}
+                          onFocus={() => setIsAnimeDropdownOpen(true)}
+                          onBlur={() => {
+                            setTimeout(() => setIsAnimeDropdownOpen(false), 200);
+                          }}
+                          onChange={(e) => setAnimeSearchQuery(e.target.value)}
+                          placeholder="Search any anime (e.g. Naruto, Hunter x Hunter)…"
+                          className="w-full bg-neutral-900/50 border border-neutral-800 rounded-xl py-2.5 px-3.5 text-xs text-white font-mono font-bold focus:border-violet-500 focus:outline-none cursor-pointer"
+                        />
+                        {isAnimeDropdownOpen && (
+                          <div className="absolute z-20 left-0 right-0 top-full mt-1 bg-neutral-900 border border-neutral-700 rounded-xl max-h-48 overflow-y-auto shadow-2xl">
+                            {animeList
+                              .filter((a) => !animeSearchQuery.trim() || a.toLowerCase().includes(animeSearchQuery.toLowerCase()))
+                              .map((anime) => {
+                                const isAdded = selectedAnimes.includes(anime);
+                                return (
+                                  <button
+                                    key={anime}
+                                    onMouseDown={() => {
+                                      if (!isAdded) {
+                                        setSelectedAnimes((prev) => [...prev, anime]);
+                                      }
+                                      setAnimeSearchQuery("");
+                                      setIsAnimeDropdownOpen(false);
+                                      setLobbyError(null);
+                                    }}
+                                    className={`w-full text-left px-3.5 py-2 text-xs font-mono hover:bg-violet-500/15 transition-colors cursor-pointer flex items-center justify-between ${
+                                      isAdded ? "text-violet-400 bg-violet-500/10" : "text-slate-200"
+                                    }`}
+                                  >
+                                    <span>{anime}</span>
+                                    {isAdded && <span className="text-[9px] text-emerald-400 font-bold uppercase">Added</span>}
+                                  </button>
+                                );
+                              })}
+                            {animeList.filter((a) => !animeSearchQuery.trim() || a.toLowerCase().includes(animeSearchQuery.toLowerCase())).length === 0 && (
+                              <p className="px-3.5 py-2 text-[10px] text-neutral-500 font-mono">No anime found matching "{animeSearchQuery}"</p>
+                            )}
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Selected anime badges */}
+                      {selectedAnimes.length > 0 ? (
                         <div className="flex flex-wrap gap-1.5 mt-2">
                           {selectedAnimes.map((anime) => (
                             <span
                               key={anime}
-                              className="inline-flex items-center gap-1.5 text-[10px] font-mono font-bold text-violet-400 bg-violet-500/10 border border-violet-500/30 px-2.5 py-1 rounded-lg animate-fadeIn"
+                              className="inline-flex items-center gap-1.5 text-[10px] font-mono font-bold text-violet-300 bg-violet-500/15 border border-violet-500/30 px-2.5 py-1 rounded-lg animate-fadeIn"
                             >
                               🎯 {anime}
                               <button
@@ -577,15 +681,25 @@ export default function AnimePartyGames({ onExit }: AnimePartyGamesProps) {
                             ✕ clear all
                           </button>
                         </div>
+                      ) : (
+                        <p className="text-[10px] font-mono text-amber-400/90 flex items-center gap-1.5 pt-1">
+                          <AlertCircle className="w-3 h-3" /> Select at least one anime from above to filter characters.
+                        </p>
                       )}
                     </div>
                   )}
                 </div>
 
+                {lobbyError && (
+                  <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-xs font-mono text-red-400">
+                    {lobbyError}
+                  </div>
+                )}
+
                 <button
                   onClick={handleStartGame}
-                  disabled={players.length < 2}
-                  className="w-full py-4 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 disabled:opacity-40 disabled:cursor-not-allowed text-white font-extrabold text-base flex items-center justify-center gap-2 shadow-lg transition"
+                  disabled={players.length < 2 || (category === "choose" && selectedAnimes.length === 0)}
+                  className="w-full py-4 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 disabled:opacity-40 disabled:cursor-not-allowed text-white font-extrabold text-base flex items-center justify-center gap-2 shadow-lg transition cursor-pointer"
                 >
                   <Play className="w-5 h-5" fill="currentColor" /> START GAME
                 </button>

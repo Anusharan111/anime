@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import Pusher from "pusher-js";
 import { Character } from "../types";
-import { CHARACTERS } from "../data/characters";
+import { getAllInitialCharacters, buildAllCharactersMap } from "../utils/partyCharacterPool";
 import { API_BASE } from "../config";
 import { sfx } from "../utils/audio";
 
@@ -178,7 +178,8 @@ export default function AnimeGuessWhoGame({ onExit }: AnimeGuessWhoGameProps) {
       setRoomId(roomIdentifier);
       roomIdRef.current = roomIdentifier;
 
-      const idMap = new Map(CHARACTERS.map(c => [c.id, c]));
+      const allChars = getAllInitialCharacters();
+      const idMap = buildAllCharactersMap(allChars);
       const resolvedGrid = (gridIds as string[]).map(id => idMap.get(id)).filter(Boolean) as Character[];
       const resolvedP1Secret = idMap.get(p1SecretId) || null;
       const resolvedP2Secret = idMap.get(p2SecretId) || null;
@@ -232,7 +233,8 @@ export default function AnimeGuessWhoGame({ onExit }: AnimeGuessWhoGameProps) {
         sfx.playWrong();
       }
 
-      const idMap = new Map(CHARACTERS.map(c => [c.id, c]));
+      const allChars = getAllInitialCharacters();
+      const idMap = buildAllCharactersMap(allChars);
       const resolvedP1Secret = idMap.get(p1SecretId);
       const resolvedP2Secret = idMap.get(p2SecretId);
 
@@ -264,7 +266,8 @@ export default function AnimeGuessWhoGame({ onExit }: AnimeGuessWhoGameProps) {
   }, [handleExit]);
 
   const triggerGameStart = (channel: any, rid: string, p1Name: string, p2Name: string) => {
-    const shuffled = [...CHARACTERS].sort(() => Math.random() - 0.5);
+    const allChars = getAllInitialCharacters();
+    const shuffled = [...allChars].sort(() => Math.random() - 0.5);
     const grid = shuffled.slice(0, 24);
 
     const secretIndices = [Math.floor(Math.random() * 24)];

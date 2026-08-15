@@ -8,23 +8,23 @@ export interface RawRatingCharacter {
   rating: number;
 }
 
-export const RATING_ANIME_NAMES = [
-  "One Piece",
-  "Naruto",
-  "Dragon Ball",
-  "Bleach",
-  "Demon Slayer",
-  "Jujutsu Kaisen",
-  "Attack on Titan",
-  "Fullmetal Alchemist",
-  "Chainsaw Man",
-] as const;
+export const ratingDataset: RawRatingCharacter[] = rawRatingData.flatMap(
+  (anime: any) => anime.characters || []
+);
+
+export const RATING_ANIME_NAMES: readonly string[] = Array.from(
+  new Set(
+    rawRatingData
+      .map(
+        (anime: any) =>
+          anime.anime_name ||
+          (anime.characters && anime.characters[0]?.anime_category)
+      )
+      .filter(Boolean) as string[]
+  )
+);
 
 export const RATING_ANIME_SET: Set<string> = new Set(RATING_ANIME_NAMES);
-
-export const ratingDataset: RawRatingCharacter[] = rawRatingData.flatMap(
-  (anime) => anime.characters
-);
 
 export function getCharactersByAnime(animeName: string): RawRatingCharacter[] {
   const normalized = animeName.trim().toLowerCase();

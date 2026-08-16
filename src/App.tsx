@@ -39,8 +39,9 @@ import LandingPage from "./LandingPage";
 import { sfx } from "./utils/audio";
 import { getRoleFitScore, getRoleSuitabilityLabel, getRoleFitMultiplier } from "./utils/roleUtils";
 import DraftView from "./components/ui/DraftView";
-import { ratingDataset, RATING_ANIME_SET, getCharactersByAnime } from "./utils/ratingDataset";
+import { ratingDataset, RATING_ANIME_SET, RATING_ANIME_NAMES, getCharactersByAnime, hasLocalDatasetForAnime } from "./utils/ratingDataset";
 import { adaptRatingCharacters } from "./utils/ratingAdapter";
+import { getAllAvailableAnimeNames } from "./utils/partyCharacterPool";
 import { useSEO, routeSEO } from "./hooks/useSEO";
 
 type ViewState = "landing" | "draft" | "results" | "feud" | "guesswho" | "party";
@@ -498,18 +499,31 @@ useEffect(() => {
   const [hottestSpotlight, setHottestSpotlight] = useState<Character>(CHARACTERS[0]);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [showAbout, setShowAbout] = useState(false);
-  const [totalCharacters, setTotalCharacters] = useState(CHARACTERS.length);
-  const [animeCounts, setAnimeCounts] = useState<Record<string, number>>(() => buildAnimeCatalog(CHARACTERS).animeCounts);
+  const [totalCharacters, setTotalCharacters] = useState(ratingDataset.length + CHARACTERS.length);
+  const [animeCounts, setAnimeCounts] = useState<Record<string, number>>(() => {
+    const counts: Record<string, number> = {};
+    for (const anime of RATING_ANIME_NAMES) {
+      counts[anime] = getCharactersByAnime(anime).length;
+    }
+    const builtinCatalog = buildAnimeCatalog(CHARACTERS);
+    for (const [anime, count] of Object.entries(builtinCatalog.animeCounts)) {
+      if (!counts[anime]) {
+        counts[anime] = count;
+      }
+    }
+    return counts;
+  });
   const aboutCharacter = CHARACTERS.find((character) => character.name === "Lelouch Lamperouge") ?? CHARACTERS[0];
 
-  // Extract unique anime names from the character pool
+  // Extract unique anime names from the character pool & dataset
   const [animeList, setAnimeList] = useState<string[]>(() => {
-    return buildAnimeCatalog(CHARACTERS).animeList;
+    return getAllAvailableAnimeNames();
   });
   const selectedAnimeCharacterCount = selectedAnimes.reduce(
     (total, anime) => {
-      if (RATING_ANIME_SET.has(anime)) {
-        return total + getCharactersByAnime(anime).length;
+      const localChars = getCharactersByAnime(anime);
+      if (localChars.length > 0) {
+        return total + localChars.length;
       }
       return total + (animeCounts[anime] || 0);
     },
@@ -521,6 +535,15 @@ useEffect(() => {
   const isPoolLimited = category === "choose" && selectedAnimeCharacterCount < MIN_RECOMMENDED_POOL && selectedAnimeCharacterCount >= ABSOLUTE_MIN;
 
   const importCastForAnime = async (anime: string) => {
+    // 1. Check local dataset FIRST
+    const localRaw = getCharactersByAnime(anime);
+    if (localRaw.length > 0) {
+      const adapted = adaptRatingCharacters(localRaw);
+      const key = getAnimeKey(anime);
+      importCacheRef.current.set(key, adapted);
+      return adapted;
+    }
+
     const key = getAnimeKey(anime);
     if (importCacheRef.current.has(key)) return importCacheRef.current.get(key) as Character[];
     if (importedCastAnimes.has(key)) {
@@ -569,6 +592,15 @@ useEffect(() => {
   };
 
   const fetchRosterCharacters = async (anime: string): Promise<Character[]> => {
+    // 1. Check local dataset FIRST
+    const localRaw = getCharactersByAnime(anime);
+    if (localRaw.length > 0) {
+      const adapted = adaptRatingCharacters(localRaw);
+      const key = getAnimeKey(anime);
+      importCacheRef.current.set(key, adapted);
+      return adapted;
+    }
+
     const key = getAnimeKey(anime);
     if (importCacheRef.current.has(key)) return importCacheRef.current.get(key) as Character[];
     try {
@@ -598,7 +630,14 @@ useEffect(() => {
     ];
 
     try {
-      await Promise.all(starterAnimes.map(anime => importCastForAnime(anime)));
+      await Promise.all(
+        starterAnimes.map(anime => {
+          if (hasLocalDatasetForAnime(anime)) {
+            return Promise.resolve(adaptRatingCharacters(getCharactersByAnime(anime)));
+          }
+          return importCastForAnime(anime);
+        })
+      );
     } catch (error) {
       console.warn("Auto import failed", error);
     }
@@ -609,11 +648,12 @@ useEffect(() => {
       const res = await fetch(`${API_BASE}/api/characters`);
       if (res.ok) {
         const data = await res.json();
-        setTotalCharacters(data.length);
+        setTotalCharacters(data.length + ratingDataset.length);
         // Build unique anime list
         const animeCatalog = buildAnimeCatalog(data);
-        setAnimeList(animeCatalog.animeList);
-        setAnimeCounts(animeCatalog.animeCounts);
+        const mergedList = Array.from(new Set([...getAllAvailableAnimeNames(), ...animeCatalog.animeList])).sort();
+        setAnimeList(mergedList);
+        setAnimeCounts(prev => ({ ...prev, ...animeCatalog.animeCounts }));
         return data as Character[];
       }
     } catch (e) {
@@ -624,36 +664,41 @@ useEffect(() => {
 
   /**
    * Build the persistent draft pool from the resolved anime filter.
-   * For the 9 rating-dataset anime, uses local dataset (no API).
-   * For other anime, fetches from API.
+   * Prioritizes the local rating dataset first (zero latency, offline friendly, 100 anime).
+   * Only falls back to API if an anime has no local dataset characters.
    * Merges, dedupes by id, and shuffles once with Fisher-Yates.
    */
   const buildDraftPool = async (activeAnimes: string[], useAll: boolean): Promise<Character[]> => {
     let characters: Character[] = [];
 
     if (useAll || activeAnimes.length === 0) {
-      const all = await fetchTotalCharactersCount();
-      characters = all || [...CHARACTERS];
+      const localAll = adaptRatingCharacters(ratingDataset);
+      const apiAll = await fetchTotalCharactersCount();
+      characters = [...localAll, ...(apiAll || CHARACTERS)];
     } else {
       setImportProgress({ title: "", current: 0, total: activeAnimes.length });
-      
-      // Split anime into rating-dataset anime and API anime
-      const ratingAnimes = activeAnimes.filter((a) => RATING_ANIME_SET.has(a));
-      const apiAnimes = activeAnimes.filter((a) => !RATING_ANIME_SET.has(a));
 
-      // Add rating-dataset characters (local, instant)
-      for (const anime of ratingAnimes) {
-        const rawChars = getCharactersByAnime(anime);
-        const adapted = adaptRatingCharacters(rawChars);
-        characters.push(...adapted);
-      }
+      for (let i = 0; i < activeAnimes.length; i++) {
+        const anime = activeAnimes[i];
+        setImportProgress({ title: anime, current: i + 1, total: activeAnimes.length });
 
-      // Fetch API characters for other anime
-      for (let i = 0; i < apiAnimes.length; i++) {
-        const anime = apiAnimes[i];
-        setImportProgress({ title: anime, current: i + 1, total: apiAnimes.length });
-        const roster = await fetchRosterCharacters(anime);
-        characters.push(...roster);
+        // 1. FIRST: Check local dataset
+        const rawLocalChars = getCharactersByAnime(anime);
+        if (rawLocalChars.length > 0) {
+          const adapted = adaptRatingCharacters(rawLocalChars);
+          characters.push(...adapted);
+          continue; // Used local dataset! No API call needed.
+        }
+
+        // 2. SECOND: Fall back to API only if local dataset does NOT have characters
+        try {
+          const roster = await fetchRosterCharacters(anime);
+          if (roster.length > 0) {
+            characters.push(...roster);
+          }
+        } catch (err) {
+          console.warn(`API import fallback failed for ${anime}`, err);
+        }
       }
       setImportProgress(null);
     }

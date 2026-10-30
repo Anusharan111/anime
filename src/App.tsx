@@ -316,6 +316,7 @@ export default function App() {
   // Persistent draft pool (built once before the draft starts)
   const draftPoolRef = useRef<Character[]>([]);
   const draftQueueRef = useRef<DraftQueue | null>(null);
+  const sessionFilterRef = useRef({ activeAnimes: [] as string[], useAll: true });
   const importCacheRef = useRef<Map<string, Character[]>>(new Map());
   const [poolSize, setPoolSize] = useState(0);
   const [queueIndex, setQueueIndex] = useState(0);
@@ -669,6 +670,8 @@ useEffect(() => {
    * Merges, dedupes by id, and shuffles once with Fisher-Yates.
    */
   const buildDraftPool = async (activeAnimes: string[], useAll: boolean): Promise<Character[]> => {
+    // Online matches must keep using the host's filter after turns switch players.
+    sessionFilterRef.current = { activeAnimes: [...activeAnimes], useAll };
     let characters: Character[] = [];
 
     if (useAll || activeAnimes.length === 0) {
@@ -703,8 +706,15 @@ useEffect(() => {
       setImportProgress(null);
     }
 
-    // Deduplicate by id (case-sensitive) to guarantee uniqueness
-    const pool = dedupeCharacters(characters);
+    // Defense in depth: a filtered room must never draw a fighter outside the
+    // host's selected anime list, even if an imported roster has extra entries.
+    const allowedAnimeKeys = new Set(activeAnimes.map(getAnimeKey));
+    const filteredCharacters = useAll
+      ? characters
+      : characters.filter((character) => allowedAnimeKeys.has(getAnimeKey(character.anime)));
+
+    // Deduplicate by id (case-sensitive) to guarantee uniqueness.
+    const pool = dedupeCharacters(filteredCharacters);
     draftPoolRef.current = pool;
     draftQueueRef.current = new DraftQueue(pool);
     setPoolSize(pool.length);
@@ -721,9 +731,7 @@ useEffect(() => {
     if (!draftQueueRef.current || draftQueueRef.current.remaining === 0) {
       setPoolExhausted(true);
       // Rebuild the pool (from the same anime set) and reshuffle
-      const activeAnimes = categoryRef.current === "choose" ? [...selectedAnimesRef.current] : [];
-      const useAll = allAnimeRef.current || categoryRef.current !== "choose";
-      await buildDraftPool(activeAnimes, useAll);
+      await buildDraftPool(sessionFilterRef.current.activeAnimes, sessionFilterRef.current.useAll);
       setPoolExhausted(false);
       if (!draftQueueRef.current || draftQueueRef.current.remaining === 0) return null;
     }
@@ -900,14 +908,15 @@ useEffect(() => {
       setIsDeployModalOpen(false);
       importStarterAllAnimeCasts().catch(() => {});
 
-      if (onlineSideRef.current === "p1") {
-        // Build the persistent pool before the first draw (host side)
-        buildDraftPool(activeAnimes || [], useAll !== false).then(() => {
+      // Both clients need the same filtered pool: P2 draws the next card after
+      // its turn, so leaving its queue empty previously rebuilt an unfiltered pool.
+      buildDraftPool(activeAnimes || [], useAll !== false).then(() => {
+        if (onlineSideRef.current === "p1") {
           requestAnimationFrame(() => {
             pullNewCharacterRef.current([], [], initialSlots);
           });
-        });
-      }
+        }
+      });
     });
 
     channel.bind("client-game-state-updated", (state: any) => {
@@ -925,6 +934,12 @@ useEffect(() => {
       if (state.mustPick !== undefined) setMustPick(state.mustPick);
       if (state.view !== undefined) setView(state.view);
       if (state.loadingResult !== undefined) setLoadingResult(state.loadingResult);
+      if (state.draftFilter) {
+        const draftFilter = state.draftFilter as { activeAnimes?: string[]; useAll?: boolean };
+        buildDraftPool(draftFilter.activeAnimes || [], draftFilter.useAll !== false).catch((error) => {
+          console.error("Failed to rebuild synced online draft pool", error);
+        });
+      }
       if (statsMatch(state.resultData)) {
         winnerCalculatedRef.current = true;
         setResultData(state.resultData);
@@ -1131,6 +1146,7 @@ useEffect(() => {
         view: "draft",
         activeCharacter: null,
         isCardFlipped: true,
+        draftFilter: { activeAnimes, useAll },
       });
 
       // Build the persistent pool before the first draw
